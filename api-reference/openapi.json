@@ -38,7 +38,10 @@
   "paths": {
     "/payout/fetch-rate": {
       "post": {
-        "tags": ["Payout"],
+        "tags": [
+          "Payout"
+        ],
+        "x-title": "Fetch Rate",
         "description": "Fetch exchange rate for a given asset and network combination",
         "servers": [
           {
@@ -52,7 +55,11 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["asset", "network", "amount"],
+                "required": [
+                  "asset",
+                  "network",
+                  "amount"
+                ],
                 "properties": {
                   "asset": {
                     "type": "string",
@@ -145,9 +152,227 @@
                         }
                       },
                       "example": {
-                        "asset": ["This field is required."],
-                        "amount": ["This field is required."],
-                        "network": ["This field is required."]
+                        "asset": [
+                          "This field is required."
+                        ],
+                        "amount": [
+                          "This field is required."
+                        ],
+                        "network": [
+                          "This field is required."
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payout/quotation": {
+      "post": {
+        "tags": [
+          "Payout"
+        ],
+        "x-title": "Create Quotation",
+        "description": "Create a quotation for cryptocurrency to fiat conversion",
+        "servers": [
+          {
+            "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
+            "description": "Payout API Base URL"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "asset",
+                  "fiat",
+                  "network",
+                  "sending_amount",
+                  "customer_id"
+                ],
+                "properties": {
+                  "asset": {
+                    "type": "string",
+                    "description": "The cryptocurrency asset code",
+                    "example": "usdt"
+                  },
+                  "fiat": {
+                    "type": "string",
+                    "description": "The fiat currency code",
+                    "example": "inr"
+                  },
+                  "network": {
+                    "type": "string",
+                    "description": "The blockchain network",
+                    "example": "bsc"
+                  },
+                  "sending_amount": {
+                    "type": "string",
+                    "description": "The amount to be sent",
+                    "example": "51"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Customer's unique identifier",
+                    "example": "def8b740-99f9-4cba-bc9e-99de57e927b4"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Quotation created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "2e104290-07c8-49f1-a5ca-0d27f0078f8a"
+                        },
+                        "asset": {
+                          "type": "string",
+                          "example": "USDT"
+                        },
+                        "network": {
+                          "type": "string",
+                          "example": "BSC"
+                        },
+                        "fiat": {
+                          "type": "string",
+                          "example": "INR"
+                        },
+                        "sending_amount": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 51
+                        },
+                        "rate": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 82.5
+                        },
+                        "receiving_amount": {
+                          "type": "number",
+                          "format": "float",
+                          "example": 4144.6
+                        },
+                        "fees": {
+                          "type": "object",
+                          "properties": {
+                            "dollarpe_fees": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 21.04
+                            },
+                            "tds_fees": {
+                              "type": "number",
+                              "format": "float",
+                              "example": 41.86
+                            }
+                          }
+                        },
+                        "wallet_address": {
+                          "type": "string",
+                          "example": "0x2EAf174Bf1CD624eD63e3C8c74Dd66B66e5cb273"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-03-08T07:31:11.163005Z"
+                        },
+                        "expiry_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2025-03-08T07:36:11.163005Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Bad Request"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "example": {
+                        "amount": [
+                          "receiving_amount is required"
+                        ]
                       }
                     }
                   }
@@ -187,7 +412,10 @@
     },
     "/customer/create": {
       "post": {
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
+        "x-title": "Create Customer",
         "description": "Create a new customer",
         "servers": [
           {
@@ -201,37 +429,42 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["full_name", "email", "phone", "country", "type"],
+                "required": [
+                  "full_name",
+                  "email",
+                  "phone",
+                  "country",
+                  "type"
+                ],
                 "properties": {
                   "full_name": {
                     "type": "string",
-                    "description": "Customer's full name",
-                    "example": "John Doe"
+                    "description": "Full name of the customer",
+                    "example": "Apoorv Goyal"
                   },
                   "email": {
                     "type": "string",
-                    "description": "Customer's email address",
-                    "example": "john.doe@example.com"
+                    "description": "Email address of the customer",
+                    "example": "apoorv@dollarpe.com"
                   },
                   "phone": {
                     "type": "string",
-                    "description": "Customer's phone number",
-                    "example": "+1234567890"
+                    "description": "Phone number of the customer",
+                    "example": "9910402972"
                   },
                   "country": {
                     "type": "string",
-                    "description": "Customer's country code",
+                    "description": "Country code",
                     "example": "IND"
                   },
                   "customer_reference_id": {
                     "type": "string",
-                    "description": "Optional unique reference ID for the customer",
+                    "description": "Optional customer reference ID",
                     "example": "test123"
                   },
                   "type": {
                     "type": "string",
                     "description": "Type of customer",
-                    "enum": ["individual", "business"],
                     "example": "individual"
                   }
                 }
@@ -309,8 +542,160 @@
                       "type": "string",
                       "example": "Bad Request"
                     },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "example": {
+                        "type": [
+                          "type is required"
+                        ],
+                        "email": [
+                          "email is required"
+                        ]
+                      }
+                    },
                     "data": {
                       "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/{customer_id}": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "x-title": "Fetch Customer",
+        "description": "Fetch details of a customer by ID",
+        "servers": [
+          {
+            "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+            "description": "Customer API Base URL"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the customer",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "550e8400-e29b-41d4-a716-446655440000"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer details fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "550e8400-e29b-41d4-a716-446655440000"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "VERIFIED"
+                        },
+                        "full_name": {
+                          "type": "string",
+                          "example": "John Doe"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "john.doe@example.com"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "+1234567890"
+                        },
+                        "country": {
+                          "type": "string",
+                          "example": "USA"
+                        },
+                        "customer_reference_id": {
+                          "type": "string",
+                          "example": "cust_12345"
+                        },
+                        "type": {
+                          "type": "string",
+                          "example": "INDIVIDUAL"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Bad Request"
                     },
                     "errors": {
                       "type": "object",
@@ -321,8 +706,136 @@
                         }
                       },
                       "example": {
-                        "type": ["type is required"],
-                        "email": ["email is required"]
+                        "customer_id": [
+                          "customer_id is required"
+                        ]
+                      }
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customer/list": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "x-title": "List Customers",
+        "description": "List all customers",
+        "servers": [
+          {
+            "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+            "description": "Customer API Base URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of customers fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "count": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "next": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": null
+                        },
+                        "previous": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "<url>"
+                        },
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "550e8400-e29b-41d4-a716-446655440000"
+                              },
+                              "status": {
+                                "type": "string",
+                                "example": "VERIFIED"
+                              },
+                              "full_name": {
+                                "type": "string",
+                                "example": "John Doe"
+                              },
+                              "email": {
+                                "type": "string",
+                                "example": "john.doe@example.com"
+                              },
+                              "phone": {
+                                "type": "string",
+                                "example": "+1234567890"
+                              },
+                              "country": {
+                                "type": "string",
+                                "example": "USA"
+                              },
+                              "customer_reference_id": {
+                                "type": "string",
+                                "example": "cust_12345"
+                              },
+                              "type": {
+                                "type": "string",
+                                "example": "INDIVIDUAL"
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
@@ -337,7 +850,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": {
+                    "success": {
                       "type": "boolean",
                       "example": false
                     },
@@ -345,12 +858,12 @@
                       "type": "string",
                       "example": "Internal Server Error"
                     },
-                    "data": {
-                      "type": "null"
-                    },
                     "errors": {
                       "type": "string",
                       "example": "Unexpected error occurred. Please try again later."
+                    },
+                    "data": {
+                      "type": "null"
                     }
                   }
                 }

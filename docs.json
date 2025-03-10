@@ -50,13 +50,30 @@
           {
             "group": "Customer",
             "pages": [
-              "api-reference/endpoint/customer/create"
+              "api-reference/endpoint/customer/create",
+              "api-reference/endpoint/customer/{customer_id}",
+              "api-reference/endpoint/customer/list"
+            ]
+          },
+          {
+            "group": "Kyc",
+            "pages": [
+              "api-reference/endpoint/kyc/get-kyc-link"
+            ]
+          },
+          {
+            "group": "Bank",
+            "pages": [
+              "api-reference/endpoint/bank/add-account",
+              "api-reference/endpoint/bank/get-bank-accounts",
+              "api-reference/endpoint/bank/get-bank-accounts"
             ]
           },
           {
             "group": "Payout",
             "pages": [
-              "api-reference/endpoint/payout/fetch-rate"
+              "api-reference/endpoint/payout/fetch-rate",
+              "api-reference/endpoint/payout/quotation"
             ]
           }
         ]
