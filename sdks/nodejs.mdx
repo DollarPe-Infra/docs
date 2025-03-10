@@ -1,0 +1,56 @@
+---
+title: "Node.js"
+description: "Node.js SDK for DollarPe API integration"
+icon: "node-js"
+iconType: "solid"
+---
+
+<Note>
+  **Coming Soon!** Our Node.js SDK is currently under development. Stay tuned for updates.
+</Note>
+
+## What to Expect
+
+Our Node.js SDK will provide:
+- Easy-to-use client for DollarPe API
+- Automatic request signing
+- Comprehensive examples and tutorials
+- Comprehensive error handling
+- Full API coverage
+
+In the meantime, you can use our [REST API](/api-reference/overview/introduction) directly with `axios` or `fetch`:
+
+```javascript
+const axios = require('axios');
+
+const API_KEY = 'your-api-key';
+const API_SECRET = 'your-api-secret';
+
+// Example request to fetch exchange rate
+async function fetchRate() {
+  try {
+    const response = await axios.post(
+      'https://sandbox.dollarpe.xyz/pos/api/v1/payout/fetch-rate',
+      {
+        asset: 'USDT',
+        network: 'BSC',
+        amount: 100.5
+      },
+      {
+        headers: {
+          'X-API-KEY': API_KEY,
+          // Add other required headers
+        }
+      }
+    );
+    
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error:', error.response?.data || error.message);
+  }
+}
+```
+
+<Card title="Want early access?" icon="stars" iconType="solid">
+  [Contact our team](mailto:support@dollarpe.xyz) to get notified when the Node.js SDK is available.
+</Card>
