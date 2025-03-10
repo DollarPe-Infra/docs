@@ -1,55 +1,91 @@
----
-title: "Authentication"
-description: "Learn how to authenticate your API requests"
----
+<Highlight>
+  #Introduction
+</Highlight>
 
-# Authentication
-
-All API endpoints require authentication using three custom headers:
-
-<ResponseField name="X-API-KEY" type="string" required>
-  Your API key provided by DollarPe
-</ResponseField>
-
-<ResponseField name="X-TIMESTAMP" type="integer" required>
-  Current Unix timestamp in seconds
-</ResponseField>
-
-<ResponseField name="X-SIGNATURE" type="string" required>
-  HMAC SHA256 signature of the request encoded in Base64
-</ResponseField>
+All API endpoints require authentication through three custom headers. 
+These headers ensure secure communication between your application and our API.
 
 <Note>
-  Before you begin, make sure you have your API credentials (API Key and API
-  Secret). If you don't have them yet, please contact our support team.
+  Ensure you have your API credentials (API Key and API Secret) before proceeding.  
+  Contact our [support team](mailto:support@dollarpexyz) if you need assistance obtaining these credentials.  
 </Note>
 
 <Warning>
-  Make sure to use different API credentials for Sandbox and Production
-  environments. Production API keys will not work in Sandbox and vice versa.
+  Use distinct API credentials for **Sandbox** and **Production** environments.  
+  **Production** API keys are not valid in the **Sandbox** environment and vice versa.
 </Warning>
+
+## Required Headers
+
+<ResponseField name="X-API-KEY" type="string" required>
+  Your unique API key provided by DollarPe. This key identifies your application.
+</ResponseField>
+
+<ResponseField name="X-TIMESTAMP" type="integer" required>
+  The current Unix timestamp in seconds. This helps prevent replay attacks.
+</ResponseField>
+
+<ResponseField name="X-SIGNATURE" type="string" required>
+  An HMAC SHA256 signature of the request, encoded in Base64. This signature verifies the integrity and authenticity of the request.
+</ResponseField>
 
 ## Generating the Signature
 
+The signature is a critical component of the authentication process. Follow these steps to generate it:
+
 <Steps>
   <Step title="Create Message String">
-    Concatenate API key, timestamp, and sorted request body with pipe separator
+    Concatenate the API key, timestamp, and a sorted JSON string of the request body using a pipe (`|`) separator.
+
+    ```python
+    import time
+    import json
+
+    api_key = "your-api-key"
+    timestamp = int(time.time())
+    request_body = { # your request body }
+    sorted_body = json.dumps(request_body, sort_keys=True)
+    message = f"{api_key}|{timestamp}|{sorted_body}"
+    ```
   </Step>
   <Step title="Generate Hash">
-    Create HMAC SHA256 hash using your API secret
+    Use your API secret to create an HMAC SHA256 hash of the message string.
+
+    ```python
+    import hmac
+    import hashlib
+
+    api_secret = "your-api-secret"
+    hash = hmac.new(api_secret.encode('utf-8'), message.encode('utf-8'), hashlib.sha256).digest()
+    ```
   </Step>
-  <Step title="Encode">Convert the hash to Base64 format</Step>
+  <Step title="Encode">
+    Convert the resulting hash to Base64 format. This encoded string is your signature.
+
+    ```python
+    import base64
+
+    signature = base64.b64encode(hash).decode('utf-8')
+    ```
+  </Step>
 </Steps>
 
 ## Code Examples
 
-The following examples show how to generate the required headers in different programming languages:
+Below are examples in various programming languages to generate the required headers:
 
 <Tabs>
   <Tab title="Node.js">
     ```javascript
     const crypto = require('crypto');
 
+    /**
+     * Generates authentication headers for API requests.
+     * @param {string} apiKey - Your API key.
+     * @param {string} apiSecret - Your API secret.
+     * @param {Object} [body={}] - The request body.
+     * @returns {Object} - The headers object containing authentication details.
+     */
     const generateHeaders = (apiKey, apiSecret, body = {}) => {
       // Get current timestamp
       const timestamp = Math.floor(Date.now() / 1000);
@@ -83,6 +119,14 @@ The following examples show how to generate the required headers in different pr
     import hashlib
 
     def generate_headers(api_key, api_secret, body=None):
+        """
+        Generates authentication headers for API requests.
+
+        :param api_key: Your API key.
+        :param api_secret: Your API secret.
+        :param body: The request body (default is None).
+        :return: A dictionary containing the authentication headers.
+        """
         # Get current timestamp
         timestamp = int(time.time())
 
@@ -124,6 +168,15 @@ The following examples show how to generate the required headers in different pr
     public class HeaderGenerator {
         private static final ObjectMapper objectMapper = new ObjectMapper();
 
+        /**
+         * Generates authentication headers for API requests.
+         *
+         * @param apiKey Your API key.
+         * @param apiSecret Your API secret.
+         * @param body The request body.
+         * @return A map containing the authentication headers.
+         * @throws Exception If an error occurs during header generation.
+         */
         public static Map<String, String> generateHeaders(String apiKey, String apiSecret, Map<String, Object> body) throws Exception {
             // Get current timestamp
             long timestamp = System.currentTimeMillis() / 1000;
@@ -164,7 +217,7 @@ The following examples show how to generate the required headers in different pr
 
 ## Example Usage
 
-Here's an example of how to use the generated headers in a request:
+Here's how to use the generated headers in an API request:
 
 ```javascript
 const apiKey = "your-api-key";
@@ -188,13 +241,3 @@ fetch("https://sandbox.dollarpe.xyz/pos/api/v1/payout/fetch-rate", {
   body: JSON.stringify(requestBody),
 });
 ```
-```
-
-Don't forget to update your mint.json to include the new authentication page in your sidebar navigation.
-
-This reorganization:
-1. Creates a cleaner, more focused introduction page
-2. Separates authentication details into their own dedicated page
-3. Maintains all the existing functionality and examples
-4. Follows documentation best practices with a clear hierarchy
-5. Makes the content more digestible for users

@@ -1,55 +1,115 @@
 ---
 title: "Introduction"
-description: "Welcome to DollarPe API Documentation"
 ---
 
-In this section we'll be going over how you can quickly get started with **DollarPe API**, from setting up your authentication to making your first API request.
+<Highlight>
+  # Introduction
+</Highlight>
 
-We'll be building a simple integration that will help you understand the core concepts, and later on we'll show how you can use the DollarPe platform to build more complex payment solutions.
+This guide will help you integrate our payment solutions into your applications quickly and efficiently.
 
-# Installation
+## Quick Start Guide
 
-To get started with DollarPe API, you'll need to:
-1. Get your API credentials (`API Key` and `API Secret`)
-2. Choose your environment (`Sandbox` or `Production`)
-3. Set up your webhook endpoints
+In this section, we'll walk you through:
+- [Authentication](/api-reference/overview/authentication)
+- Making your first API request
+- Understanding core concepts
 
-# Prerequisites
+## Development Tools
 
-- **API Credentials** - You'll need valid API credentials. For access, please [contact our support team](mailto:support@dollarpe.xyz).
+<CardGroup cols={3}>
+  <Card title="API Reference" icon="book-open" href="/api-reference/endpoint/payout/fetch-rate">
+    Explore our comprehensive API documentation with detailed endpoints and examples.
+  </Card>
+  <Card title="Postman Collection" icon="rectangle-terminal" href="https://www.postman.com/dollarpe/workspace/dollarpe-public">
+    Download our Postman collection for quick API testing and integration.
+  </Card>
+  <Card title="SDK Libraries" icon="code" href="/guides/overview">
+    Access our official SDKs for seamless integration.
+  </Card>
+</CardGroup>
 
-- **Development Environment** - Choose the appropriate environment:
-  - `Sandbox` - For testing and development
-  - `Production` - For live transactions
+## Service Overview
 
-- **Webhook URL** - A publicly accessible HTTPS endpoint to receive transaction updates.
+<CardGroup cols={3}>
+  <Card title="Customer API" icon="user" href="/api-reference/endpoint/customer/create">
+    Create and manage customer profiles with unique identifiers.
+  </Card>
+  <Card title="KYC API" icon="id-card" href="/api-reference/endpoint/kyc">
+    Handle customer verification and compliance processes.
+  </Card>
+  <Card title="Payout API" icon="money-bill-transfer" href="/api-reference/endpoint/payout/quotation">
+    Process cryptocurrency payouts and rate conversions.
+  </Card>
+</CardGroup>
+
+<CardGroup cols={3}>
+  <Card title="Bank API" icon="building-columns" href="/api-reference/endpoint/bank">
+    Manage bank account integrations and transfers.
+  </Card>
+  <Card title="Webhook API" icon="webhook" href="/api-reference/endpoint/webhook">
+    Configure real-time transaction notifications.
+  </Card>
+  <Card title="Support" icon="headset" href="mailto:support@dollarpe.xyz">
+    Get technical assistance and integration support.
+  </Card>
+</CardGroup>
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+<Steps>
+  <Step title="API Credentials">
+    Obtain your `API Key` and `API Secret`.  
+    [Contact our support team](mailto:support@dollarpe.xyz) for access.
+  </Step>
+  <Step title="Choose Environment">
+    Select your development environment:
+    - **Sandbox** - For testing and development
+    - **Production** - For live transactions
+  </Step>
+  <Step title="Webhook Setup">
+    Configure a publicly accessible HTTPS endpoint to receive transaction updates.  
+    Learn more in our [Webhook documentation](/api-reference/endpoint/webhook).
+  </Step>
+</Steps>
 
 ## Base URLs
 
-DollarPe API is available in both Sandbox and Production environments.
+Access DollarPe API through our dedicated environments:
 
 <Tabs>
   <Tab title="Sandbox">
     <ResponseField name="Base URL" type="string">
       `https://sandbox.dollarpe.xyz`
     </ResponseField>
+    
+    Use this environment for:
+    - Development and testing
+    - Integration validation
+    - Simulated transactions
   </Tab>
   <Tab title="Production">
     <ResponseField name="Base URL" type="string">
       `https://production.dollarpe.xyz`
     </ResponseField>
+    
+    Use this environment for:
+    - Live transactions
+    - Real payment processing
+    - Production deployments
   </Tab>
 </Tabs>
 
 <Note>
-  Start with the **Sandbox** environment for testing and development. Switch to
-  **Production** only when your integration is fully tested and ready for real
-  transactions.
+  Always start with the **Sandbox** environment for development and testing.  
+  Move to **Production** only after thorough testing and validation.
 </Note>
 
 ## Response Format
 
-All API responses follow a consistent format:
+Our API follows a consistent response format across all endpoints:
 
 <Tabs>
   <Tab title="Success Response">
@@ -86,3 +146,7 @@ All API responses follow a consistent format:
     ```
   </Tab>
 </Tabs>
+
+<Note>
+  Need help? Our [support team](mailto:support@dollarpe.xyz) is available to assist you with your integration.
+</Note>
