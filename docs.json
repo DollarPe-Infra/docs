@@ -31,7 +31,8 @@
             "group": "We Support",
             "pages": [
               "guides/support/stablecoins_and_blockchains",
-              "guides/support/fiat_methods"
+              "guides/support/fiat_methods",
+              "guides/support/geographies"
             ]
           }
         ]
