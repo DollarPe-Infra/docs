@@ -1,8 +1,8 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "title": "DollarPe API",
+    "description": "API for DollarPe - Customer, Payout, and Webhook services",
     "license": {
       "name": "MIT"
     },
@@ -10,85 +10,174 @@
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
+      "description": "Payout API Base URL",
+      "variables": {
+        "base_url": {
+          "default": "https://sandbox.dollarpe.xyz"
+        }
+      }
+    },
+    {
+      "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+      "description": "Customer API Base URL",
+      "variables": {
+        "base_url": {
+          "default": "https://sandbox.dollarpe.xyz"
+        }
+      }
     }
   ],
   "security": [
     {
-      "bearerAuth": []
+      "ApiKeyAuth": [],
+      "TimestampAuth": [],
+      "SignatureAuth": []
     }
   ],
   "paths": {
-    "/plants": {
-      "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
+    "/payout/fetch-rate": {
+      "post": {
+        "tags": ["Payout"],
+        "description": "Fetch exchange rate for a given asset and network combination",
+        "servers": [
           {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
+            "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
+            "description": "Payout API Base URL"
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["asset", "network", "amount"],
+                "properties": {
+                  "asset": {
+                    "type": "string",
+                    "description": "The cryptocurrency asset code",
+                    "example": "USDT"
+                  },
+                  "network": {
+                    "type": "string",
+                    "description": "The blockchain network",
+                    "example": "BSC"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "format": "decimal",
+                    "description": "The amount to convert",
+                    "example": 100.5
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "asset": {
+                          "type": "string",
+                          "example": "USDT"
+                        },
+                        "network": {
+                          "type": "string",
+                          "example": "BSC"
+                        },
+                        "fiat": {
+                          "type": "string",
+                          "example": "INR"
+                        },
+                        "rate": {
+                          "type": "number",
+                          "format": "decimal",
+                          "example": 87.2
+                        }
+                      }
+                    }
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Unexpected error",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Bad Request"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "example": {
+                        "asset": ["This field is required."],
+                        "amount": ["This field is required."],
+                        "network": ["This field is required."]
+                      }
+                    }
+                  }
                 }
               }
             }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
           },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
+          "500": {
+            "description": "Internal Server Error",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    }
+                  }
                 }
               }
             }
@@ -96,122 +185,218 @@
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
-        "parameters": [
+    "/customer/create": {
+      "post": {
+        "tags": ["Customer"],
+        "description": "Create a new customer",
+        "servers": [
           {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+            "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+            "description": "Customer API Base URL"
           }
         ],
-        "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
-      "post": {
-        "description": "Information about a new plant added to the store",
         "requestBody": {
-          "description": "Plant added to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "type": "object",
+                "required": ["full_name", "email", "phone", "country", "type"],
+                "properties": {
+                  "full_name": {
+                    "type": "string",
+                    "description": "Customer's full name",
+                    "example": "John Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "Customer's email address",
+                    "example": "john.doe@example.com"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "Customer's phone number",
+                    "example": "+1234567890"
+                  },
+                  "country": {
+                    "type": "string",
+                    "description": "Customer's country code",
+                    "example": "IND"
+                  },
+                  "customer_reference_id": {
+                    "type": "string",
+                    "description": "Optional unique reference ID for the customer",
+                    "example": "test123"
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Type of customer",
+                    "enum": ["individual", "business"],
+                    "example": "individual"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
+            "description": "Customer created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "550e8400-e29b-41d4-a716-446655440000"
+                        },
+                        "customer_reference_id": {
+                          "type": "string",
+                          "example": "test123"
+                        },
+                        "full_name": {
+                          "type": "string",
+                          "example": "John Doe"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "john.doe@example.com"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "+1234567890"
+                        },
+                        "country": {
+                          "type": "string",
+                          "example": "USA"
+                        },
+                        "type": {
+                          "type": "string",
+                          "example": "INDIVIDUAL"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Bad Request"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "example": {
+                        "type": ["type is required"],
+                        "email": ["email is required"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     }
   },
   "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      }
-    },
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-KEY",
+        "description": "API Key for authentication"
+      },
+      "TimestampAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-TIMESTAMP",
+        "description": "Current timestamp in seconds since epoch"
+      },
+      "SignatureAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-SIGNATURE",
+        "description": "HMAC SHA256 signature of the request encoded in Base64"
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Customer",
+      "description": "Customer related operations",
+      "x-displayName": "Customer",
+      "x-traitTag": true
+    },
+    {
+      "name": "Payout",
+      "description": "Payout related operations"
+    },
+    {
+      "name": "Webhooks",
+      "description": "Webhook related operations"
+    }
+  ]
 }
