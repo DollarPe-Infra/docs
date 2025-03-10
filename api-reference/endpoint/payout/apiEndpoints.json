@@ -1,0 +1,360 @@
+{
+  "/payout/fetch-rate": {
+    "post": {
+      "tags": ["Payout"],
+      "x-title": "Fetch Rate",
+      "description": "Fetch exchange rate for a given asset and network combination",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
+          "description": "Payout API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["asset", "network", "amount"],
+              "properties": {
+                "asset": {
+                  "type": "string",
+                  "description": "The cryptocurrency asset code",
+                  "example": "USDT"
+                },
+                "network": {
+                  "type": "string",
+                  "description": "The blockchain network",
+                  "example": "BSC"
+                },
+                "amount": {
+                  "type": "number",
+                  "format": "decimal",
+                  "description": "The amount to convert",
+                  "example": 100.5
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "asset": {
+                        "type": "string",
+                        "example": "USDT"
+                      },
+                      "network": {
+                        "type": "string",
+                        "example": "BSC"
+                      },
+                      "fiat": {
+                        "type": "string",
+                        "example": "INR"
+                      },
+                      "rate": {
+                        "type": "number",
+                        "format": "decimal",
+                        "example": 87.2
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Bad Request"
+                  },
+                  "data": {
+                    "type": "null"
+                  },
+                  "errors": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "example": {
+                      "asset": ["This field is required."],
+                      "amount": ["This field is required."],
+                      "network": ["This field is required."]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "data": {
+                    "type": "null"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/payout/quotation": {
+    "post": {
+      "tags": ["Payout"],
+      "x-title": "Create Quotation",
+      "description": "Create a quotation for cryptocurrency to fiat conversion",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
+          "description": "Payout API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "asset",
+                "fiat",
+                "network",
+                "sending_amount",
+                "customer_id"
+              ],
+              "properties": {
+                "asset": {
+                  "type": "string",
+                  "description": "The cryptocurrency asset code",
+                  "example": "usdt"
+                },
+                "fiat": {
+                  "type": "string",
+                  "description": "The fiat currency code",
+                  "example": "inr"
+                },
+                "network": {
+                  "type": "string",
+                  "description": "The blockchain network",
+                  "example": "bsc"
+                },
+                "sending_amount": {
+                  "type": "string",
+                  "description": "The amount to be sent",
+                  "example": "51"
+                },
+                "customer_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Customer's unique identifier",
+                  "example": "def8b740-99f9-4cba-bc9e-99de57e927b4"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Quotation created successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "2e104290-07c8-49f1-a5ca-0d27f0078f8a"
+                      },
+                      "asset": {
+                        "type": "string",
+                        "example": "USDT"
+                      },
+                      "network": {
+                        "type": "string",
+                        "example": "BSC"
+                      },
+                      "fiat": {
+                        "type": "string",
+                        "example": "INR"
+                      },
+                      "sending_amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 51
+                      },
+                      "rate": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 82.5
+                      },
+                      "receiving_amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 4144.6
+                      },
+                      "fees": {
+                        "type": "object",
+                        "properties": {
+                          "dollarpe_fees": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 21.04
+                          },
+                          "tds_fees": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 41.86
+                          }
+                        }
+                      },
+                      "wallet_address": {
+                        "type": "string",
+                        "example": "0x2EAf174Bf1CD624eD63e3C8c74Dd66B66e5cb273"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-08T07:31:11.163005Z"
+                      },
+                      "expiry_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-03-08T07:36:11.163005Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Bad Request"
+                  },
+                  "data": {
+                    "type": "null"
+                  },
+                  "errors": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "example": {
+                      "amount": ["receiving_amount is required"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "data": {
+                    "type": "null"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
