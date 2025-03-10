@@ -1,33 +1,245 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "Introduction"
+description: "Welcome to DollarPe API documentation"
 ---
 
 <Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
+  Before you begin, make sure you have your API credentials (API Key and API
+  Secret). If you don't have them yet, please contact our support team.
 </Note>
 
-## Welcome
+## Base URLs
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+DollarPe API is available in both Sandbox and Production environments.
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+<Tabs>
+  <Tab title="Sandbox">
+    <ResponseField name="Base URL" type="string">
+      `https://sandbox.dollarpe.xyz`
+    </ResponseField>
+  </Tab>
+  <Tab title="Production">
+    <ResponseField name="Base URL" type="string">
+      `https://production.dollarpe.xyz`
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<Note>
+  Start with the Sandbox environment for testing and development. Switch to
+  Production only when your integration is fully tested and ready for real
+  transactions.
+</Note>
+
+<Warning>
+  Make sure to use different API credentials for Sandbox and Production
+  environments. Production API keys will not work in Sandbox and vice versa.
+</Warning>
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All API endpoints require authentication using three custom headers:
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+<ResponseField name="X-API-KEY" type="string" required>
+  Your API key provided by DollarPe
+</ResponseField>
+
+<ResponseField name="X-TIMESTAMP" type="integer" required>
+  Current Unix timestamp in seconds
+</ResponseField>
+
+<ResponseField name="X-SIGNATURE" type="string" required>
+  HMAC SHA256 signature of the request encoded in Base64
+</ResponseField>
+
+### Generating the Signature
+
+<Steps>
+  <Step title="Create Message String">
+    Concatenate API key, timestamp, and sorted request body with pipe separator
+  </Step>
+  <Step title="Generate Hash">
+    Create HMAC SHA256 hash using your API secret
+  </Step>
+  <Step title="Encode">Convert the hash to Base64 format</Step>
+</Steps>
+
+### Code Examples
+
+The following examples show how to generate the required headers in different programming languages:
+
+<Tabs>
+  <Tab title="Node.js">
+    ```javascript
+    const crypto = require('crypto');
+
+    const generateHeaders = (apiKey, apiSecret, body = {}) => {
+      // Get current timestamp
+      const timestamp = Math.floor(Date.now() / 1000);
+
+      // Sort and stringify the body
+      const sortedBody = JSON.stringify(body, Object.keys(body).sort());
+
+      // Create message string
+      const message = `${apiKey}|${timestamp}|${sortedBody}`;
+
+      // Generate signature
+      const signature = crypto
+        .createHmac('sha256', apiSecret)
+        .update(message)
+        .digest('base64');
+
+      return {
+        'X-API-KEY': apiKey,
+        'X-TIMESTAMP': timestamp.toString(),
+        'X-SIGNATURE': signature
+      };
+    };
+    ```
+
+  </Tab>
+  <Tab title="Python">
+    ```python
+    import time
+    import json
+    import hmac
+    import base64
+    import hashlib
+
+    def generate_headers(api_key, api_secret, body=None):
+        # Get current timestamp
+        timestamp = int(time.time())
+
+        # Sort and stringify the body
+        if body is None:
+            body = {}
+        sorted_body = json.dumps(body, sort_keys=True)
+
+        # Create message string
+        message = f"{api_key}|{timestamp}|{sorted_body}"
+
+        # Generate signature
+        signature = base64.b64encode(
+            hmac.new(
+                api_secret.encode('utf-8'),
+                message.encode('utf-8'),
+                hashlib.sha256
+            ).digest()
+        ).decode('utf-8')
+
+        return {
+            'X-API-KEY': api_key,
+            'X-TIMESTAMP': str(timestamp),
+            'X-SIGNATURE': signature
+        }
+    ```
+
+  </Tab>
+  <Tab title="PHP">
+    ```php
+    <?php
+
+    function generateHeaders($apiKey, $apiSecret, $body = []) {
+        // Get current timestamp
+        $timestamp = time();
+
+        // Sort and stringify the body
+        ksort($body);
+        $sortedBody = json_encode($body);
+
+        // Create message string
+        $message = "{$apiKey}|{$timestamp}|{$sortedBody}";
+
+        // Generate signature
+        $signature = base64_encode(
+            hash_hmac('sha256', $message, $apiSecret, true)
+        );
+
+        return [
+            'X-API-KEY' => $apiKey,
+            'X-TIMESTAMP' => (string)$timestamp,
+            'X-SIGNATURE' => $signature
+        ];
+    }
+    ```
+
+  </Tab>
+</Tabs>
+
+### Example Usage
+
+Here's an example of how to use the generated headers in a request:
+
+```javascript
+const apiKey = "your-api-key";
+const apiSecret = "your-api-secret";
+
+const requestBody = {
+  asset: "USDT",
+  network: "BSC",
+  amount: 100.5,
+};
+
+const headers = generateHeaders(apiKey, apiSecret, requestBody);
+
+// Make API request
+fetch("https://sandbox.dollarpe.xyz/pos/api/v1/payout/fetch-rate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    ...headers,
+  },
+  body: JSON.stringify(requestBody),
+});
 ```
+
+## Response Format
+
+All API responses follow a consistent format:
+
+<CodeGroup>
+  ```json Success Response
+  {
+      "status": true,
+      "message": "Success",
+      "data": {
+          // Response data specific to each endpoint
+      }
+  }
+  ```
+</CodeGroup>
+
+## Error Responses
+
+The API uses conventional HTTP response codes to indicate the success or failure of requests. Here are the possible error responses:
+
+<AccordionGroup>
+  <Accordion title="400 Bad Request" icon="circle-exclamation" iconType="duotone" color="#f87171">
+    Returned when the request is invalid or missing required parameters.
+
+    ```json
+    {
+        "status": false,
+        "message": "Bad Request",
+        "data": null,
+        "errors": {
+            "field_name": ["Error message"],
+        }
+    }
+    ```
+
+  </Accordion>
+  <Accordion title="500 Internal Server Error" icon="triangle-exclamation" iconType="duotone" color="#f87171">
+    Returned when an unexpected error occurs on the server.
+
+    ```json
+    {
+        "status": false,
+        "message": "Internal Server Error",
+        "data": null,
+        "errors": "Unexpected error occurred. Please try again later."
+    }
+    ```
+
+  </Accordion>
+</AccordionGroup>
