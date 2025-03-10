@@ -32,7 +32,7 @@
             "pages": [
               "guides/support/geographies",
               "guides/support/stablecoins_and_blockchains",
-              "guides/support/fiat_methods"
+              "guides/support/fiatMethods"
             ]
           }
         ]
