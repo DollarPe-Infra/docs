@@ -1,0 +1,48 @@
+---
+title: "Python"
+description: "Python SDK for DollarPe API integration"
+icon: "python"
+iconType: "solid"
+---
+
+<Note>
+  **Coming Soon!** Our SDK is currently under development. Stay tuned for updates.
+</Note>
+
+## What to Expect
+
+Our Python SDK will provide:
+- Easy-to-use client for DollarPe API
+- Type-safe request and response handling
+- Comprehensive examples and tutorials
+- Comprehensive error handling
+- Full API coverage
+
+In the meantime, you can use our [REST API](/api-reference/overview/introduction) directly with any Python HTTP client like `requests`:
+
+```python
+import requests
+
+API_KEY = "your-api-key"
+API_SECRET = "your-api-secret"
+
+# Example request to fetch exchange rate
+response = requests.post(
+    "https://sandbox.dollarpe.xyz/pos/api/v1/payout/fetch-rate",
+    headers={
+        "X-API-KEY": API_KEY,
+        # Add other required headers
+    },
+    json={
+        "asset": "USDT",
+        "network": "BSC",
+        "amount": 100.5
+    }
+)
+
+print(response.json())
+```
+
+<Card title="Want early access?" icon="stars" iconType="solid">
+  [Contact our team](mailto:support@dollarpe.xyz) to get notified when the Python SDK is available.
+</Card>

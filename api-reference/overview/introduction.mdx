@@ -1,0 +1,88 @@
+---
+title: "Introduction"
+description: "Welcome to DollarPe API Documentation"
+---
+
+In this section we'll be going over how you can quickly get started with **DollarPe API**, from setting up your authentication to making your first API request.
+
+We'll be building a simple integration that will help you understand the core concepts, and later on we'll show how you can use the DollarPe platform to build more complex payment solutions.
+
+# Installation
+
+To get started with DollarPe API, you'll need to:
+1. Get your API credentials (`API Key` and `API Secret`)
+2. Choose your environment (`Sandbox` or `Production`)
+3. Set up your webhook endpoints
+
+# Prerequisites
+
+- **API Credentials** - You'll need valid API credentials. For access, please [contact our support team](mailto:support@dollarpe.xyz).
+
+- **Development Environment** - Choose the appropriate environment:
+  - `Sandbox` - For testing and development
+  - `Production` - For live transactions
+
+- **Webhook URL** - A publicly accessible HTTPS endpoint to receive transaction updates.
+
+## Base URLs
+
+DollarPe API is available in both Sandbox and Production environments.
+
+<Tabs>
+  <Tab title="Sandbox">
+    <ResponseField name="Base URL" type="string">
+      `https://sandbox.dollarpe.xyz`
+    </ResponseField>
+  </Tab>
+  <Tab title="Production">
+    <ResponseField name="Base URL" type="string">
+      `https://production.dollarpe.xyz`
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<Note>
+  Start with the **Sandbox** environment for testing and development. Switch to
+  **Production** only when your integration is fully tested and ready for real
+  transactions.
+</Note>
+
+## Response Format
+
+All API responses follow a consistent format:
+
+<Tabs>
+  <Tab title="Success Response">
+    ```json
+    {
+        "status": true,
+        "message": "Success",
+        "data": {
+            // Response data specific to each endpoint
+        }
+    }
+    ```
+  </Tab>
+  <Tab title="Bad Request">
+    ```json
+    {
+        "status": false,
+        "message": "Bad Request",
+        "data": null,
+        "errors": {
+            "field_name": ["Error message"]
+        }
+    }
+    ```
+  </Tab>
+  <Tab title="Internal Server Error">
+    ```json
+    {
+        "status": false,
+        "message": "Internal Server Error",
+        "data": null,
+        "errors": "Unexpected error occurred. Please try again later."
+    }
+    ```
+  </Tab>
+</Tabs>

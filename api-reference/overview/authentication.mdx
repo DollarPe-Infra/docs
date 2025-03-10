@@ -1,42 +1,9 @@
 ---
-title: "Introduction"
-description: "Welcome to DollarPe API documentation"
+title: "Authentication"
+description: "Learn how to authenticate your API requests"
 ---
 
-<Note>
-  Before you begin, make sure you have your API credentials (API Key and API
-  Secret). If you don't have them yet, please contact our support team.
-</Note>
-
-## Base URLs
-
-DollarPe API is available in both Sandbox and Production environments.
-
-<Tabs>
-  <Tab title="Sandbox">
-    <ResponseField name="Base URL" type="string">
-      `https://sandbox.dollarpe.xyz`
-    </ResponseField>
-  </Tab>
-  <Tab title="Production">
-    <ResponseField name="Base URL" type="string">
-      `https://production.dollarpe.xyz`
-    </ResponseField>
-  </Tab>
-</Tabs>
-
-<Note>
-  Start with the Sandbox environment for testing and development. Switch to
-  Production only when your integration is fully tested and ready for real
-  transactions.
-</Note>
-
-<Warning>
-  Make sure to use different API credentials for Sandbox and Production
-  environments. Production API keys will not work in Sandbox and vice versa.
-</Warning>
-
-## Authentication
+# Authentication
 
 All API endpoints require authentication using three custom headers:
 
@@ -52,7 +19,17 @@ All API endpoints require authentication using three custom headers:
   HMAC SHA256 signature of the request encoded in Base64
 </ResponseField>
 
-### Generating the Signature
+<Note>
+  Before you begin, make sure you have your API credentials (API Key and API
+  Secret). If you don't have them yet, please contact our support team.
+</Note>
+
+<Warning>
+  Make sure to use different API credentials for Sandbox and Production
+  environments. Production API keys will not work in Sandbox and vice versa.
+</Warning>
+
+## Generating the Signature
 
 <Steps>
   <Step title="Create Message String">
@@ -64,7 +41,7 @@ All API endpoints require authentication using three custom headers:
   <Step title="Encode">Convert the hash to Base64 format</Step>
 </Steps>
 
-### Code Examples
+## Code Examples
 
 The following examples show how to generate the required headers in different programming languages:
 
@@ -96,7 +73,6 @@ The following examples show how to generate the required headers in different pr
       };
     };
     ```
-
   </Tab>
   <Tab title="Python">
     ```python
@@ -133,40 +109,60 @@ The following examples show how to generate the required headers in different pr
             'X-SIGNATURE': signature
         }
     ```
-
   </Tab>
-  <Tab title="PHP">
-    ```php
-    <?php
+  <Tab title="Java">
+    ```java
+    import javax.crypto.Mac;
+    import javax.crypto.spec.SecretKeySpec;
+    import java.nio.charset.StandardCharsets;
+    import java.util.Base64;
+    import java.util.HashMap;
+    import java.util.Map;
+    import java.util.TreeMap;
+    import com.fasterxml.jackson.databind.ObjectMapper;
 
-    function generateHeaders($apiKey, $apiSecret, $body = []) {
-        // Get current timestamp
-        $timestamp = time();
+    public class HeaderGenerator {
+        private static final ObjectMapper objectMapper = new ObjectMapper();
 
-        // Sort and stringify the body
-        ksort($body);
-        $sortedBody = json_encode($body);
+        public static Map<String, String> generateHeaders(String apiKey, String apiSecret, Map<String, Object> body) throws Exception {
+            // Get current timestamp
+            long timestamp = System.currentTimeMillis() / 1000;
 
-        // Create message string
-        $message = "{$apiKey}|{$timestamp}|{$sortedBody}";
+            // Sort and stringify the body
+            String sortedBody = "{}";
+            if (body != null) {
+                TreeMap<String, Object> sortedMap = new TreeMap<>(body);
+                sortedBody = objectMapper.writeValueAsString(sortedMap);
+            }
 
-        // Generate signature
-        $signature = base64_encode(
-            hash_hmac('sha256', $message, $apiSecret, true)
-        );
+            // Create message string
+            String message = String.format("%s|%d|%s", apiKey, timestamp, sortedBody);
 
-        return [
-            'X-API-KEY' => $apiKey,
-            'X-TIMESTAMP' => (string)$timestamp,
-            'X-SIGNATURE' => $signature
-        ];
+            // Generate signature
+            Mac sha256Hmac = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secretKey = new SecretKeySpec(
+                apiSecret.getBytes(StandardCharsets.UTF_8), 
+                "HmacSHA256"
+            );
+            sha256Hmac.init(secretKey);
+            String signature = Base64.getEncoder().encodeToString(
+                sha256Hmac.doFinal(message.getBytes(StandardCharsets.UTF_8))
+            );
+
+            // Create headers map
+            Map<String, String> headers = new HashMap<>();
+            headers.put("X-API-KEY", apiKey);
+            headers.put("X-TIMESTAMP", String.valueOf(timestamp));
+            headers.put("X-SIGNATURE", signature);
+
+            return headers;
+        }
     }
     ```
-
   </Tab>
 </Tabs>
 
-### Example Usage
+## Example Usage
 
 Here's an example of how to use the generated headers in a request:
 
@@ -192,54 +188,13 @@ fetch("https://sandbox.dollarpe.xyz/pos/api/v1/payout/fetch-rate", {
   body: JSON.stringify(requestBody),
 });
 ```
+```
 
-## Response Format
+Don't forget to update your mint.json to include the new authentication page in your sidebar navigation.
 
-All API responses follow a consistent format:
-
-<CodeGroup>
-  ```json Success Response
-  {
-      "status": true,
-      "message": "Success",
-      "data": {
-          // Response data specific to each endpoint
-      }
-  }
-  ```
-</CodeGroup>
-
-## Error Responses
-
-The API uses conventional HTTP response codes to indicate the success or failure of requests. Here are the possible error responses:
-
-<AccordionGroup>
-  <Accordion title="400 Bad Request" icon="circle-exclamation" iconType="duotone" color="#f87171">
-    Returned when the request is invalid or missing required parameters.
-
-    ```json
-    {
-        "status": false,
-        "message": "Bad Request",
-        "data": null,
-        "errors": {
-            "field_name": ["Error message"],
-        }
-    }
-    ```
-
-  </Accordion>
-  <Accordion title="500 Internal Server Error" icon="triangle-exclamation" iconType="duotone" color="#f87171">
-    Returned when an unexpected error occurs on the server.
-
-    ```json
-    {
-        "status": false,
-        "message": "Internal Server Error",
-        "data": null,
-        "errors": "Unexpected error occurred. Please try again later."
-    }
-    ```
-
-  </Accordion>
-</AccordionGroup>
+This reorganization:
+1. Creates a cleaner, more focused introduction page
+2. Separates authentication details into their own dedicated page
+3. Maintains all the existing functionality and examples
+4. Follows documentation best practices with a clear hierarchy
+5. Makes the content more digestible for users

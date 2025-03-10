@@ -11,25 +11,27 @@
   "navigation": {
     "tabs": [
       {
+        "tab": "Welcome",
+        "pages": [
+          "introduction"
+        ]
+      },
+      {
         "tab": "Guides",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Getting Started",
             "pages": [
-              "introduction",
-              "quickstart",
-              "development"
+              "guides/overview",
+              "guides/kyc",
+              "guides/payout"
             ]
           },
           {
-            "group": "Essentials",
+            "group": "We Support",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
+              "guides/support/coin_chain_support",
+              "guides/support/fiat_methods"
             ]
           }
         ]
@@ -38,9 +40,10 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "API Documentation",
+            "group": "Overview",
             "pages": [
-              "api-reference/introduction"
+              "api-reference/overview/introduction",
+              "api-reference/overview/authentication"
             ]
           },
           {
@@ -56,26 +59,22 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "SDKs",
+        "pages": [
+          "sdks/python",
+          "sdks/nodejs"
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "pages": [
+          "changelog/introduction"
+        ]
       }
     ],
     "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
     }
   },
   "logo": {
@@ -97,9 +96,10 @@
   },
   "footer": {
     "socials": {
+      "telegram": "https://t.me/joinchat/AAAAAEH0-401NjEx",
       "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "linkedin": "https://linkedin.com/company/mintlify",
+      "github": "https://github.com/mintlify"
     }
   }
 }
