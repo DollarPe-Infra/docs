@@ -17,6 +17,10 @@ Before starting the integration:
 - Review [supported stablecoins and blockchains](/guides/support/stablecoins_and_blockchains)
 </Note>
 
+## Integration Flow
+
+### Visual Process Flow
+
 ```mermaid
 flowchart TD
     %% Main Flow
@@ -59,9 +63,45 @@ flowchart TD
 
 ```
 
-For a comprehensive transaction integration, follow these steps:
+### Sequence Diagram
 
-## Step 1: Fetch Current Exchange Rate
+```mermaid
+sequenceDiagram
+    %% Participants with Colors
+    participant User as 🧑‍💻 User
+    participant System as ⚙️ System
+    participant FetchRateAPI as 🔵 API: /payout/fetch-rate/
+    participant QuoteAPI as 🟣 API: /payout/quotation/
+    participant PayoutAPI as 🟠 API: /payout/initiate/
+    participant Webhook as 🔔 Webhook Listener
+
+    %% Process Flow with Color Highlights
+    User ->> System: 🟢 Start
+    System ->> System: 🔍 Check if KYC'ed with 1 verified bank account
+    System ->> FetchRateAPI: 📡 Fetch current rate
+    FetchRateAPI -->> System: 🔄 Return rate
+
+    System ->> QuoteAPI: ✍️ Create Quotation using crypto amount
+    QuoteAPI -->> System: 📩 Return quote details
+
+    System ->> System: 🚀 Send Crypto Funds to wallet
+    System ->> System: 💰 Use sending_amount & whitelisted wallet address
+
+    System ->> PayoutAPI: 📝 Create Payout using transaction hash
+    PayoutAPI -->> System: 🔄 Return payout details
+
+    alt Monitor Payout Status
+        System ->> System: 🔄 Poll transaction status
+    else Webhook Notification
+        Webhook -->> System: 🔔 Receive status update
+    end
+
+    System ->> User: ✅ Complete Transaction
+```
+
+## Integration Steps
+
+### 1. Fetch Current Exchange Rate
 
 First, retrieve the current exchange rate using the [Fetch Rate](/api-reference/endpoint/payout/fetch-rate). This step is crucial for obtaining real-time pricing information.
 
@@ -76,7 +116,7 @@ POST /payout/fetch-rate
 
 The response includes current rate.
 
-## Step 2: Generate Quotation
+### 2. Generate Quotation
 
 Create a quotation using the [Create Quotation](/api-reference/endpoint/payout/quotation). 
 
@@ -102,7 +142,7 @@ The response includes:
 - `quotation_id`: Unique identifier for the quote
 - `expiry_time`: Validity period for the quotation
 
-## Step 3: Send Crypto Funds
+### 3. Send Crypto Funds
 
 <Warning>
 **Important**: 
@@ -117,7 +157,7 @@ Transfer the crypto amount to the wallet address received in the quotation respo
 2. Double-check the network selection
 3. Confirm the exact amount
 
-## Step 4: Initiate Payout
+### 4. Initiate Payout
 
 Once funds are sent, create a payout using the [Create Payout](/api-reference/endpoint/payout/initiate).
 
@@ -133,7 +173,7 @@ POST /payout/initiate
 
 The response includes a `payout_id` for tracking the transaction.
 
-## Step 5: Monitor Transaction Status
+### 5. Monitor Transaction Status
 
 ### Option 1: Webhook Integration (Recommended)
 Configure your [webhook endpoint](/api-reference/endpoint/webhook) to receive real-time status updates. Events include:
@@ -149,7 +189,7 @@ Use the [Fetch Payout API](/api-reference/endpoint/payout/{payout_id}) to check 
 GET /payout/{payout_id}
 ```
 
-## Step 6: Handle Transaction Completion
+### 6. Handle Transaction Completion
 
 ### Successful Transactions
 When status update indicates success:
@@ -163,14 +203,16 @@ If the transaction fails:
 2. Contact [support](mailto:support@dollarpe.xyz) if needed
 3. Notify the user and provide next steps
 
-## Supported Payment Methods
+## Additional Resources
+
+### Supported Payment Methods
 
 Review our supported [fiat payment methods](/guides/support/fiatMethods) for:
 - Processing times
 - Amount limits
 - Available transfer types
 
-## Error Handling
+### Error Handling
 
 Implement proper error handling for:
 - Rate fluctuations
@@ -179,7 +221,7 @@ Implement proper error handling for:
 - Expired quotations
 - Failed transactions
 
-## Best Practices
+### Best Practices
 
 1. Always verify asset-network combinations before transactions
 2. Implement robust error handling
