@@ -1820,6 +1820,291 @@
         }
       }
     },
+    "/kyc/add-kyc-data": {
+      "post": {
+        "tags": [
+          "KYC"
+        ],
+        "x-title": "Add KYC Data",
+        "description": "Add KYC information for a customer",
+        "servers": [
+          {
+            "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+            "description": "KYC API Base URL"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "customer_id",
+                  "full_name",
+                  "phone",
+                  "full_address",
+                  "dob",
+                  "document_type",
+                  "document_front_image_url",
+                  "document_back_image_url",
+                  "document_details"
+                ],
+                "properties": {
+                  "customer_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                  },
+                  "full_name": {
+                    "type": "string",
+                    "example": "Apoorv Goyal"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "9910402972"
+                  },
+                  "full_address": {
+                    "type": "string",
+                    "example": "FULL_ADDRESS_OF_THE_CUSTOMER"
+                  },
+                  "dob": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "DD-MM-YYYY"
+                  },
+                  "pan_number": {
+                    "type": "string",
+                    "example": "CLBPG5935N"
+                  },
+                  "document_type": {
+                    "type": "string",
+                    "enum": [
+                      "AADHAAR",
+                      "PASSPORT"
+                    ],
+                    "example": "AADHAAR"
+                  },
+                  "document_front_image_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "document_back_image_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "document_details": {
+                    "type": "object",
+                    "required": [
+                      "document_number"
+                    ],
+                    "properties": {
+                      "document_number": {
+                        "type": "string",
+                        "example": "123456123456"
+                      },
+                      "additional_data": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "KYC data added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kyc/update-tax-info": {
+      "post": {
+        "tags": [
+          "KYC"
+        ],
+        "x-title": "Update Tax Information",
+        "description": "Update customer's tax information",
+        "servers": [
+          {
+            "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+            "description": "KYC API Base URL"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "customer_id",
+                  "pan_number"
+                ],
+                "properties": {
+                  "customer_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                  },
+                  "pan_number": {
+                    "type": "string",
+                    "example": "CLBPG5935N"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tax information updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kyc/update-document-info": {
+      "post": {
+        "tags": [
+          "KYC"
+        ],
+        "x-title": "Update Document Information",
+        "description": "Update customer's document information",
+        "servers": [
+          {
+            "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+            "description": "KYC API Base URL"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "customer_id",
+                  "full_address",
+                  "document_type",
+                  "document_front_image_url",
+                  "document_back_image_url",
+                  "document_details"
+                ],
+                "properties": {
+                  "customer_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                  },
+                  "full_address": {
+                    "type": "string",
+                    "example": "FULL_ADDRESS_OF_THE_CUSTOMER"
+                  },
+                  "document_type": {
+                    "type": "string",
+                    "enum": [
+                      "AADHAAR",
+                      "PASSPORT"
+                    ],
+                    "example": "AADHAAR"
+                  },
+                  "document_front_image_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "document_back_image_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "document_details": {
+                    "type": "object",
+                    "required": [
+                      "document_number"
+                    ],
+                    "properties": {
+                      "document_number": {
+                        "type": "string",
+                        "example": "123456123456"
+                      },
+                      "additional_data": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Document information updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/bank/add-account": {
       "post": {
         "tags": [
@@ -2288,6 +2573,94 @@
                     },
                     "data": {
                       "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhook/url": {
+      "post": {
+        "tags": [
+          "Webhook"
+        ],
+        "x-title": "Configure Webhook",
+        "description": "Configure the webhook URL for receiving transaction status updates",
+        "servers": [
+          {
+            "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+            "description": "Webhook API Base URL"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "url"
+                ],
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "The HTTPS URL where webhook events will be sent",
+                    "example": "https://your-domain.com/webhook/dollarpe"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook URL configured successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object"
                     }
                   }
                 }

@@ -28,7 +28,7 @@ flowchart TD
     
     %% Create Quotation
     FetchRate --> CreateQuote[Create Quotation using crypto amount]
-    CreateQuote -->|Call API| QuoteAPI[/API: /payout/create-quotation/]
+    CreateQuote -->|Call API| QuoteAPI[/API: /payout/quotation/]
 
     %% Send Funds
     CreateQuote --> SendFunds[Send Crypto Funds to provided wallet address]

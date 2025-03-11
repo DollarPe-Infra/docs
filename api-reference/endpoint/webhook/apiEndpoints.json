@@ -1,3 +1,86 @@
 {
-  
+  "/webhook/url": {
+    "post": {
+      "tags": ["Webhook"],
+      "x-title": "Configure Webhook",
+      "description": "Configure the webhook URL for receiving transaction status updates",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+          "description": "Webhook API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["url"],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "The HTTPS URL where webhook events will be sent",
+                  "example": "https://your-domain.com/webhook/dollarpe"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Webhook URL configured successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

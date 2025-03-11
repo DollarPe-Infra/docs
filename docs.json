@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "DollarPe",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -61,7 +61,10 @@
               {
                 "group": "KYC",
                 "pages": [
-                  "api-reference/endpoint/kyc/get-kyc-link-{customer_id}"
+                  "api-reference/endpoint/kyc/get-kyc-link-{customer_id}",
+                  "api-reference/endpoint/kyc/add-kyc-data",
+                  "api-reference/endpoint/kyc/update-tax-info",
+                  "api-reference/endpoint/kyc/update-document-info"
                 ]
               },
               {
@@ -96,6 +99,17 @@
                   "api-reference/endpoint/payout/initiate",
                   "api-reference/endpoint/payout/{payout_id}",
                   "api-reference/endpoint/payout/history"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              {
+                "group": "Configure Webhook",
+                "pages": [
+                  "api-reference/endpoint/webhook/url"
                 ]
               }
             ]
