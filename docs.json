@@ -50,34 +50,54 @@
           {
             "group": "Customer",
             "pages": [
-              "api-reference/endpoint/customer/create",
-              "api-reference/endpoint/customer/{customer_id}",
-              "api-reference/endpoint/customer/list"
+              {
+                "group": "Onboarding",
+                "pages": [
+                  "api-reference/endpoint/customer/create",
+                  "api-reference/endpoint/customer/{customer_id}",
+                  "api-reference/endpoint/customer/list"
+                ]
+              },
+              {
+                "group": "KYC",
+                "pages": [
+                  "api-reference/endpoint/kyc/get-kyc-link-{customer_id}"
+                ]
+              },
+              {
+                "group": "Bank",
+                "pages": [
+                  "api-reference/endpoint/bank/add-account",
+                  "api-reference/endpoint/bank/get-bank-accounts-{customer_id}-{bank_id}",
+                  "api-reference/endpoint/bank/get-bank-accounts-{customer_id}"
+                ]
+              }
             ]
           },
           {
-            "group": "Kyc",
+            "group": "Transactions",
             "pages": [
-              "api-reference/endpoint/kyc/get-kyc-link-{customer_id}"
-            ]
-          },
-          {
-            "group": "Bank",
-            "pages": [
-              "api-reference/endpoint/bank/add-account",
-              "api-reference/endpoint/bank/get-bank-accounts-{customer_id}-{bank_id}",
-              "api-reference/endpoint/bank/get-bank-accounts-{customer_id}"
-            ]
-          },
-          {
-            "group": "Payout",
-            "pages": [
-              "api-reference/endpoint/payout/fetch-rate",
-              "api-reference/endpoint/payout/quotation",
-              "api-reference/endpoint/payout/quotation-{quotation_id}",
-              "api-reference/endpoint/payout/initiate",
-              "api-reference/endpoint/payout/{payout_id}",
-              "api-reference/endpoint/payout/history"
+              {
+                "group": "Rate",
+                "pages": [
+                  "api-reference/endpoint/payout/fetch-rate"
+                ]
+              },
+              {
+                "group": "Quotation",
+                "pages": [
+                  "api-reference/endpoint/payout/quotation",
+                  "api-reference/endpoint/payout/quotation-{quotation_id}"
+                ]
+              },
+              {
+                "group": "Payout",
+                "pages": [
+                  "api-reference/endpoint/payout/initiate",
+                  "api-reference/endpoint/payout/{payout_id}",
+                  "api-reference/endpoint/payout/history"
+                ]
+              }
             ]
           }
         ]
@@ -96,8 +116,7 @@
         ]
       }
     ],
-    "global": {
-    }
+    "global": {}
   },
   "logo": {
     "light": "/logo/light.svg",

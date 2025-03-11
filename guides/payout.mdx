@@ -1,10 +1,192 @@
 ---
+title: "Payout Intergration Guide"
 icon: "book-open-cover"
 iconType: "solid"
 ---
 
 <Highlight>
-  # Payout Intergration
+  # Payout Intergration Guide
 </Highlight>
 
-In depth Payout Intergration guide
+This guide serves as a comprehensive walkthrough for partners to integrate the API's for transaction processes using DollarPe APIs.
+
+<Note>
+Before starting the integration:
+- Ensure you have completed the [authentication setup](/api-reference/overview/authentication)
+- Configure your [webhook endpoint](/api-reference/endpoint/webhook) for real-time updates
+- Review [supported stablecoins and blockchains](/guides/support/stablecoins_and_blockchains)
+</Note>
+
+```mermaid
+flowchart TD
+    %% Main Flow
+    Start([Start]) --> KYCCheck[KYC'ed User with 1 Verified Bank Account]
+
+    %% Fetch Rate
+    KYCCheck --> FetchRate[Fetch current rate]
+    FetchRate -->|Call API| FetchRateAPI[/API: /payout/fetch-rate/]
+    
+    %% Create Quotation
+    FetchRate --> CreateQuote[Create Quotation using crypto amount]
+    CreateQuote -->|Call API| QuoteAPI[/API: /payout/create-quotation/]
+
+    %% Send Funds
+    CreateQuote --> SendFunds[Send Crypto Funds to provided wallet address]
+    SendFunds --> SendTxnInfo[Use sending_amount & whitelisted wallet address]
+
+    %% Create Payout
+    SendFunds --> CreatePayout[Create Payout using transaction hash]
+    CreatePayout -->|Call API| PayoutAPI[/API: /payout/initiate/]
+
+    %% Monitor Status
+    CreatePayout --> MonitorStatus{Monitor Payout Status?}
+    MonitorStatus -- Polling --> PollStatus[Check transaction status]
+    MonitorStatus -- Webhooks --> Webhook[Listen to webhooks]
+    PollStatus --> Complete([Complete])
+    Webhook --> Complete([Complete])
+
+    %% Styling for Mintlify Dark/Light Mode
+    classDef mainNode fill:#ffffff,stroke:#4a90e2,stroke-width:2px,color:#000
+    classDef apiNode fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px,color:#000
+    classDef processNode fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000
+    classDef monitorNode fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000
+
+    %% Apply Styles
+    class KYCCheck,FetchRate,CreateQuote,SendFunds,CreatePayout mainNode
+    class FetchRateAPI,QuoteAPI,PayoutAPI apiNode
+    class SendTxnInfo,PollStatus,Webhook processNode
+    class MonitorStatus monitorNode
+
+```
+
+For a comprehensive transaction integration, follow these steps:
+
+## Step 1: Fetch Current Exchange Rate
+
+First, retrieve the current exchange rate using the [Fetch Rate](/api-reference/endpoint/payout/fetch-rate). This step is crucial for obtaining real-time pricing information.
+
+```javascript
+POST /payout/fetch-rate
+{
+  "asset": "USDT",
+  "network": "BSC",
+  "amount": 87.5
+}
+```
+
+The response includes current rate.
+
+## Step 2: Generate Quotation
+
+Create a quotation using the [Create Quotation](/api-reference/endpoint/payout/quotation). 
+
+<Warning>
+**Critical Security Notice**: 
+- Only use supported [asset and network combinations](/guides/support/stablecoins_and_blockchains)
+- **Funds sent to unsupported pairs or incorrect addresses will be permanently lost**
+</Warning>
+
+```javascript
+POST /payout/quotation
+{
+  "asset": "USDT",
+  "network": "BSC",
+  "fiat": "INR",
+  "sending_amount": "100",
+  "customer_id": "customer_uuid"
+}
+```
+
+The response includes:
+- `wallet_address`: Destination for crypto transfer
+- `quotation_id`: Unique identifier for the quote
+- `expiry_time`: Validity period for the quotation
+
+## Step 3: Send Crypto Funds
+
+<Warning>
+**Important**: 
+- Send **exact** amount specified in quotation.
+- Use **only** the whitelisted wallet address to send funds.
+- Send funds **only** to the wallet address returned in quotation response.
+- Complete transfer before quotation expiry.
+</Warning>
+
+Transfer the crypto amount to the wallet address received in the quotation response. Ensure you:
+1. Verify the wallet address
+2. Double-check the network selection
+3. Confirm the exact amount
+
+## Step 4: Initiate Payout
+
+Once funds are sent, create a payout using the [Create Payout](/api-reference/endpoint/payout/initiate).
+
+```javascript
+POST /payout/initiate
+{
+  "quotation_id": "quotation_uuid",
+  "customer_id": "customer_uuid",
+  "bank_id": "bank_account_uuid",
+  "transaction_hash": "0x..."
+}
+```
+
+The response includes a `payout_id` for tracking the transaction.
+
+## Step 5: Monitor Transaction Status
+
+### Option 1: Webhook Integration (Recommended)
+Configure your [webhook endpoint](/api-reference/endpoint/webhook) to receive real-time status updates. Events include:
+- Transaction initiation
+- Crypto receipt confirmation
+- Fiat transfer status
+- Completion/Failure notifications
+
+### Option 2: Status Polling
+Use the [Fetch Payout API](/api-reference/endpoint/payout/{payout_id}) to check transaction status:
+
+```javascript
+GET /payout/{payout_id}
+```
+
+## Step 6: Handle Transaction Completion
+
+### Successful Transactions
+When status update indicates success:
+1. Verify the received amount matches expected value
+2. Update your internal systems
+3. Notify the user of successful completion
+
+### Failed Transactions
+If the transaction fails:
+1. Check the error details in the status response
+2. Contact [support](mailto:support@dollarpe.xyz) if needed
+3. Notify the user and provide next steps
+
+## Supported Payment Methods
+
+Review our supported [fiat payment methods](/guides/support/fiatMethods) for:
+- Processing times
+- Amount limits
+- Available transfer types
+
+## Error Handling
+
+Implement proper error handling for:
+- Rate fluctuations
+- Network timeouts
+- Invalid parameters
+- Expired quotations
+- Failed transactions
+
+## Best Practices
+
+1. Always verify asset-network combinations before transactions
+2. Implement robust error handling
+3. Set up automated monitoring for webhook endpoints
+4. Maintain transaction logs for reconciliation
+5. Test thoroughly in [sandbox environment](/api-reference/overview/introduction#base-urls) first
+
+<Note>
+For technical support or integration assistance, contact our [support team](mailto:support@dollarpe.xyz)
+</Note>
