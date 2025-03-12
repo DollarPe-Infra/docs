@@ -39,8 +39,8 @@ flowchart TD
     %% Failure Handling
     Failed --> CheckReason{Check Failure Reason}
     
-    %% PAN Verification Path
-    CheckReason -->|PAN Verification Failed| UpdateTax[Update Tax Info]
+    %% Tax Number Verification Path
+    CheckReason -->|Tax Number Verification Failed| UpdateTax[Update Tax Info]
     UpdateTax -->|Call API| TaxAPI[/API: /kyc/update-tax-info/]
     TaxAPI --> Processing
     
@@ -90,8 +90,8 @@ sequenceDiagram
         KYCSystem-->>API: Verification Complete
         API-->>Webhook: KYC State: VERIFIED
         Note over Client,API: Can proceed to add bank account
-    else PAN Verification Failed
-        KYCSystem-->>API: PAN Verification Failed
+    else Tax Number Verification Failed
+        KYCSystem-->>API: Tax Number Verification Failed
         API-->>Webhook: KYC State: FAILED
         Client->>API: Update Tax Info
         API-->>Client: KYC State: PROCESSING
@@ -145,7 +145,7 @@ POST /kyc/add-kyc-data
   "phone": "9910402972",
   "full_address": "123 Main St, City",
   "dob": "01-01-1990",
-  "pan_number": "ABCDE1234F",
+  "tax_number": "ABCDE1234F",
   "document_type": "AADHAAR",
   "document_front_image_url": "https://...",
   "document_back_image_url": "https://...",
@@ -168,14 +168,14 @@ Check customer status using [Fetch Customer](/api-reference/endpoint/customer/{c
 
 ### 4. Handle Verification Failures
 
-#### PAN Verification Failed
-If PAN verification fails, update tax information using [Update Tax Info](/api-reference/endpoint/kyc/update-tax-info):
+#### Tax Number Verification Failed
+If Tax Number verification fails, update tax information using [Update Tax Info](/api-reference/endpoint/kyc/update-tax-info):
 
 ```javascript
 POST /kyc/update-tax-info
 {
   "customer_id": "customer_uuid",
-  "pan_number": "ABCDE1234F"
+  "tax_number": "ABCDE1234F"
 }
 ```
 
