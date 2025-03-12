@@ -1,11 +1,236 @@
 ---
-title: "Kyc Intergration Guide"
+title: "KYC Integration Guide"
 icon: "book-open-cover"
 iconType: "solid"
 ---
 
 <Highlight>
-  # Kyc Intergration
+  # KYC Integration Guide
 </Highlight>
 
-In depth Kyc Intergration guide
+This guide provides a comprehensive walkthrough for integrating DollarPe's KYC verification system into your application.
+
+<Note>
+Before starting the integration:
+- Ensure you have completed the [authentication setup](/api-reference/overview/authentication)
+- Configure your [webhook endpoint](/api-reference/endpoint/webhook) for real-time KYC status updates
+</Note>
+
+## Integration Flow
+
+### Visual Process Flow
+
+```mermaid
+flowchart TD
+    %% Main Flow
+    Start([Start]) --> CreateCustomer[Create Customer]
+    CreateCustomer -->|Call API| CustomerAPI[/API: /customer/create/]
+    
+    %% Add KYC Data
+    CustomerAPI --> AddKYC[Add KYC Data]
+    AddKYC -->|Call API| KycAPI[/API: /kyc/add-kyc-data/]
+    KycAPI --> Processing{KYC State: PROCESSING}
+    
+    %% Verification Process
+    Processing --> Verification{Verification Result}
+    Verification -->|Success| Verified[KYC State: VERIFIED]
+    Verification -->|Failure| Failed[KYC State: FAILED]
+    
+    %% Failure Handling
+    Failed --> CheckReason{Check Failure Reason}
+    
+    %% PAN Verification Path
+    CheckReason -->|PAN Verification Failed| UpdateTax[Update Tax Info]
+    UpdateTax -->|Call API| TaxAPI[/API: /kyc/update-tax-info/]
+    TaxAPI --> Processing
+    
+    %% Document Verification Path
+    CheckReason -->|Document Verification Failed| UpdateDoc[Update Document Info]
+    UpdateDoc -->|Call API| DocAPI[/API: /kyc/update-document-info/]
+    DocAPI --> Processing
+    
+    %% Success Path
+    Verified --> AddBank[Add Bank Account]
+    AddBank -->|Call API| BankAPI[/API: /bank/add-account/]
+    BankAPI --> Complete([Complete])
+
+    %% Styling
+    classDef mainNode fill:#ffffff,stroke:#4a90e2,stroke-width:2px,color:#000
+    classDef apiNode fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px,color:#000
+    classDef stateNode fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000
+    classDef failureNode fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000
+
+    class CreateCustomer,AddKYC,UpdateTax,UpdateDoc,AddBank mainNode
+    class CustomerAPI,KycAPI,TaxAPI,DocAPI,BankAPI apiNode
+    class Processing,Verified stateNode
+    class Failed,CheckReason failureNode
+```
+
+### Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant API
+    participant KYCSystem
+    participant Webhook
+
+    %% Create Customer
+    Client->>API: Create Customer
+    API-->>Client: Customer Created
+
+    %% Add KYC Data
+    Client->>API: Submit KYC Data
+    API-->>Client: KYC State: PROCESSING
+    
+    %% Verification Process
+    API->>KYCSystem: Verify KYC Data
+    
+    alt Verification Success
+        KYCSystem-->>API: Verification Complete
+        API-->>Webhook: KYC State: VERIFIED
+        Note over Client,API: Can proceed to add bank account
+    else PAN Verification Failed
+        KYCSystem-->>API: PAN Verification Failed
+        API-->>Webhook: KYC State: FAILED
+        Client->>API: Update Tax Info
+        API-->>Client: KYC State: PROCESSING
+        API->>KYCSystem: Re-verify KYC
+    else Document Verification Failed
+        KYCSystem-->>API: Document Verification Failed
+        API-->>Webhook: KYC State: FAILED
+        Client->>API: Update Document Info
+        API-->>Client: KYC State: PROCESSING
+        API->>KYCSystem: Re-verify KYC
+    end
+
+    %% Final Success
+    Client->>API: Add Bank Account
+    API-->>Client: Bank Account Added
+```
+
+## Integration Steps
+
+### 1. Create Customer
+
+First, create a customer using the [Create Customer](/api-reference/endpoint/customer/create) endpoint.
+
+```javascript
+POST /customer/create
+{
+  "full_name": "John Doe",
+  "email": "john@example.com",
+  "phone": "9910402972",
+  "country": "IND",
+  "type": "individual"
+}
+```
+
+### 2. Submit KYC Data
+
+Submit the customer's KYC information using [Add KYC Data](/api-reference/endpoint/kyc/add-kyc-data).
+
+<Warning>
+**Important**: 
+- Ensure all document images are clear and legible
+- Supported document types: AADHAAR, PASSPORT
+- All required fields must be provided
+</Warning>
+
+```javascript
+POST /kyc/add-kyc-data
+{
+  "customer_id": "customer_uuid",
+  "full_name": "John Doe",
+  "phone": "9910402972",
+  "full_address": "123 Main St, City",
+  "dob": "01-01-1990",
+  "pan_number": "ABCDE1234F",
+  "document_type": "AADHAAR",
+  "document_front_image_url": "https://...",
+  "document_back_image_url": "https://...",
+  "document_details": {
+    "document_number": "123456789012"
+  }
+}
+```
+
+### 3. Monitor KYC Status
+
+### Option 1: Webhook Integration (Recommended)
+Configure your [webhook endpoint](/api-reference/endpoint/webhook) to receive real-time KYC status updates:
+- PROCESSING: Initial state after submission
+- VERIFIED: KYC verification successful
+- FAILED: Verification failed with specific reason
+
+### Option 2: Status Polling
+Check customer status using [Fetch Customer](/api-reference/endpoint/customer/{customer_id}).
+
+### 4. Handle Verification Failures
+
+#### PAN Verification Failed
+If PAN verification fails, update tax information using [Update Tax Info](/api-reference/endpoint/kyc/update-tax-info):
+
+```javascript
+POST /kyc/update-tax-info
+{
+  "customer_id": "customer_uuid",
+  "pan_number": "ABCDE1234F"
+}
+```
+
+#### Document Verification Failed
+If document verification fails, update document information using [Update Document Info](/api-reference/endpoint/kyc/update-document-info):
+
+```javascript
+POST /kyc/update-document-info
+{
+  "customer_id": "customer_uuid",
+  "full_address": "Updated Address",
+  "document_type": "AADHAAR",
+  "document_front_image_url": "https://...",
+  "document_back_image_url": "https://...",
+  "document_details": {
+    "document_number": "123456789012"
+  }
+}
+```
+
+### 5. Add Bank Account
+
+Once KYC is verified, add bank account using [Add Bank Account](/api-reference/endpoint/bank/add-account):
+
+```javascript
+POST /bank/add-account
+{
+  "customer_id": "customer_uuid",
+  "account_number": "1234567890",
+  "ifsc": "ABCD0001234"
+}
+```
+
+## Best Practices
+
+1. **Document Quality**
+   - Submit high-resolution, clear images
+   - Ensure all text is legible
+   - Include all required document parts
+
+2. **Error Handling**
+   - Implement proper error handling for all API calls
+   - Store transaction IDs for tracking
+   - Log all webhook notifications
+
+3. **Testing**
+   - Test thoroughly in sandbox environment
+   - Verify webhook integration
+   - Test both success and failure scenarios
+
+4. **Security**
+   - Secure storage of sensitive information
+   - Implement proper access controls
+   - Use HTTPS for all API calls
+
+<Note>
+For technical support or integration assistance, contact our [support team](mailto:support@dollarpe.xyz)
+</Note>
