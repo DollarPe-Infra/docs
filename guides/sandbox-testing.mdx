@@ -1,0 +1,430 @@
+---
+title: "Testing With Sandbox"
+icon: "flask"
+iconType: "solid"
+---
+
+<Highlight>
+  # Testing With Sandbox
+</Highlight>
+
+## Introduction to Sandbox Environment
+
+The DollarPe Sandbox environment provides a safe, isolated testing ground for integrating with our APIs before deploying to production. This guide covers everything you need to know about testing your integration thoroughly in the sandbox environment.
+
+<Note>
+**Key Benefits of Sandbox Testing:**
+- Test the full integration flow without real funds
+- Validate your implementation against our API specifications
+- Simulate various success and error scenarios
+- Ensure your error handling works correctly
+- Gain confidence before going live
+</Note>
+
+## Sandbox vs. Production
+
+<Tabs>
+  <Tab title="Key Differences">
+    | Feature | Sandbox | Production |
+    |:--------|:--------|:-----------|
+    | Base URL | `https://sandbox.dollarpe.xyz` | `https://production.dollarpe.xyz` |
+    | API Keys | Sandbox-specific | Production-specific |
+    | Funds | Test funds only | Real funds |
+    | Blockchain Networks | Includes test networks | Only mainnet networks |
+    | Processing Times | Accelerated for testing | Actual processing times |
+    | Rate Limits | Higher for testing | Standard production limits |
+  </Tab>
+  
+  <Tab title="Environment Comparison">
+    ```mermaid
+    graph TD
+      subgraph Sandbox
+        SandboxAPI[Sandbox API]
+        TestBlockchain[Test Blockchains]
+        MockBanking[Mock Banking System]
+        TestKYC[Simulated KYC]
+      end
+      
+      subgraph Production
+        ProdAPI[Production API]
+        RealBlockchain[Real Blockchains]
+        RealBanking[Real Banking System]
+        RealKYC[Actual KYC Verification]
+      end
+      
+      Developer --> Sandbox
+      Sandbox -- After Testing --> Production
+      Production --> Customers
+      
+      classDef sandboxNodes fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
+      classDef prodNodes fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000
+      
+      class SandboxAPI,TestBlockchain,MockBanking,TestKYC sandboxNodes
+      class ProdAPI,RealBlockchain,RealBanking,RealKYC prodNodes
+    ```
+  </Tab>
+</Tabs>
+
+## Getting Started with Sandbox
+
+### Step 1: Obtain Sandbox Credentials
+
+<Warning>
+**IMPORTANT**: Sandbox credentials are different from production credentials. They cannot be used interchangeably.
+</Warning>
+
+To get started with the sandbox environment:
+
+1. Contact our [support team](mailto:support@dollarpe.xyz) to request sandbox access
+2. You'll receive your sandbox API key and API secret
+3. Store these credentials securely, following the same security practices you would for production
+
+### Step 2: Configure Your Environment
+
+Update your application configuration to use the sandbox base URL and credentials:
+
+```javascript
+// Sandbox configuration
+const config = {
+  baseUrl: 'https://sandbox.dollarpe.xyz',
+  apiKey: 'YOUR_SANDBOX_API_KEY',
+  apiSecret: 'YOUR_SANDBOX_API_SECRET'
+};
+```
+
+### Step 3: Implement Authentication
+
+Authentication works the same way in sandbox as it does in production. Use the same header generation logic with your sandbox credentials:
+
+```javascript
+const crypto = require('crypto');
+
+const generateHeaders = (apiKey, apiSecret, body = {}) => {
+  // Get current timestamp
+  const timestamp = Math.floor(Date.now() / 1000);
+
+  // Sort and stringify the body
+  const sortedBody = JSON.stringify(body, Object.keys(body).sort());
+
+  // Create message string
+  const message = `${apiKey}|${timestamp}|${sortedBody}`;
+
+  // Generate signature
+  const signature = crypto
+    .createHmac('sha256', apiSecret)
+    .update(message)
+    .digest('base64');
+
+  return {
+    'Content-Type': 'application/json',
+    'X-API-KEY': apiKey,
+    'X-TIMESTAMP': timestamp.toString(),
+    'X-SIGNATURE': signature
+  };
+};
+```
+
+## Testing KYC Flow in Sandbox
+
+The sandbox environment allows you to test the complete KYC flow without submitting real documents.
+
+### Creating Test Customers
+
+Create test customers using the same API endpoint as production:
+
+```javascript
+// Example: Create a test customer
+const createTestCustomer = async () => {
+  const requestBody = {
+    "full_name": "Test User",
+    "email": "testuser@example.com",
+    "phone": "9910402972",
+    "country": "IND",
+    "type": "individual"
+  };
+  
+  const headers = generateHeaders(config.apiKey, config.apiSecret, requestBody);
+  
+  const response = await fetch(`${config.baseUrl}/cms/api/v1/customer/create`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(requestBody)
+  });
+  
+  return await response.json();
+};
+```
+
+### Simulating KYC Document Submission
+
+In sandbox, you can use test document URLs for KYC submission:
+
+```javascript
+// Example: Submit test KYC data
+const submitTestKYC = async (customerId) => {
+  const requestBody = {
+    "customer_id": customerId,
+    "full_name": "Test User",
+    "phone": "9910402972",
+    "full_address": "123 Test Street, Test City",
+    "dob": "01-01-1990",
+    "document_type": "AADHAAR",
+    "document_front_image_url": "https://sandbox.dollarpe.xyz/test-images/aadhaar-front.jpg",
+    "document_back_image_url": "https://sandbox.dollarpe.xyz/test-images/aadhaar-back.jpg",
+    "document_details": {
+      "document_number": "123456789012"
+    }
+  };
+  
+  const headers = generateHeaders(config.apiKey, config.apiSecret, requestBody);
+  
+  const response = await fetch(`${config.baseUrl}/cms/api/v1/kyc/add-kyc-data`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(requestBody)
+  });
+  
+  return await response.json();
+};
+```
+
+<Note>
+In the sandbox environment, KYC verification is automatically approved for most test submissions. To test failure scenarios, use specific test values as described in the "Testing Error Scenarios" section.
+</Note>
+
+### Adding Test Bank Accounts
+
+Once KYC is verified, add test bank accounts:
+
+```javascript
+// Example: Add a test bank account
+const addTestBankAccount = async (customerId) => {
+  const requestBody = {
+    "customer_id": customerId,
+    "account_number": "1234567890",
+    "ifsc": "SBIN0000001",
+    "account_type": "savings",
+    "account_holder_name": "Test User"
+  };
+  
+  const headers = generateHeaders(config.apiKey, config.apiSecret, requestBody);
+  
+  const response = await fetch(`${config.baseUrl}/cms/api/v1/bank/add-account`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(requestBody)
+  });
+  
+  return await response.json();
+};
+```
+
+## Testing Payout Flow in Sandbox
+
+### Fetching Test Rates
+
+Fetch test exchange rates using the same API as production:
+
+```javascript
+// Example: Fetch test exchange rate
+const fetchTestRate = async () => {
+  const requestBody = {
+    "asset": "USDT",
+    "network": "BSC",
+    "amount": 100
+  };
+  
+  const headers = generateHeaders(config.apiKey, config.apiSecret, requestBody);
+  
+  const response = await fetch(`${config.baseUrl}/pos/api/v1/payout/fetch-rate`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(requestBody)
+  });
+  
+  return await response.json();
+};
+```
+
+### Creating Test Quotations
+
+Create test quotations to receive wallet addresses for sending test funds:
+
+```javascript
+// Example: Create a test quotation
+const createTestQuotation = async (customerId) => {
+  const requestBody = {
+    "asset": "usdt",
+    "fiat": "inr",
+    "network": "sepolia", // Note: Use sepolia for sandbox testing
+    "sending_amount": "10",
+    "customer_id": customerId
+  };
+  
+  const headers = generateHeaders(config.apiKey, config.apiSecret, requestBody);
+  
+  const response = await fetch(`${config.baseUrl}/pos/api/v1/payout/quotation`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(requestBody)
+  });
+  
+  return await response.json();
+};
+```
+
+### Sending Test Cryptocurrency
+
+In the sandbox environment, you can use test networks like Sepolia for Ethereum-based testing:
+
+<Warning>
+**IMPORTANT**: Even in sandbox, you must send funds to the exact wallet address provided in the quotation response. Use test networks like Sepolia instead of mainnet networks.
+</Warning>
+
+1. Get test tokens from a Sepolia faucet
+2. Send the exact amount of test USDT/USDC to the wallet address from the quotation
+3. Obtain the transaction hash for the next step
+
+### Initiating Test Payouts
+
+Initiate test payouts using the transaction hash from your test network transaction:
+
+```javascript
+// Example: Initiate a test payout
+const initiateTestPayout = async (quotationId, customerId, bankId, txHash) => {
+  const requestBody = {
+    "quotation_id": quotationId,
+    "customer_id": customerId,
+    "client_reference_id": "test123",
+    "bank_id": bankId,
+    "transaction_hash": txHash
+  };
+  
+  const headers = generateHeaders(config.apiKey, config.apiSecret, requestBody);
+  
+  const response = await fetch(`${config.baseUrl}/pos/api/v1/payout/initiate`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(requestBody)
+  });
+  
+  return await response.json();
+};
+```
+
+### Monitoring Test Transaction Status
+
+Monitor the status of your test payout:
+
+```javascript
+// Example: Check test payout status
+const checkTestPayoutStatus = async (payoutId) => {
+  const headers = generateHeaders(config.apiKey, config.apiSecret);
+  
+  const response = await fetch(`${config.baseUrl}/pos/api/v1/payout/${payoutId}`, {
+    method: 'GET',
+    headers: headers
+  });
+  
+  return await response.json();
+};
+```
+
+<Note>
+In the sandbox environment, transaction processing is accelerated. Status changes that might take hours in production typically happen within minutes in sandbox.
+</Note>
+
+## Testing Webhook Integration
+
+Configure your webhook endpoint to receive test notifications:
+
+```javascript
+// Example: Configure webhook URL
+const configureWebhook = async () => {
+  const requestBody = {
+    "url": "https://your-test-server.com/webhook/dollarpe"
+  };
+  
+  const headers = generateHeaders(config.apiKey, config.apiSecret, requestBody);
+  
+  const response = await fetch(`${config.baseUrl}/cms/api/v1/webhook/url`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(requestBody)
+  });
+  
+  return await response.json();
+};
+```
+
+<Tip>
+For local development, use tools like [ngrok](https://ngrok.com/) to create a public URL that forwards to your local webhook handler.
+</Tip>
+
+## Sandbox Testing Checklist
+
+Use this checklist to ensure you've thoroughly tested your integration:
+
+<Accordion title="Customer and KYC Testing">
+- [ ] Create a test customer
+- [ ] Submit KYC information
+- [ ] Test successful KYC verification
+- [ ] Test KYC verification failure scenarios
+- [ ] Update failed KYC information
+- [ ] Add bank account details
+</Accordion>
+
+<Accordion title="Payout Flow Testing">
+- [ ] Fetch current exchange rates
+- [ ] Create quotations
+- [ ] Test quotation expiry handling
+- [ ] Send test cryptocurrency (using test networks)
+- [ ] Initiate payouts with transaction details
+- [ ] Monitor transaction status changes
+- [ ] Test successful payout completion
+- [ ] Test payout failure scenarios
+</Accordion>
+
+<Accordion title="Webhook Testing">
+- [ ] Configure webhook URL
+- [ ] Verify webhook receives KYC status updates
+- [ ] Verify webhook receives transaction status updates
+- [ ] Test webhook error handling
+</Accordion>
+
+<Accordion title="Error Handling Testing">
+- [ ] Test API authentication failures
+- [ ] Test invalid input validation
+- [ ] Test rate limit handling
+- [ ] Test timeout scenarios
+- [ ] Verify error messages are properly displayed to users
+</Accordion>
+
+
+## Transitioning to Production
+
+Once you've completed thorough testing in the sandbox environment, follow these steps to transition to production:
+
+1. Request production API credentials from our [support team](mailto:support@dollarpe.xyz)
+2. Update your application configuration to use production URLs and credentials
+3. Ensure all test code and sandbox-specific logic is removed or properly conditioned
+4. Implement proper logging and monitoring for production transactions
+5. Set up alerts for critical error conditions
+6. Conduct a final review of security measures and error handling
+7. Deploy your application with production settings
+
+<Warning>
+**IMPORTANT**: Before going live, ensure you have proper error handling, logging, and monitoring in place. Real funds will be at stake in the production environment.
+</Warning>
+
+## Getting Help
+
+If you encounter any issues during sandbox testing:
+
+- Check our [API documentation](/api-reference) for detailed endpoint information
+- Review error messages and response codes for troubleshooting clues
+- Contact our [support team](mailto:support@dollarpe.xyz) with specific error details and transaction IDs
+
+<Note>
+Our support team is available to help with sandbox testing issues. When reporting problems, please include your relevant customer IDs, transaction IDs, and detailed error messages to expedite troubleshooting.
+</Note>

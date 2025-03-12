@@ -3,75 +3,51 @@ title: "Introduction"
 ---
 
 <Highlight>
-  # Introduction
+  # DollarPe API Reference
 </Highlight>
 
-This guide will help you integrate our payment solutions into your applications quickly and efficiently.
+Welcome to DollarPe's API documentation. This comprehensive guide will help you integrate our cryptocurrency-to-fiat payout solutions into your applications quickly and efficiently. Our APIs enable you to offer seamless crypto-to-INR transfers to your customers while we handle the complex aspects of blockchain transactions, KYC verification, and banking operations.
 
-## Quick Start Guide
+## API Overview
 
-In this section, we'll walk you through:
-- [Authentication](/api-reference/overview/authentication)
-- Making your first API request
-- Understanding core concepts
-
-## Development Tools
-
-<CardGroup cols={3}>
-  <Card title="API Reference" icon="book-open" href="/api-reference/endpoint/payout/fetch-rate">
-    Explore our comprehensive API documentation with detailed endpoints and examples.
-  </Card>
-  <Card title="Postman Collection" icon="rectangle-terminal" href="https://www.postman.com/dollarpe/workspace/dollarpe-public">
-    Download our Postman collection for quick API testing and integration.
-  </Card>
-  <Card title="SDK Libraries" icon="code" href="/guides/overview">
-    Access our official SDKs for seamless integration.
-  </Card>
-</CardGroup>
-
-## Service Overview
+DollarPe's API platform provides a suite of services that work together to create a complete payout solution:
 
 <CardGroup cols={3}>
   <Card title="Customer API" icon="user" href="/api-reference/endpoint/customer/create">
     Create and manage customer profiles with unique identifiers.
   </Card>
-  <Card title="KYC API" icon="id-card" href="/api-reference/endpoint/kyc">
+  <Card title="KYC API" icon="id-card" href="/api-reference/endpoint/kyc/add-kyc-data">
     Handle customer verification and compliance processes.
   </Card>
-  <Card title="Payout API" icon="money-bill-transfer" href="/api-reference/endpoint/payout/quotation">
-    Process cryptocurrency payouts and rate conversions.
+  <Card title="Bank API" icon="building-columns" href="/api-reference/endpoint/bank/add-account">
+    Manage bank account integrations for fiat payouts.
+  </Card>
+  <Card title="Payout API" icon="money-bill-transfer" href="/api-reference/endpoint/payout/initiate">
+    Process cryptocurrency-to-fiat conversions and transfers.
+  </Card>
+  <Card title="Webhook API" icon="bell" href="/api-reference/endpoint/webhook/url">
+    Configure real-time notifications for transaction updates.
   </Card>
 </CardGroup>
 
-<CardGroup cols={3}>
-  <Card title="Bank API" icon="building-columns" href="/api-reference/endpoint/bank">
-    Manage bank account integrations and transfers.
-  </Card>
-  <Card title="Webhook API" icon="webhook" href="/api-reference/endpoint/webhook">
-    Configure real-time transaction notifications.
-  </Card>
-  <Card title="Support" icon="headset" href="mailto:support@dollarpe.xyz">
-    Get technical assistance and integration support.
-  </Card>
-</CardGroup>
+## Getting Started
 
-## Prerequisites
-
-Before you begin, ensure you have the following:
+Before integrating with our API, ensure you have the following prerequisites in place:
 
 <Steps>
-  <Step title="API Credentials">
-    Obtain your `API Key` and `API Secret`.  
-    [Contact our support team](mailto:support@dollarpe.xyz) for access.
+  <Step title="Obtain API Credentials">
+    Contact our [support team](mailto:support@dollarpe.xyz) to receive your unique API Key and API Secret for authentication.
   </Step>
   <Step title="Choose Environment">
-    Select your development environment:
-    - **Sandbox** - For testing and development
-    - **Production** - For live transactions
+    Select the appropriate environment for your development stage:
+    - **Sandbox** - For testing and development (no real funds)
+    - **Production** - For live transactions (real funds)
   </Step>
-  <Step title="Webhook Setup">
-    Configure a publicly accessible HTTPS endpoint to receive transaction updates.  
-    Learn more in our [Webhook documentation](/api-reference/endpoint/webhook).
+  <Step title="Set Up Authentication">
+    Implement our [authentication system](/api-reference/overview/authentication) to secure your API requests.
+  </Step>
+  <Step title="Configure Webhooks">
+    Set up a publicly accessible HTTPS endpoint to receive real-time transaction updates via our [webhook system](/api-reference/endpoint/webhook/url).
   </Step>
 </Steps>
 
@@ -85,27 +61,59 @@ Access DollarPe API through our dedicated environments:
       `https://sandbox.dollarpe.xyz`
     </ResponseField>
     
+    <ResponseField name="API Endpoints" type="string">
+      - Customer API: `https://sandbox.dollarpe.xyz/cms/api/v1`
+      - Payout API: `https://sandbox.dollarpe.xyz/pos/api/v1`
+    </ResponseField>
+    
     Use this environment for:
     - Development and testing
     - Integration validation
-    - Simulated transactions
+    - Simulated transactions with test networks
+    - No real funds are involved
   </Tab>
   <Tab title="Production">
     <ResponseField name="Base URL" type="string">
       `https://production.dollarpe.xyz`
     </ResponseField>
     
+    <ResponseField name="API Endpoints" type="string">
+      - Customer API: `https://production.dollarpe.xyz/cms/api/v1`
+      - Payout API: `https://production.dollarpe.xyz/pos/api/v1`
+    </ResponseField>
+    
     Use this environment for:
     - Live transactions
     - Real payment processing
     - Production deployments
+    - Real funds are involved
   </Tab>
 </Tabs>
 
-<Note>
-  Always start with the **Sandbox** environment for development and testing.  
+<Warning>
+  **Important**: Always start with the **Sandbox** environment for development and testing.  
   Move to **Production** only after thorough testing and validation.
-</Note>
+  
+  Sandbox and Production environments use different API credentials. Make sure to use the correct credentials for each environment.
+</Warning>
+
+## Authentication
+
+All API requests require authentication using three custom headers:
+
+<ResponseField name="X-API-KEY" type="string" required>
+  Your unique API key provided by DollarPe.
+</ResponseField>
+
+<ResponseField name="X-TIMESTAMP" type="integer" required>
+  The current Unix timestamp in seconds.
+</ResponseField>
+
+<ResponseField name="X-SIGNATURE" type="string" required>
+  An HMAC SHA256 signature of the request, encoded in Base64.
+</ResponseField>
+
+For detailed instructions on generating these headers, see our [Authentication Guide](/api-reference/overview/authentication).
 
 ## Response Format
 
@@ -147,6 +155,13 @@ Our API follows a consistent response format across all endpoints:
   </Tab>
 </Tabs>
 
-<Note>
-  Need help? Our [support team](mailto:support@dollarpe.xyz) is available to assist you with your integration.
-</Note>
+## Testing Your Integration
+
+Before going live, thoroughly test your integration in our Sandbox environment:
+
+1. Use Sandbox API credentials and base URLs
+2. Test the complete customer journey from registration to payout
+3. Verify webhook notifications are properly received and processed
+4. Test error scenarios and implement appropriate error handling
+
+For detailed testing instructions, see our [Sandbox Testing Guide](/guides/sandbox-testing).

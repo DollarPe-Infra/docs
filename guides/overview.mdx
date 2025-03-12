@@ -1,14 +1,188 @@
+---
+title: "API Integration Overview"
+icon: "rocket"
+iconType: "solid"
+---
+
 <Highlight>
-  # Quick Start
+  # DollarPe API Integration Overview
 </Highlight>
 
-Step-by-step guide to implementing secure cryptocurrency payouts. Learn how to fetch rates, validate transactions, and process payments across multiple blockchain networks using DollarPe's API.
+## Welcome to DollarPe's API Platform
+
+DollarPe provides a comprehensive suite of APIs that enable businesses to offer cryptocurrency-to-fiat payout services to their customers. Our platform handles the complex aspects of cryptocurrency transactions, KYC verification, and banking operations, allowing you to focus on your core business while offering seamless payout solutions.
+
+<Note>
+**Partner Integration Benefits:**
+- Offer crypto-to-fiat payouts without building blockchain infrastructure
+- Leverage our compliant KYC and banking relationships
+- Access competitive exchange rates and low transaction fees
+- Provide your customers with fast, reliable payment options
+</Note>
+
+## Integration Journey
+
+As a DollarPe API partner, your integration journey involves these key steps:
 
 <CardGroup cols={2}>
-  <Card title="KYC Integration Guide" icon="square-1" href="/guides/kyc">
-    Comprehensive documentation for KYC integration.
+  <Card title="KYC Integration" icon="id-card" href="/guides/kyc">
+    Implement our KYC verification flow to ensure regulatory compliance for your users.
   </Card>
-  <Card title="Payout Integration Guide" icon="square-2" href="/guides/payout">
-    Comprehensive documentation for Payout integration.
+  <Card title="Payout Integration" icon="money-bill-transfer" href="/guides/payout">
+    Connect to our payout system to enable cryptocurrency-to-fiat transfers to bank accounts.
+  </Card>
+  <Card title="Stablecoins & Blockchains" icon="circle-dollar" href="/guides/support/stablecoins_and_blockchains">
+    Understand our supported cryptocurrencies and blockchain networks for optimal implementation.
+  </Card>
+  <Card title="Fiat Payment Methods" icon="money-bill-transfer" href="/guides/support/fiatMethods">
+    Explore the available fiat payout options you can offer to your customers.
   </Card>
 </CardGroup>
+
+## Partner Integration Flow
+
+The typical partner integration flow follows these steps:
+
+```mermaid
+flowchart TD
+    Start([Start Partner Integration]) --> Auth[Set Up API Authentication]
+    Auth --> Webhook[Configure Webhooks for Notifications]
+    
+    Webhook --> KYC[Implement Customer KYC Flow]
+    KYC --> KYCVerified{KYC Verified?}
+    
+    KYCVerified -->|No| HandleKYCFailure[Handle KYC Failure]
+    HandleKYCFailure --> KYC
+    
+    KYCVerified -->|Yes| AddBank[Add Customer Bank Account]
+    AddBank --> PayoutFlow[Implement Payout Flow]
+    
+    PayoutFlow --> FetchRate[Fetch Current Exchange Rate]
+    FetchRate --> CreateQuote[Create Payout Quotation]
+    CreateQuote --> SendCrypto[Send Crypto to DollarPe Wallet]
+    SendCrypto --> InitiatePayout[Initiate Fiat Payout]
+    InitiatePayout --> MonitorStatus[Monitor Transaction Status]
+    MonitorStatus --> Complete([Integration Complete])
+
+    classDef startEndNode fill:#dcedc8,stroke:#558b2f,stroke-width:2px,color:#000
+    classDef mainNode fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
+    classDef decisionNode fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px,color:#000
+    classDef successNode fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000
+    classDef failureNode fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000
+
+    class Start,Complete startEndNode
+    class Auth,Webhook,KYC,AddBank,PayoutFlow,FetchRate,CreateQuote,SendCrypto,InitiatePayout,MonitorStatus mainNode
+    class KYCVerified decisionNode
+    class HandleKYCFailure failureNode
+```
+
+## Key Integration Components
+
+### 1. API Authentication
+
+Secure your API requests to our platform using our authentication system:
+
+```javascript
+// Example authentication header setup
+const crypto = require('crypto');
+
+/**
+ * Generates authentication headers for DollarPe API requests.
+ * @param {string} apiKey - Your partner API key.
+ * @param {string} apiSecret - Your partner API secret.
+ * @param {Object} [body={}] - The request body.
+ * @returns {Object} - The headers object containing authentication details.
+ */
+const generateHeaders = (apiKey, apiSecret, body = {}) => {
+  // Get current timestamp
+  const timestamp = Math.floor(Date.now() / 1000);
+
+  // Sort and stringify the body
+  const sortedBody = JSON.stringify(body, Object.keys(body).sort());
+
+  // Create message string
+  const message = `${apiKey}|${timestamp}|${sortedBody}`;
+
+  // Generate signature
+  const signature = crypto
+    .createHmac('sha256', apiSecret)
+    .update(message)
+    .digest('base64');
+
+  return {
+    'Content-Type': 'application/json',
+    'X-API-KEY': apiKey,
+    'X-TIMESTAMP': timestamp.toString(),
+    'X-SIGNATURE': signature
+  };
+};
+```
+
+### 2. Customer KYC Integration
+
+Implement our KYC flow to verify your customers' identities:
+
+<Accordion title="KYC Implementation Steps">
+1. Create a customer profile using [/customer/create](/api-reference/endpoint/customer/create)
+2. Submit KYC documents and information using [/kyc/add-kyc-data](/api-reference/endpoint/kyc/add-kyc-data)
+3. Monitor verification status via [/customer/{customer_id}](/api-reference/endpoint/customer/{customer_id}) or webhooks
+4. Handle verification issues if needed using [/kyc/update-tax-info](/api-reference/endpoint/kyc/update-tax-info) or [/kyc/update-document-info](/api-reference/endpoint/kyc/update-document-info)
+5. Add bank account details once verified using [/bank/add-account](/api-reference/endpoint/bank/add-account)
+
+See our [KYC Integration Guide](/guides/kyc) for detailed implementation steps.
+</Accordion>
+
+### 3. Payout Service Integration
+
+Connect to our payout system to enable cryptocurrency-to-fiat transfers:
+
+<Accordion title="Payout Implementation Steps">
+1. Fetch current exchange rates using [/payout/fetch-rate](/api-reference/endpoint/payout/fetch-rate)
+2. Create a quotation using [/payout/quotation](/api-reference/endpoint/payout/quotation)
+3. Send cryptocurrency to the provided DollarPe wallet address
+4. Initiate the payout with transaction details using [/payout/initiate](/api-reference/endpoint/payout/initiate)
+5. Monitor the transaction status using [/payout/{payout_id}](/api-reference/endpoint/payout/{payout_id}) or webhooks
+
+See our [Payout Integration Guide](/guides/payout) for detailed implementation steps.
+</Accordion>
+
+## Services We Provide
+
+<Tabs>
+  <Tab title="Cryptocurrency Processing">
+    We handle all aspects of cryptocurrency transactions:
+    
+    - **USDT**: Support on Ethereum, Polygon, Arbitrum, Tron, and Solana networks
+    - **USDC**: Support on Ethereum, Polygon, Arbitrum, Tron, and Solana networks
+    - Secure wallet infrastructure
+    - Transaction monitoring and verification
+    - Competitive exchange rates
+    
+    See [Stablecoins & Blockchains](/guides/support/stablecoins_and_blockchains) for details.
+  </Tab>
+  
+  <Tab title="Fiat Payout Options">
+    We provide multiple payout methods to Indian bank accounts:
+    
+    - **UPI**: Instant transfers up to ₹1,00,000
+    - **IMPS**: Instant transfers up to ₹5,00,000
+    - **NEFT**: Transfers with no upper limit (approximately 30 minutes processing time)
+    - **RTGS**: High-value transfers (min ₹2,00,000)
+    
+    See [Fiat Payment Methods](/guides/support/fiatMethods) for details.
+  </Tab>
+  
+  <Tab title="Compliance & Security">
+    We handle regulatory compliance:
+    
+    - KYC verification processing
+    - AML monitoring
+    - Regulatory reporting
+    - Secure data handling
+    - Banking partnerships
+    
+    Currently supporting **India** with plans for expansion.
+    
+    See [Supported Geographies](/guides/support/geographies) for details.
+  </Tab>
+</Tabs>

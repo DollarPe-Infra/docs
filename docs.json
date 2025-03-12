@@ -28,6 +28,12 @@
             ]
           },
           {
+            "group": "Testing & Development",
+            "pages": [
+              "guides/sandbox-testing"
+            ]
+          },
+          {
             "group": "We Support",
             "pages": [
               "guides/support/geographies",

@@ -8,239 +8,441 @@ iconType: "solid"
   # KYC Integration Guide
 </Highlight>
 
-This guide provides a comprehensive walkthrough for integrating DollarPe's KYC verification system into your application.
+## What is KYC and Why It Matters
+
+Know Your Customer (KYC) verification is an essential process that helps verify the identity of your users, prevent fraud, and comply with regulatory requirements. This guide will walk you through integrating DollarPe's KYC system into your application, whether you're a developer or a business owner.
 
 <Note>
-Before starting the integration:
-- Ensure you have completed the [authentication setup](/api-reference/overview/authentication)
-- Configure your [webhook endpoint](/api-reference/endpoint/webhook) for real-time KYC status updates
+**Before You Begin:**
+- Complete the [authentication setup](/api-reference/overview/authentication) for API access
+- Set up your [webhook endpoint](/api-reference/endpoint/webhook) to receive real-time KYC status updates
 </Note>
 
-## Integration Flow
+## Integration at a Glance
 
-### Visual Process Flow
+The KYC integration follows these main steps:
+
+1. Create a customer profile
+2. Submit their KYC documents and information
+3. Monitor verification status (usually completed in 5-120 minutes)
+4. Handle any verification issues
+5. Add bank account details once verified
+6. Begin transactions
+
+## Visual Integration Flow
+
+### Process Flow Diagram
 
 ```mermaid
 flowchart TD
-    %% Main Flow
-    Start([Start]) --> CreateCustomer[Create Customer]
-    CreateCustomer -->|Call API| CustomerAPI[/API: /customer/create/]
+    Start([Start Integration]) --> CreateCustomer[Create Customer Profile]
+    CreateCustomer -->|API Call| CustomerAPI[/API: /customer/create/]
     
-    %% Add KYC Data
-    CustomerAPI --> AddKYC[Add KYC Data]
-    AddKYC -->|Call API| KycAPI[/API: /kyc/add-kyc-data/]
-    KycAPI --> Processing{KYC State: PROCESSING}
+    CustomerAPI --> AddKYC[Submit KYC Data]
+    AddKYC -->|API Call| KycAPI[/API: /kyc/add-kyc-data/]
+    KycAPI --> Processing[KYC PROCESSING State]
     
-    %% Verification Process
-    Processing --> Verification{Verification Result}
+    Processing --> WebhookNotification[Webhook Notification]
+    WebhookNotification --> Verification{Verification Result}
+    
     Verification -->|Success| Verified[KYC State: VERIFIED]
     Verification -->|Failure| Failed[KYC State: FAILED]
     
-    %% Failure Handling
     Failed --> CheckReason{Check Failure Reason}
     
-    %% Tax Number Verification Path
-    CheckReason -->|Tax Number Verification Failed| UpdateTax[Update Tax Info]
-    UpdateTax -->|Call API| TaxAPI[/API: /kyc/update-tax-info/]
+    CheckReason -->|Tax Number Issue| UpdateTax[Update Tax Info]
+    UpdateTax -->|API Call| TaxAPI[/API: /kyc/update-tax-info/]
     TaxAPI --> Processing
     
-    %% Document Verification Path
-    CheckReason -->|Document Verification Failed| UpdateDoc[Update Document Info]
-    UpdateDoc -->|Call API| DocAPI[/API: /kyc/update-document-info/]
+    CheckReason -->|Document Issue| UpdateDoc[Update Document Info]
+    UpdateDoc -->|API Call| DocAPI[/API: /kyc/update-document-info/]
     DocAPI --> Processing
     
-    %% Success Path
     Verified --> AddBank[Add Bank Account]
-    AddBank -->|Call API| BankAPI[/API: /bank/add-account/]
-    BankAPI --> Complete([Complete])
+    AddBank -->|API Call| BankAPI[/API: /bank/add-account/]
+    BankAPI --> Complete[Begin Transactions]
+    Complete --> TransactionReady([Integration Complete])
 
-    %% Styling
-    classDef mainNode fill:#ffffff,stroke:#4a90e2,stroke-width:2px,color:#000
+    classDef startEndNode fill:#dcedc8,stroke:#558b2f,stroke-width:2px,color:#000
+    classDef mainNode fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
     classDef apiNode fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px,color:#000
     classDef stateNode fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000
     classDef failureNode fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000
+    classDef waitNode fill:#fff8e1,stroke:#ff8f00,stroke-width:2px,color:#000
 
-    class CreateCustomer,AddKYC,UpdateTax,UpdateDoc,AddBank mainNode
+    class Start,TransactionReady startEndNode
+    class CreateCustomer,AddKYC,UpdateTax,UpdateDoc,AddBank,Complete mainNode
     class CustomerAPI,KycAPI,TaxAPI,DocAPI,BankAPI apiNode
     class Processing,Verified stateNode
     class Failed,CheckReason failureNode
+    class WebhookNotification waitNode
 ```
 
-### Sequence Diagram
+<Note>
+**Processing Time**: KYC verification typically takes 5-120 minutes to complete. Design your user experience accordingly.
+</Note>
+
+### Sequence Diagram: Detailed Process Flow
 
 ```mermaid
 sequenceDiagram
-    participant Client
-    participant API
-    participant KYCSystem
-    participant Webhook
-
-    %% Create Customer
-    Client->>API: Create Customer
-    API-->>Client: Customer Created
-
-    %% Add KYC Data
-    Client->>API: Submit KYC Data
-    API-->>Client: KYC State: PROCESSING
+    participant App as Your Application
+    participant API as DollarPe API
+    participant KYC as KYC Verification System
+    participant Webhook as Your Webhook Server
     
-    %% Verification Process
-    API->>KYCSystem: Verify KYC Data
+    App->>API: Create Customer Profile
+    API->>App: Customer Created with customer_id
     
-    alt Verification Success
-        KYCSystem-->>API: Verification Complete
-        API-->>Webhook: KYC State: VERIFIED
-        Note over Client,API: Can proceed to add bank account
+    App->>API: Submit KYC Data
+    API->>App: KYC State: PROCESSING
+    API->>KYC: Begin Verification Process
+    
+    alt Successful Verification
+        KYC->>API: Verification Complete
+        API->>Webhook: KYC State: VERIFIED
+        Webhook->>App: Notify KYC Success
+        Note over App: Customer can now add bank account
+        App->>API: Add Bank Account
+        API->>App: Bank Account Added Successfully
+        App->>API: Begin Transactions
     else Tax Number Verification Failed
-        KYCSystem-->>API: Tax Number Verification Failed
-        API-->>Webhook: KYC State: FAILED
-        Client->>API: Update Tax Info
-        API-->>Client: KYC State: PROCESSING
-        API->>KYCSystem: Re-verify KYC
+        KYC->>API: Tax Number Verification Failed
+        API->>Webhook: KYC State: FAILED (Reason: Tax Number)
+        Webhook->>App: Notify KYC Failure
+        App->>App: Request updated tax info from user
+        App->>API: Update Tax Info
+        API->>KYC: Re-verify KYC
     else Document Verification Failed
-        KYCSystem-->>API: Document Verification Failed
-        API-->>Webhook: KYC State: FAILED
-        Client->>API: Update Document Info
-        API-->>Client: KYC State: PROCESSING
-        API->>KYCSystem: Re-verify KYC
+        KYC->>API: Document Verification Failed
+        API->>Webhook: KYC State: FAILED (Reason: Document)
+        Webhook->>App: Notify KYC Failure
+        App->>App: Request updated document from user
+        App->>API: Update Document Info
+        API->>KYC: Re-verify KYC
     end
-
-    %% Final Success
-    Client->>API: Add Bank Account
-    API-->>Client: Bank Account Added
 ```
 
-## Integration Steps
+## Step-by-Step Integration Guide
 
-### 1. Create Customer
+### Step 1: Create a Customer Profile
 
-First, create a customer using the [Create Customer](/api-reference/endpoint/customer/create) endpoint.
+First, register your customer in the system. This creates a unique customer ID that will be used throughout the KYC process.
 
-```javascript
-POST /customer/create
-{
-  "full_name": "John Doe",
-  "email": "john@example.com",
-  "phone": "9910402972",
-  "country": "IND",
-  "type": "individual"
-}
-```
-
-### 2. Submit KYC Data
-
-Submit the customer's KYC information using [Add KYC Data](/api-reference/endpoint/kyc/add-kyc-data).
-
-<Warning>
-**Important**: 
-- Ensure all document images are clear and legible
-- Supported document types: AADHAAR, PASSPORT
-- All required fields must be provided
-</Warning>
-
-```javascript
-POST /kyc/add-kyc-data
-{
-  "customer_id": "customer_uuid",
-  "full_name": "John Doe",
-  "phone": "9910402972",
-  "full_address": "123 Main St, City",
-  "dob": "01-01-1990",
-  "tax_number": "ABCDE1234F",
-  "document_type": "AADHAAR",
-  "document_front_image_url": "https://...",
-  "document_back_image_url": "https://...",
-  "document_details": {
-    "document_number": "123456789012"
+<Tabs>
+  <Tab title="API Request">
+  ```javascript
+  POST /customer/create
+  {
+    "full_name": "John Doe",
+    "email": "john@example.com",
+    "phone": "9910402972",
+    "country": "IND",
+    "type": "individual"
   }
-}
-```
-
-### 3. Monitor KYC Status
-
-### Option 1: Webhook Integration (Recommended)
-Configure your [webhook endpoint](/api-reference/endpoint/webhook) to receive real-time KYC status updates:
-- PROCESSING: Initial state after submission
-- VERIFIED: KYC verification successful
-- FAILED: Verification failed with specific reason
-
-### Option 2: Status Polling
-Check customer status using [Fetch Customer](/api-reference/endpoint/customer/{customer_id}).
-
-### 4. Handle Verification Failures
-
-#### Tax Number Verification Failed
-If Tax Number verification fails, update tax information using [Update Tax Info](/api-reference/endpoint/kyc/update-tax-info):
-
-```javascript
-POST /kyc/update-tax-info
-{
-  "customer_id": "customer_uuid",
-  "tax_number": "ABCDE1234F"
-}
-```
-
-#### Document Verification Failed
-If document verification fails, update document information using [Update Document Info](/api-reference/endpoint/kyc/update-document-info):
-
-```javascript
-POST /kyc/update-document-info
-{
-  "customer_id": "customer_uuid",
-  "full_address": "Updated Address",
-  "document_type": "AADHAAR",
-  "document_front_image_url": "https://...",
-  "document_back_image_url": "https://...",
-  "document_details": {
-    "document_number": "123456789012"
+  ```
+  </Tab>
+  
+  <Tab title="Response">
+  ```json
+  {
+    "success": true,
+    "customer_id": "cus_12345abcde",
+    "status": "CREATED"
   }
-}
-```
+  ```
+  </Tab>
+</Tabs>
 
-### 5. Add Bank Account
-
-Once KYC is verified, add bank account using [Add Bank Account](/api-reference/endpoint/bank/add-account):
-
-```javascript
-POST /bank/add-account
-{
-  "customer_id": "customer_uuid",
-  "account_number": "1234567890",
-  "ifsc": "ABCD0001234"
-}
-```
-
-### 6. Begin Transactions
-
-Once the customer is KYC verified and has at least one verified bank account, they can start transacting. At this point you can:
-
-- Create payouts using the [Payout Integration Guide](/guides/payout)
+**Key Fields:**
+- `full_name`: Customer's legal name
+- `email`: Valid email address
+- `phone`: Contact number with country code
+- `country`: Country code (e.g., "IND" for India)
+- `type`: "individual" or "business"
 
 <Note>
-Ensure the customer's status is **VERIFIED** and they have at least one verified bank account before initiating transactions.
+Save the returned `customer_id` as you'll need it for all subsequent API calls.
 </Note>
 
-## Best Practices
+### Step 2: Submit KYC Information
 
-1. **Document Quality**
-   - Submit high-resolution, clear images
-   - Ensure all text is legible
-   - Include all required document parts
+Once the customer profile is created, collect and submit their KYC details.
 
-2. **Error Handling**
-   - Implement proper error handling for all API calls
-   - Store transaction IDs for tracking
-   - Log all webhook notifications
+<Warning>
+**Document Requirements:**
+- Clear, high-resolution images
+- All document text must be legible
+- Supported document types: AADHAAR, PASSPORT
+- Make sure the customer's face is clearly visible in photo ID
+</Warning>
 
-3. **Testing**
-   - Test thoroughly in sandbox environment
-   - Verify webhook integration
-   - Test both success and failure scenarios
+<Tabs>
+  <Tab title="API Request">
+  ```javascript
+  POST /kyc/add-kyc-data
+  {
+    "customer_id": "cus_12345abcde",
+    "full_name": "John Doe",
+    "phone": "9910402972",
+    "full_address": "123 Main St, City",
+    "dob": "01-01-1990",
+    "tax_number": "ABCDE1234F",
+    "document_type": "AADHAAR",
+    "document_front_image_url": "https://...",
+    "document_back_image_url": "https://...",
+    "document_details": {
+      "document_number": "123456789012"
+    }
+  }
+  ```
+  </Tab>
+  
+  <Tab title="Response">
+  ```json
+  {
+    "success": true,
+    "kyc_id": "kyc_67890fghij",
+    "status": "PROCESSING"
+  }
+  ```
+  </Tab>
+</Tabs>
 
-4. **Security**
-   - Secure storage of sensitive information
-   - Implement proper access controls
-   - Use HTTPS for all API calls
+**Key Fields:**
+- `customer_id`: ID received from Step 1
+- `full_address`: Complete residential address
+- `dob`: Date of birth (format: DD-MM-YYYY)
+- `tax_number`: PAN as applicable
+- `document_type`: Type of ID document submitted
+- `document_front_image_url` & `document_back_image_url`: Secure URLs to uploaded document images
+
+<Tip>
+For best results, use a secure file upload service to store document images and provide the URLs to our API. Never send document images as base64 strings.
+</Tip>
+
+### Step 3: Track Verification Status
+
+After submitting KYC data, our system begins the verification process, which typically takes between 5-120 minutes to complete. There are two ways to monitor this status:
 
 <Note>
-For technical support or integration assistance, contact our [support team](mailto:support@dollarpe.xyz)
+**Verification Timeframe**: Most verifications complete within 5-120 minutes. You should communicate this expected timeline to your users to set proper expectations.
+</Note>
+
+#### Option A: Webhook Integration (Recommended)
+
+Webhooks provide real-time updates about KYC status changes. Configure your webhook endpoint to receive these notifications:
+
+```javascript
+// Sample webhook payload
+{
+  "event": "kyc.status_updated",
+  "customer_id": "cus_12345abcde",
+  "kyc_id": "kyc_67890fghij",
+  "status": "VERIFIED", // or "FAILED"
+  "reason": null, // Contains failure reason if status is "FAILED"
+  "timestamp": "2025-03-12T14:30:00Z"
+}
+```
+
+#### Option B: Status Polling
+
+If webhooks aren't feasible, you can periodically check the status using the customer endpoint:
+
+<Tabs>
+  <Tab title="API Request">
+  ```javascript
+  GET /customer/{customer_id}
+  ```
+  </Tab>
+  
+  <Tab title="Response">
+  ```json
+  {
+    "customer_id": "cus_12345abcde",
+    "full_name": "John Doe",
+    "kyc_status": "PROCESSING", // Can be "PROCESSING", "VERIFIED", or "FAILED"
+    "kyc_details": {
+      "kyc_id": "kyc_67890fghij",
+      "failure_reason": null,
+      "submission_time": "2025-03-12T12:30:00Z",
+      "estimated_completion_by": "2025-03-12T14:30:00Z"
+    }
+  }
+  ```
+  </Tab>
+</Tabs>
+
+<Tip>
+If using the polling approach, we recommend checking no more frequently than once every 5 minutes to avoid API rate limits.
+</Tip>
+
+### Step 4: Handle Verification Issues
+
+If verification fails, you'll need to update the specific information that caused the failure.
+
+#### Scenario A: Tax Number Verification Failed
+
+<Tabs>
+  <Tab title="API Request">
+  ```javascript
+  POST /kyc/update-tax-info
+  {
+    "customer_id": "cus_12345abcde",
+    "tax_number": "XYZAB1234C" // Corrected tax number
+  }
+  ```
+  </Tab>
+  
+  <Tab title="Response">
+  ```json
+  {
+    "success": true,
+    "status": "PROCESSING"
+  }
+  ```
+  </Tab>
+</Tabs>
+
+#### Scenario B: Document Verification Failed
+
+<Tabs>
+  <Tab title="API Request">
+  ```javascript
+  POST /kyc/update-document-info
+  {
+    "customer_id": "cus_12345abcde",
+    "full_address": "123 Main St, Apt 4B, City", // Updated address
+    "document_type": "AADHAAR",
+    "document_front_image_url": "https://...", // New, clearer image
+    "document_back_image_url": "https://...", // New, clearer image
+    "document_details": {
+      "document_number": "123456789012"
+    }
+  }
+  ```
+  </Tab>
+  
+  <Tab title="Response">
+  ```json
+  {
+    "success": true,
+    "status": "PROCESSING"
+  }
+  ```
+  </Tab>
+</Tabs>
+
+<Tip>
+Common verification failures include:
+- Blurry or illegible document images
+- Mismatched name between documents
+- Incorrect tax number format
+- Expired identification documents
+</Tip>
+
+### Step 5: Add Bank Account Details
+
+Once KYC verification is successful, you can add the customer's bank account:
+
+<Tabs>
+  <Tab title="API Request">
+  ```javascript
+  POST /bank/add-account
+  {
+    "customer_id": "cus_12345abcde",
+    "account_number": "1234567890",
+    "ifsc": "ABCD0001234", // Bank identifier code
+    "account_type": "savings", // "savings" or "current"
+    "account_holder_name": "John Doe"
+  }
+  ```
+  </Tab>
+  
+  <Tab title="Response">
+  ```json
+  {
+    "success": true,
+    "bank_account_id": "ba_456789klmno",
+    "status": "VERIFIED"
+  }
+  ```
+  </Tab>
+</Tabs>
+
+<Note>
+For Indian users, IFSC code is required. For international users, refer to [international bank requirements](/guides/international-banking).
+</Note>
+
+### Step 6: Ready for Transactions
+
+Once KYC is verified and bank details are added, the customer can start transacting. At this point, you can:
+
+- Process payments using our [Payment API](/guides/payment)
+- Create payouts using the [Payout Integration Guide](/guides/payout)
+
+## Testing Your Integration
+
+### Sandbox Environment
+
+Before going live, test your integration thoroughly in our sandbox environment:
+
+1. Use the base URL: `https://sandbox-api.dollarpe.xyz`
+2. Create test customers on sandbox
+3. Test both successful and failed verification scenarios
+
+## Common Issues & Solutions
+
+<Accordion title="Images Not Uploading Properly">
+Ensure you're using HTTPS URLs from a reliable file storage service. Image files should be JPG or PNG format, under 5MB, with minimum resolution of 300 DPI.
+</Accordion>
+
+<Accordion title="Webhook Not Receiving Updates">
+Check your webhook URL configuration and ensure your server is properly acknowledging webhook events with a 200 OK response.
+</Accordion>
+
+<Accordion title="Verification Taking Too Long">
+Most verifications complete within 5-120 minutes. If it's taking longer, check the status via API polling. For delays exceeding 3 hours, contact [support team](mailto:support@dollarpe.xyz).
+</Accordion>
+
+<Accordion title="API Connection Issues">
+Ensure you're using the correct base URL and your authentication headers are properly set up. Check our [authentication guide](/api-reference/overview/authentication) for details.
+</Accordion>
+
+## Best Practices for Smooth KYC
+
+1. **Provide Clear Instructions to Users**
+   - Explain what documents they need before starting
+   - Give guidance on image quality requirements
+   - Set expectations about the verification timeframe
+
+2. **Implement Proper Error Handling**
+   - Display user-friendly error messages
+   - Provide specific guidance on how to correct issues
+   - Keep track of transaction IDs for troubleshooting
+
+3. **Secure Document Handling**
+   - Never store sensitive document images on your servers
+   - Use encrypted connections for all data transfers
+   - Implement proper access controls for KYC data
+
+4. **Optimize for Mobile Users**
+   - Provide camera capture guidance for document photos
+   - Design mobile-friendly KYC collection forms
+   - Test the flow on multiple device types
+
+<Tip>
+Create a progress indicator for users showing where they are in the KYC process to improve user experience and reduce abandonment. Consider adding a status page where users can check their verification progress.
+</Tip>
+
+## Getting Help
+
+If you encounter any issues with your KYC integration:
+
+- Check our [API documentation](/api-reference) for detailed endpoint information
+- Visit the [Troubleshooting Guide](/guides/troubleshooting) for common solutions
+- Contact our [support team](mailto:support@dollarpe.xyz) with your customer_id and transaction logs
+
+<Note>
+Our support team is available 24/7 to help with integration issues. For urgent matters, use the in-app chat or call our technical support hotline.
 </Note>

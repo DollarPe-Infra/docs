@@ -1,14 +1,26 @@
 ---
 title: "Stablecoins and Blockchains"
+icon: "circle-dollar"
+iconType: "solid"
 ---
 
 <Highlight>
   # Stablecoins and Blockchains
 </Highlight>
 
+## Understanding Stablecoins and Blockchain Support
+
+DollarPe supports multiple stablecoins across various blockchain networks to provide you with flexibility and optimal transaction costs. This guide explains which combinations are supported and best practices for using them in your integration.
+
 <Warning>
-Deposits sent to unsupported asset / blockchain pairs or sent to addresses that do not match the expected pair will be lost. Please review the supported blockchains list carefully.
+**CRITICAL SECURITY NOTICE**: 
+- Deposits sent to unsupported asset/blockchain pairs will be permanently lost
+- Always verify the blockchain network before sending any funds
+- Double-check wallet addresses to ensure they match the expected asset/network pair
+- Funds sent to incorrect addresses or networks CANNOT be recovered
 </Warning>
+
+## Supported Stablecoins and Blockchains
 
 We support the following **stablecoins** on these blockchains:
 
@@ -16,3 +28,7 @@ We support the following **stablecoins** on these blockchains:
 |:---------|:---:|:-------:|:--------:|:----:|:------:|:----------------:|
 | **USDT** | ✅  |   ✅    |    ✅    |  ✅  |   ✅   |       ✅        |
 | **USDC** | ✅  |   ✅    |    ✅    |  ✅  |   ✅   |       ✅        |
+
+<Note>
+The Sepolia network is only available in our Sandbox environment for testing purposes. Do not use it for production transactions.
+</Note>
