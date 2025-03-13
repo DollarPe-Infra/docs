@@ -26,7 +26,7 @@
                     "type": "string",
                     "format": "uri",
                     "description": "The HTTPS URL where webhook events will be sent",
-                    "example": "https://your-domain.com/webhook/dollarpe"
+                    "example": "www.testwh1fromapi.com/w1"
                   }
                 }
               }
@@ -50,7 +50,8 @@
                       "example": "Success"
                     },
                     "data": {
-                      "type": "object"
+                      "type": "string",
+                      "example": "www.testwh1fromapi.com/w1"
                     }
                   }
                 }
