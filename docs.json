@@ -40,6 +40,12 @@
               "guides/support/stablecoins_and_blockchains",
               "guides/support/fiatMethods"
             ]
+          },
+          {
+            "group": "FAQ",
+            "pages": [
+              "guides/faq"
+            ]
           }
         ]
       },

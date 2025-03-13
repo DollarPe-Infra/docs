@@ -350,11 +350,10 @@ Once KYC verification is successful, you can add the customer's bank account:
   ```javascript
   POST /bank/add-account
   {
-    "customer_id": "cus_12345abcde",
-    "account_number": "1234567890",
-    "ifsc": "ABCD0001234", // Bank identifier code
-    "account_type": "savings", // "savings" or "current"
-    "account_holder_name": "John Doe"
+    "customer_id": "c2cf861b-342b-4318-a90e-85cd0312e82f",
+    "account_number": "7627389201",
+    "ifsc": "SBI0001829IU",
+    "vpa": "abc@okbank"
   }
   ```
   </Tab>
@@ -371,8 +370,7 @@ Once KYC verification is successful, you can add the customer's bank account:
 </Tabs>
 
 <Note>
-For Indian users, IFSC code is required. For international users, refer to [international bank requirements](/guides/international-banking).
-</Note>
+For Indian users, IFSC code is required.
 
 ### Step 6: Ready for Transactions
 
@@ -388,7 +386,7 @@ Once KYC is verified and bank details are added, the customer can start transact
 
 Before going live, test your integration thoroughly in our sandbox environment:
 
-1. Use the base URL: `https://sandbox-api.dollarpe.xyz`
+1. Use the base URL: `https://sandbox.dollarpe.xyz`
 2. Create test customers on sandbox
 3. Test both successful and failed verification scenarios
 
@@ -409,32 +407,6 @@ Most verifications complete within 5-120 minutes. If it's taking longer, check t
 <Accordion title="API Connection Issues">
 Ensure you're using the correct base URL and your authentication headers are properly set up. Check our [authentication guide](/api-reference/overview/authentication) for details.
 </Accordion>
-
-## Best Practices for Smooth KYC
-
-1. **Provide Clear Instructions to Users**
-   - Explain what documents they need before starting
-   - Give guidance on image quality requirements
-   - Set expectations about the verification timeframe
-
-2. **Implement Proper Error Handling**
-   - Display user-friendly error messages
-   - Provide specific guidance on how to correct issues
-   - Keep track of transaction IDs for troubleshooting
-
-3. **Secure Document Handling**
-   - Never store sensitive document images on your servers
-   - Use encrypted connections for all data transfers
-   - Implement proper access controls for KYC data
-
-4. **Optimize for Mobile Users**
-   - Provide camera capture guidance for document photos
-   - Design mobile-friendly KYC collection forms
-   - Test the flow on multiple device types
-
-<Tip>
-Create a progress indicator for users showing where they are in the KYC process to improve user experience and reduce abandonment. Consider adding a status page where users can check their verification progress.
-</Tip>
 
 ## Getting Help
 
