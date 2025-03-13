@@ -139,8 +139,8 @@
     "global": {}
   },
   "logo": {
-    "dark": "/logo/light.png",
-    "light": "/logo/dark.png"
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png"
   },
   "navbar": {
     "links": [
