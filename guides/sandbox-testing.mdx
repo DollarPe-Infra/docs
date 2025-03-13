@@ -347,7 +347,7 @@ const configureWebhook = async () => {
   
   const headers = generateHeaders(config.apiKey, config.apiSecret, requestBody);
   
-  const response = await fetch(`${config.baseUrl}/cms/api/v1/webhook/url`, {
+  const response = await fetch(`${config.baseUrl}/org/api/v1/organizations/api-webhooks`, {
     method: 'POST',
     headers: headers,
     body: JSON.stringify(requestBody)

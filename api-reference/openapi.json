@@ -2609,7 +2609,7 @@
         }
       }
     },
-    "/webhook/url": {
+    "/organizations/api-webhooks": {
       "post": {
         "tags": [
           "Webhook"
@@ -2618,7 +2618,7 @@
         "description": "Configure the webhook URL for receiving transaction status updates",
         "servers": [
           {
-            "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+            "url": "https://sandbox.dollarpe.xyz/org/api/v1",
             "description": "Webhook API Base URL"
           }
         ],
@@ -2629,10 +2629,10 @@
               "schema": {
                 "type": "object",
                 "required": [
-                  "url"
+                  "webhook_url"
                 ],
                 "properties": {
-                  "url": {
+                  "webhook_url": {
                     "type": "string",
                     "format": "uri",
                     "description": "The HTTPS URL where webhook events will be sent",

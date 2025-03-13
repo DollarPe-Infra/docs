@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const allEndpointServices = ["payout", "customer", "kyc", "bank", "webhook"];
+const allEndpointServices = ["payout", "customer", "kyc", "bank", "organizations"];
 const openApiPath = path.join(__dirname, 'openapi.json');
 const baseDir = path.join(__dirname, 'endpoint');
 

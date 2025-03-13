@@ -115,7 +115,7 @@
               {
                 "group": "Configure Webhook",
                 "pages": [
-                  "api-reference/endpoint/webhook/url"
+                  "api-reference/endpoint/organizations/api-webhooks"
                 ]
               }
             ]
