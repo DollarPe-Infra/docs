@@ -23,14 +23,22 @@
             "group": "Getting Started",
             "pages": [
               "guides/overview",
+              "guides/best-practice",
+              "guides/integration-checklist"
+            ]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
               "guides/kyc",
               "guides/payout"
             ]
           },
           {
-            "group": "Testing & Development",
+            "group": "Development & Testing",
             "pages": [
-              "guides/sandbox-testing"
+              "guides/sandbox-testing",
+              "guides/error-handling"
             ]
           },
           {
@@ -42,7 +50,7 @@
             ]
           },
           {
-            "group": "FAQ",
+            "group": "Resources",
             "pages": [
               "guides/faq"
             ]
@@ -56,7 +64,10 @@
             "group": "Overview",
             "pages": [
               "api-reference/overview/introduction",
-              "api-reference/overview/authentication"
+              "api-reference/overview/authentication",
+              "api-reference/overview/webhooks",
+              "api-reference/overview/status-reference"
+              
             ]
           },
           {
@@ -149,10 +160,7 @@
   },
   "footer": {
     "socials": {
-      "telegram": "https://t.me/joinchat/AAAAAEH0-401NjEx",
-      "x": "https://x.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify",
-      "github": "https://github.com/mintlify"
+      "website": "https://dollarpe.xyz"
     }
   }
 }

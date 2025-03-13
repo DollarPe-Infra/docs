@@ -1,0 +1,106 @@
+---
+title: "Integration Checklist"
+icon: "ballot-check"
+iconType: "solid"
+---
+Before going live with your integration, ensure you've completed all the following checklists. Each section covers critical aspects of the integration process.
+
+### 1. Customer and KYC Verification
+
+<Accordion title="Customer and KYC Verification">
+#### Account Setup
+- [ ] Create and verify customer accounts
+- [ ] Submit complete KYC information with all required fields
+- [ ] Test successful KYC verification flow
+- [ ] Test KYC verification failure scenarios
+
+#### Error Handling & Updates
+- [ ] Implement proper error handling for KYC rejections
+- [ ] Update failed KYC information and resubmit
+
+#### Bank Account Verification
+- [ ] Add and verify bank account details
+- [ ] Ensure bank account details match KYC information
+</Accordion>
+
+### 2. Critical Payout Requirements
+
+<Accordion title="Payout Security Requirements">
+#### Wallet Security
+- [ ] Send funds ONLY from whitelisted wallet addresses
+- [ ] Implement strict validation checks before sending crypto
+- [ ] Double-check asset and network selection matches quotation
+
+#### Transaction Management
+- [ ] Send EXACTLY the amount specified in quotation
+- [ ] Complete transfers BEFORE quotation expiry_time
+- [ ] Verify blockchain transaction confirmation
+- [ ] Use correct transaction hash for payouts
+
+#### Monitoring & Timing
+- [ ] Create new quotations for expired ones
+- [ ] Implement comprehensive transaction monitoring
+- [ ] Set up failure alerts
+- [ ] Establish delayed transaction handling process (>24h)
+</Accordion>
+
+### 3. Testing & Verification
+
+<Accordion title="Payout Flow Testing">
+#### Basic Testing
+- [ ] Fetch current exchange rates
+- [ ] Create quotations (various amounts/currencies)
+- [ ] Test quotation expiry handling
+- [ ] Send test cryptocurrency (sandbox networks)
+
+#### Advanced Testing
+- [ ] Initiate payouts with transaction details
+- [ ] Monitor all possible transaction states
+- [ ] Verify fee calculations and display
+- [ ] Test failure scenarios and recovery
+</Accordion>
+
+### 4. Webhook Integration
+
+<Accordion title="Webhook Setup & Testing">
+#### Configuration
+- [ ] Configure webhook URL
+- [ ] Implement webhook signature verification
+- [ ] Set up webhook monitoring
+
+#### Testing
+- [ ] Verify KYC status update webhooks
+- [ ] Verify transaction status update webhooks
+- [ ] Test error handling and retries
+- [ ] Implement idempotent processing
+</Accordion>
+
+### 5. Error Handling
+
+<Accordion title="Error Management">
+#### Technical Testing
+- [ ] Test API authentication failures
+- [ ] Test input validation
+- [ ] Test rate limit handling
+- [ ] Test timeout scenarios
+
+#### User Experience
+- [ ] Implement user-friendly error messages
+- [ ] Display proper error guidance
+- [ ] Maintain detailed transaction logs
+</Accordion>
+
+### 6. Production Deployment
+
+<Accordion title="Production Readiness">
+#### Setup
+- [ ] Request production API credentials
+- [ ] Update configuration for production
+- [ ] Remove test/sandbox code
+
+#### Safety Measures
+- [ ] Implement production logging
+- [ ] Configure critical error alerts
+- [ ] Conduct security review
+- [ ] Test with small amounts first
+</Accordion>

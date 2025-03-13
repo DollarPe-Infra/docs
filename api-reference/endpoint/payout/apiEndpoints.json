@@ -698,10 +698,6 @@
                           }
                         }
                       },
-                      "memo": {
-                        "type": "string",
-                        "example": "123456"
-                      },
                       "wallet_address": {
                         "type": "string",
                         "example": "0x2EAf174Bf1CD624eD63e3C8c74Dd66B66e5cb273"
@@ -839,21 +835,21 @@
                         "format": "uuid",
                         "example": "08441dd3-8cc0-405c-932b-7fdbc8894f66"
                       },
-                      "quotation_d": {
+                      "quotation_id": {
                         "type": "string",
                         "format": "uuid",
                         "example": "08441dd3-8cc0-405c-932b-7fdbc8894f66"
                       },
-                      "customer_d": {
+                      "customer_id": {
                         "type": "string",
                         "format": "uuid",
                         "example": "dfd8db74-2fbb-46d1-9a93-b90f156e13b4"
                       },
                       "status": {
                         "type": "string",
-                        "example": "CRYPTO_RECEIVED"
+                        "example": "SUCCESS"
                       },
-                      "client_reference_d": {
+                      "client_reference_id": {
                         "type": "string",
                         "example": "testUser123"
                       },
@@ -899,6 +895,14 @@
                           }
                         }
                       },
+                      "reference_number": {
+                        "type": "string",
+                        "example": "589020123123"
+                      },
+                      "error_message": {
+                        "type": "string",
+                        "example": ""
+                      },
                       "transaction_hash": {
                         "type": "string",
                         "example": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406684d4f809ac"
@@ -918,6 +922,33 @@
                         "example": "2025-02-11T01:30:08.000Z"
                       }
                     }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
                   }
                 }
               }
@@ -1018,7 +1049,7 @@
                             },
                             "status": {
                               "type": "string",
-                              "example": "CRYPTO_RECEIVED"
+                              "example": "SUCCESS"
                             },
                             "client_reference_id": {
                               "type": "string",
@@ -1067,6 +1098,14 @@
                                   "example": 21.04
                                 }
                               }
+                            },
+                            "reference_number": {
+                              "type": "string",
+                              "example": "589020123123"
+                            },
+                            "error_message": {
+                              "type": "string",
+                              "example": ""
                             },
                             "transaction_hash": {
                               "type": "string",

@@ -4,9 +4,12 @@ openapi: 'POST /payout/initiate'
 ---
 
 <Note>
-  Make sure to use correct **[asset, network]** combinations. 
-  Refer [supported stablecoins and blockchains](/guides/support/stablecoins_and_blockchains).
+  Before initiating a payout, please review our [Payout Best Practices](/guides/best-practice) guide to ensure successful transaction processing.
 </Note>
+
 <Warning>
-  **Deposits sent to unsupported asset/blockchain pairs or incorrect addresses will be permanently lost.**
+  **Critical Warning:**
+  - Deposits to unsupported asset/blockchain pairs will be lost
+  - Deposits to incorrect addresses will be lost
+  - These losses are **permanent** and **non-recoverable**
 </Warning>

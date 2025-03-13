@@ -1,0 +1,32 @@
+---
+title: 'Best Practices'
+description: 'Comprehensive guide covering essential prerequisites and validation requirements for DollarPe API integrations, including payout processing, customer creation.'
+icon: 'shield-check'
+---
+
+## Payout Prerequisites
+
+Before initiating a payout, verify these requirements:
+
+### Quotation Validation
+- ✅ **quotation_id** validation:
+  - Must exist and be valid
+  - Must not be linked to any existing order
+  - Must not be expired
+
+### Transaction Details
+- ✅ **Organization Verification**:
+  - **customer_id** and **quotation_id** must belong to the **same organization**
+
+- ✅ **Asset Requirements**:
+  - Only use supported [stablecoins and blockchains](/guides/support/stablecoins_and_blockchains)
+  - Transaction amount must **exactly match** quotation amount
+
+- ✅ **Wallet Requirements**:
+  - **Source**: Must be sent from **whitelisted** wallet address only
+    - Wallet must be pre-approved during onboarding
+  - **Destination**: Must be sent **only** to wallet address provided in quotation response
+
+- ✅ **Transaction Validation**:
+  - Crypto transaction hash must be **unique**
+  - Hash must not be linked to any other orders

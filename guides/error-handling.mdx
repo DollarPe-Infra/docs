@@ -1,0 +1,45 @@
+---
+title: 'Error Handling'
+description: 'Guide to handling errors in DollarPe API'
+icon: 'circle-exclamation'
+---
+
+## Error Response Format
+
+<Tabs>
+  <Tab title = "400">
+```json
+{
+  "status": false,
+  "message": "Bad Request",
+  "errors": {
+      "field_name": [
+          "Error message"
+      ]
+  },
+  "data": null
+}
+```
+</Tab>
+  <Tab title = "500">
+  ```json
+{
+    "success": false,
+    "message": "Internal Server Error",
+    "errors": "Unexpected error occurred. Please try again later.",
+    "data": null
+}
+```
+  </Tab>
+</Tabs>
+
+## Common Error Codes
+
+### Authentication Errors (4xx)
+- `401_UNAUTHORIZED`: Invalid or missing API credentials
+
+### Validation Errors (4xx)
+- `400_BAD_REQUEST`: Invalid request parameters
+
+### System Errors (5xx)
+- `500_INTERNAL_ERROR`: Unexpected server error
