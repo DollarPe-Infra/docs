@@ -118,13 +118,13 @@ Below are examples in various programming languages to generate the required hea
     import base64
     import hashlib
 
-    def generate_headers(api_key, api_secret, body=None):
+    def generate_headers(api_key, api_secret, body={}):
         """
         Generates authentication headers for API requests.
 
         :param api_key: Your API key.
         :param api_secret: Your API secret.
-        :param body: The request body (default is None).
+        :param body: The request body (default is {}).
         :return: A dictionary containing the authentication headers.
         """
         # Get current timestamp
