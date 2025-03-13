@@ -490,10 +490,6 @@ mode: "custom"
         # Generate authentication headers
         def generate_headers(api_key, api_secret, body=None):
             timestamp = int(time.time())
-            
-            if body is None:
-                body = {}
-                
             sorted_body = json.dumps(body, sort_keys=True)
             message = f"{api_key}|{timestamp}|{sorted_body}"
             

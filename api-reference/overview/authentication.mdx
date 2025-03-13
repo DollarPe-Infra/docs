@@ -131,8 +131,6 @@ Below are examples in various programming languages to generate the required hea
         timestamp = int(time.time())
 
         # Sort and stringify the body
-        if body is None:
-            body = {}
         sorted_body = json.dumps(body, sort_keys=True)
 
         # Create message string
