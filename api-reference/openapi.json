@@ -1691,135 +1691,6 @@
         }
       }
     },
-    "/kyc/get-kyc-link/{customer_id}": {
-      "get": {
-        "tags": [
-          "KYC"
-        ],
-        "x-title": "Get KYC Link",
-        "description": "Get the KYC verification link for a customer",
-        "servers": [
-          {
-            "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
-            "description": "KYC API Base URL"
-          }
-        ],
-        "parameters": [
-          {
-            "name": "customer_id",
-            "in": "path",
-            "required": true,
-            "description": "Customer's unique identifier",
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "example": "550e8400-e29b-41d4-a716-446655440000"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "KYC link fetched successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "boolean",
-                      "example": true
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Success"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "format": "uuid",
-                          "example": "550e8400-e29b-41d4-a716-446655440000"
-                        },
-                        "url": {
-                          "type": "string",
-                          "format": "uri",
-                          "example": "https://kyc.verification.com/customer/550e8400"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "boolean",
-                      "example": false
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Bad Request"
-                    },
-                    "errors": {
-                      "type": "object",
-                      "properties": {
-                        "customer_id": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "example": [
-                            "customer_id is invalid"
-                          ]
-                        }
-                      }
-                    },
-                    "data": {
-                      "type": "null"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": false
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Internal Server Error"
-                    },
-                    "errors": {
-                      "type": "string",
-                      "example": "Unexpected error occurred. Please try again later."
-                    },
-                    "data": {
-                      "type": "null"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/kyc/add-kyc-data": {
       "post": {
         "tags": [
@@ -2636,7 +2507,7 @@
                     "type": "string",
                     "format": "uri",
                     "description": "The HTTPS URL where webhook events will be sent",
-                    "example": "https://your-domain.com/webhook/dollarpe"
+                    "example": "www.testwh1fromapi.com/w1"
                   }
                 }
               }
@@ -2660,7 +2531,8 @@
                       "example": "Success"
                     },
                     "data": {
-                      "type": "object"
+                      "type": "string",
+                      "example": "www.testwh1fromapi.com/w1"
                     }
                   }
                 }

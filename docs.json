@@ -67,7 +67,6 @@
               {
                 "group": "KYC",
                 "pages": [
-                  "api-reference/endpoint/kyc/get-kyc-link-{customer_id}",
                   "api-reference/endpoint/kyc/add-kyc-data",
                   "api-reference/endpoint/kyc/update-tax-info",
                   "api-reference/endpoint/kyc/update-document-info"
