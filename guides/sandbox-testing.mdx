@@ -200,11 +200,10 @@ Once KYC is verified, add test bank accounts:
 // Example: Add a test bank account
 const addTestBankAccount = async (customerId) => {
   const requestBody = {
-    "customer_id": customerId,
-    "account_number": "1234567890",
-    "ifsc": "SBIN0000001",
-    "account_type": "savings",
-    "account_holder_name": "Test User"
+    "customer_id": "c2cf861b-342b-4318-a90e-85cd0312e82f",
+    "account_number": "7627389201",
+    "ifsc": "SBI0001829IU",
+    "vpa": "abc@okbank"
   };
   
   const headers = generateHeaders(config.apiKey, config.apiSecret, requestBody);
