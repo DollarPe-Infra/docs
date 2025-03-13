@@ -3,73 +3,107 @@ title: "DollarPe API Platform"
 mode: "custom"
 ---
 
-<div className="hero-section" style={{
-  background: "var(--hero-bg)",
-  padding: "80px 0",
-  textAlign: "center",
-  borderBottom: "1px solid var(--border-color)"
-}}>
-  <div style={{
-    maxWidth: "1200px",
-    margin: "0 auto",
-    padding: "0 24px"
-  }}>
-    <div style={{
-      marginBottom: "32px",
-      display: "flex",
-      justifyContent: "center"
-    }}>
-      <h1 style={{
-        fontSize: "48px",
-        fontWeight: "700",
-        color: "var(--text-color)"
-      }}>
-        Build With <span style={{ color: "#24cb71", fontWeight: "800" }}>DollarPe</span>
+<div
+  className="hero-section"
+  style={{
+    background: "var(--hero-bg)",
+    padding: "100px 0",
+    textAlign: "center",
+    borderBottom: "1px solid var(--border-color)",
+    position: "relative",
+    overflow: "hidden",
+  }}
+>
+  <div
+    style={{
+      maxWidth: "1200px",
+      margin: "0 auto",
+      padding: "0 24px",
+      position: "relative",
+      zIndex: "1",
+    }}
+  >
+    <div
+      style={{
+        marginBottom: "32px",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <h1
+        style={{
+          fontSize: "56px",
+          fontWeight: "800",
+          color: "var(--text-color)",
+          marginBottom: "24px",
+        }}
+      >
+        Build With{" "}
+        <span style={{ color: "#24cb71", fontWeight: "800" }}>DollarPe</span>
       </h1>
     </div>
-    
-    <p style={{
-      fontSize: "20px",
-      lineHeight: "1.6",
-      color: "var(--text-secondary)",
-      maxWidth: "800px",
-      margin: "0 auto 40px"
-    }}>
-      Seamlessly integrate cryptocurrency-to-fiat payouts into your platform with our comprehensive API suite. Built for developers, designed for scale.
+
+    <p
+      style={{
+        fontSize: "22px",
+        lineHeight: "1.6",
+        color: "#64748b",
+        maxWidth: "800px",
+        margin: "0 auto 48px",
+        fontWeight: "500",
+      }}
+    >
+      Seamlessly integrate cryptocurrency-to-fiat payouts into your platform
+      with our comprehensive API suite. Built for developers, designed for
+      scale.
     </p>
-    
-    <div style={{
-      display: "flex",
-      justifyContent: "center",
-      gap: "16px",
-      flexWrap: "wrap"
-    }}>
-      <a href="/guides/overview" style={{
-        display: "inline-block",
-        background: "#24cb71",
-        color: "white",
-        padding: "12px 24px",
-        borderRadius: "6px",
-        fontWeight: "600",
-        textDecoration: "none",
-        transition: "all 0.2s ease"
-      }}>
-        Get Started →
+
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: "16px",
+        flexWrap: "wrap",
+      }}
+    >
+      <a
+        href="/guides/overview"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          background: "#24cb71",
+          color: "white",
+          padding: "16px 32px",
+          borderRadius: "8px",
+          fontWeight: "600",
+          fontSize: "18px",
+          textDecoration: "none",
+          transition: "all 0.2s ease",
+          boxShadow: "0 4px 6px rgba(37, 203, 113, 0.25)",
+        }}
+      >
+        Get Started <span style={{ marginLeft: "8px" }}>→</span>
       </a>
-      <a href="/api-reference/overview/authentication" style={{
-        display: "inline-block",
-        background: "transparent",
-        color: "#24cb71",
-        border: "1px solid #24cb71",
-        padding: "12px 24px",
-        borderRadius: "6px",
-        fontWeight: "600",
-        textDecoration: "none",
-        transition: "all 0.2s ease"
-      }}>
+      <a
+        href="/api-reference/overview/authentication"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          background: "transparent",
+          color: "#24cb71",
+          border: "2px solid #24cb71",
+          padding: "16px 32px",
+          borderRadius: "8px",
+          fontWeight: "600",
+          fontSize: "18px",
+          textDecoration: "none",
+          transition: "all 0.2s ease",
+        }}
+      >
         API Reference
       </a>
     </div>
+
   </div>
 </div>
 
@@ -77,49 +111,44 @@ mode: "custom"
   :root {
     --hero-bg: transparent;
     --text-color: #1e293b;
-    --text-secondary: #4b5563;
-    --border-color: rgba(226, 232, 240, 0.3);
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --card-bg: white;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
-  
+
   [data-theme="dark"] {
     --hero-bg: transparent;
     --text-color: #f1f5f9;
-    --text-secondary: #cbd5e1;
-    --border-color: rgba(51, 65, 85, 0.3);
+    --text-secondary: #e2e8f0;
+    --border-color: #334155;
+    --card-bg: #1a1f2c;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
   }
-  
+
   .hero-section a:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
   }
-  
-  /* Make all cards in the page dark-mode compatible */
-  [data-theme="dark"] div[style*="background: white"] {
-    background: #1a1f2c !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1) !important;
-  }
-  
-  [data-theme="dark"] h2[style*="color: #1e293b"],
-  [data-theme="dark"] h3[style*="color: #1e293b"] {
-    color: #f1f5f9 !important;
-  }
-  
-  [data-theme="dark"] p[style*="color: #64748b"] {
-    color: #94a3b8 !important;
+
+  .feature-card:hover,
+  .resource-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
 `}</style>
 
 <div style={{
   maxWidth: "1200px",
   margin: "0 auto",
-  padding: "60px 24px 0"
+  padding: "80px 24px"
 }}>
-  <div style={{marginBottom: "60px"}}>
- <h2 style={{
-      fontSize: "32px",
+  <div style={{marginBottom: "80px"}}>
+    <h2 style={{
+      fontSize: "36px",
       fontWeight: "700",
-      marginBottom: "24px",
-      color: "var(--text-color)"
+      marginBottom: "48px",
+      color: "var(--text-color)",
+      textAlign: "center"
     }}>
       Why Choose DollarPe?
     </h2>
@@ -174,484 +203,497 @@ mode: "custom"
         </p>
       </div>
     </div>
+
   </div>
 
-  
-  <div style={{marginBottom: "60px"}}>
-    <h2 style={{
-      fontSize: "32px",
-      fontWeight: "700",
-      marginBottom: "24px",
-      color: "var(--text-color)"
-    }}>
+  <div style={{ marginBottom: "80px" }}>
+    <h2
+      style={{
+        fontSize: "36px",
+        fontWeight: "700",
+        marginBottom: "48px",
+        color: "var(--text-color)",
+        textAlign: "center",
+      }}
+    >
       Start Building Today
     </h2>
-    
+
     <CardGroup cols={2}>
       <Card
         title="Quick Start Guide"
         icon="rocket"
         href="/guides/overview"
+        iconType="duotone"
       >
-        Get up and running with DollarPe APIs in minutes. Follow our step-by-step integration guide.
+        Get up and running with DollarPe APIs in minutes. Follow our step-by-step
+        integration guide.
       </Card>
-      
+
       <Card
         title="API Reference"
         icon="code"
         href="/api-reference/overview/authentication"
+        iconType="duotone"
       >
-        Explore our comprehensive API documentation with examples in multiple programming languages.
+        Explore our comprehensive API documentation with examples in multiple
+        programming languages.
       </Card>
-      
+
       <Card
         title="KYC Integration"
         icon="id-card"
         href="/guides/kyc"
+        iconType="duotone"
       >
-        Learn how to implement our KYC verification flow for regulatory compliance.
+        Learn how to implement our KYC verification flow for regulatory
+        compliance.
       </Card>
-      
+
       <Card
         title="Payout Integration"
         icon="money-bill-transfer"
         href="/guides/payout"
+        iconType="duotone"
       >
         Enable cryptocurrency-to-fiat payouts with our secure and reliable API.
       </Card>
-      
+
       <Card
         title="Supported Cryptocurrencies"
         icon="circle-dollar"
         href="/guides/support/stablecoins_and_blockchains"
+        iconType="duotone"
       >
-        Explore the stablecoins and blockchain networks we support for transactions.
+        Explore the stablecoins and blockchain networks we support for
+        transactions.
       </Card>
-      
+
       <Card
         title="Fiat Payment Methods"
         icon="money-bill-transfer"
         href="/guides/support/fiatMethods"
+        iconType="duotone"
       >
         Discover the various fiat payment options available for your customers.
       </Card>
+
     </CardGroup>
+
   </div>
-  
-  <div style={{marginBottom: "60px"}}>
-    <h2 style={{
-      fontSize: "32px",
-      fontWeight: "700",
-      marginBottom: "24px",
-      color: "var(--text-color)"
-    }}>
-      Integration Process
+
+  <div style={{ marginBottom: "80px" }}>
+    <h2
+      style={{
+        fontSize: "36px",
+        fontWeight: "700",
+        marginBottom: "48px",
+        color: "var(--text-color)",
+        textAlign: "center",
+      }}
+    >
+      Integration Steps
     </h2>
-    
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: "16px"
-    }}>
-      <div style={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: "16px",
-        background: "white",
-        borderRadius: "8px",
-        padding: "24px",
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
-      }}>
-        <div style={{
-          background: "#24cb71",
-          color: "white",
-          width: "32px",
-          height: "32px",
-          borderRadius: "50%",
+
+    <div
+      style={{
+        background: "var(--card-bg)",
+        borderRadius: "12px",
+        padding: "40px",
+        boxShadow: "var(--card-shadow)",
+        border: "1px solid var(--border-color)",
+      }}
+    >
+      <div
+        style={{
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: "700",
-          flexShrink: "0"
-        }}>
-          1
-        </div>
-        <div>
-          <h3 style={{fontSize: "18px", fontWeight: "700", marginBottom: "8px", color: "#1e293b"}}>
-            Set Up Authentication
-          </h3>
-          <p style={{fontSize: "16px", color: "#64748b", lineHeight: "1.6", marginBottom: "12px"}}>
-            Obtain your API credentials and implement our secure authentication system.
-          </p>
-          <a href="/api-reference/overview/authentication" style={{
-            color: "#24cb71",
-            fontWeight: "600",
-            textDecoration: "none",
-            fontSize: "14px"
-          }}>
-            Learn more →
-          </a>
-        </div>
-      </div>
-      
-      <div style={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: "16px",
-        background: "white",
-        borderRadius: "8px",
-        padding: "24px",
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
-      }}>
-        <div style={{
-          background: "#24cb71",
-          color: "white",
-          width: "32px",
-          height: "32px",
-          borderRadius: "50%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: "700",
-          flexShrink: "0"
-        }}>
-          2
-        </div>
-        <div>
-          <h3 style={{fontSize: "18px", fontWeight: "700", marginBottom: "8px", color: "#1e293b"}}>
-            Implement KYC Flow
-          </h3>
-          <p style={{fontSize: "16px", color: "#64748b", lineHeight: "1.6", marginBottom: "12px"}}>
-            Integrate our KYC verification process to ensure regulatory compliance.
-          </p>
-          <a href="/guides/kyc" style={{
-            color: "#24cb71",
-            fontWeight: "600",
-            textDecoration: "none",
-            fontSize: "14px"
-          }}>
-            Learn more →
-          </a>
-        </div>
-      </div>
-      
-      <div style={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: "16px",
-        background: "white",
-        borderRadius: "8px",
-        padding: "24px",
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
-      }}>
-        <div style={{
-          background: "#24cb71",
-          color: "white",
-          width: "32px",
-          height: "32px",
-          borderRadius: "50%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: "700",
-          flexShrink: "0"
-        }}>
-          3
-        </div>
-        <div>
-          <h3 style={{fontSize: "18px", fontWeight: "700", marginBottom: "8px", color: "#1e293b"}}>
-            Connect Payout System
-          </h3>
-          <p style={{fontSize: "16px", color: "#64748b", lineHeight: "1.6", marginBottom: "12px"}}>
-            Enable cryptocurrency-to-fiat transfers to bank accounts with our payout API.
-          </p>
-          <a href="/guides/payout" style={{
-            color: "#24cb71",
-            fontWeight: "600",
-            textDecoration: "none",
-            fontSize: "14px"
-          }}>
-            Learn more →
-          </a>
-        </div>
-      </div>
-      
-      <div style={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: "16px",
-        background: "white",
-        borderRadius: "8px",
-        padding: "24px",
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
-      }}>
-        <div style={{
-          background: "#24cb71",
-          color: "white",
-          width: "32px",
-          height: "32px",
-          borderRadius: "50%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: "700",
-          flexShrink: "0"
-        }}>
-          4
-        </div>
-        <div>
-          <h3 style={{fontSize: "18px", fontWeight: "700", marginBottom: "8px", color: "#1e293b"}}>
-            Go Live
-          </h3>
-          <p style={{fontSize: "16px", color: "#64748b", lineHeight: "1.6", marginBottom: "12px"}}>
-            Test thoroughly in our sandbox environment and then transition to production.
-          </p>
-          <a href="/guides/sandbox-testing" style={{
-            color: "#24cb71",
-            fontWeight: "600",
-            textDecoration: "none",
-            fontSize: "14px"
-          }}>
-            Learn more →
-          </a>
-        </div>
+          flexDirection: "column",
+          gap: "24px",
+        }}
+      >
+        {[
+          {
+            number: "1",
+            title: "Set Up Authentication",
+            description:
+              "Obtain your API credentials and implement our secure authentication system.",
+            link: "/api-reference/overview/authentication",
+          },
+          {
+            number: "2",
+            title: "Implement KYC Flow",
+            description:
+              "Integrate our KYC verification process to ensure regulatory compliance.",
+            link: "/guides/kyc",
+          },
+          {
+            number: "3",
+            title: "Connect Payout System",
+            description:
+              "Enable cryptocurrency-to-fiat transfers to bank accounts with our payout API.",
+            link: "/guides/payout",
+          },
+          {
+            number: "4",
+            title: "Go Live",
+            description:
+              "Test thoroughly in our sandbox environment and then transition to production.",
+            link: "/guides/sandbox-testing",
+          },
+        ].map((item, index) => (
+          <div
+            key={item.title}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "24px",
+              background: "var(--card-bg)",
+              borderRadius: "12px",
+              padding: "24px",
+              boxShadow: "var(--card-shadow)",
+              border: "1px solid var(--border-color)",
+              transition: "all 0.2s ease",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "24px",
+                color: "#24cb71",
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#ecfdf5",
+                fontWeight: "700",
+                flexShrink: 0,
+              }}
+            >
+              {item.number}
+            </div>
+            <div style={{ flex: 1 }}>
+              <h3
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "700",
+                  marginBottom: "8px",
+                  color: "var(--text-color)",
+                }}
+              >
+                {item.title}
+              </h3>
+              <p
+                style={{
+                  fontSize: "16px",
+                  color: "var(--text-secondary)",
+                  lineHeight: "1.5",
+                  margin: 0,
+                }}
+              >
+                {item.description}
+              </p>
+            </div>
+            <a
+              href={item.link}
+              style={{
+                color: "#24cb71",
+                fontWeight: "600",
+                textDecoration: "none",
+                fontSize: "16px",
+                display: "inline-flex",
+                alignItems: "center",
+                flexShrink: 0,
+              }}
+            >
+              Learn more <span style={{ marginLeft: "8px" }}>→</span>
+            </a>
+          </div>
+        ))}
       </div>
     </div>
+
   </div>
-  
-  <div style={{marginBottom: "60px"}}>
+
+  <div style={{marginBottom: "80px"}}>
     <h2 style={{
-      fontSize: "32px",
+      fontSize: "36px",
       fontWeight: "700",
-      marginBottom: "24px",
-      color: "var(--text-color)"
+      marginBottom: "48px",
+      color: "var(--text-color)",
+      textAlign: "center"
     }}>
       Code Examples
     </h2>
     
-    <Tabs>
-      <Tab title="Node.js">
-        ```javascript
-        const crypto = require('crypto');
+    <div style={{
+      background: "var(--card-bg)",
+      borderRadius: "12px",
+      padding: "32px",
+      boxShadow: "var(--card-shadow)",
+      border: "1px solid var(--border-color)"
+    }}>
+      <Tabs>
+        <Tab title="Node.js">
+          ```javascript
+          const crypto = require('crypto');
 
-        // Generate authentication headers
-        const generateHeaders = (apiKey, apiSecret, body = {}) => {
-          const timestamp = Math.floor(Date.now() / 1000);
-          const sortedBody = JSON.stringify(body, Object.keys(body).sort());
-          const message = `${apiKey}|${timestamp}|${sortedBody}`;
-          
-          const signature = crypto
-            .createHmac('sha256', apiSecret)
-            .update(message)
-            .digest('base64');
-          
-          return {
-            'Content-Type': 'application/json',
-            'X-API-KEY': apiKey,
-            'X-TIMESTAMP': timestamp.toString(),
-            'X-SIGNATURE': signature
-          };
-        };
+          // Generate authentication headers
+          const generateHeaders = (apiKey, apiSecret, body = {}) => {
+            const timestamp = Math.floor(Date.now() / 1000);
+            const sortedBody = JSON.stringify(body, Object.keys(body).sort());
+            const message = `${apiKey}|${timestamp}|${sortedBody}`;
 
-        // Example: Fetch exchange rate
-        async function fetchRate() {
-          const apiKey = 'YOUR_API_KEY';
-          const apiSecret = 'YOUR_API_SECRET';
-          
-          const requestBody = {
-            asset: 'USDT',
-            network: 'BSC',
-            amount: 100
-          };
-          
-          const headers = generateHeaders(apiKey, apiSecret, requestBody);
-          
-          const response = await fetch('https://sandbox.dollarpe.xyz/cms/api/v1/payout/fetch-rate', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(requestBody)
-          });
-          
-          const data = await response.json();
-          console.log(data);
-        }
-        ```
-      </Tab>
-      
-      <Tab title="Python">
-        ```python
-        import time
-        import json
-        import hmac
-        import base64
-        import hashlib
-        import requests
+            const signature = crypto
+              .createHmac('sha256', apiSecret)
+              .update(message)
+              .digest('base64');
 
-        # Generate authentication headers
-        def generate_headers(api_key, api_secret, body={}):
-            timestamp = int(time.time())
-            sorted_body = json.dumps(body, sort_keys=True)
-            message = f"{api_key}|{timestamp}|{sorted_body}"
-            
-            signature = base64.b64encode(
-                hmac.new(
-                    api_secret.encode('utf-8'),
-                    message.encode('utf-8'),
-                    hashlib.sha256
-                ).digest()
-            ).decode('utf-8')
-            
             return {
-                'Content-Type': 'application/json',
-                'X-API-KEY': api_key,
-                'X-TIMESTAMP': str(timestamp),
-                'X-SIGNATURE': signature
-            }
+              'Content-Type': 'application/json',
+              'X-API-KEY': apiKey,
+              'X-TIMESTAMP': timestamp.toString(),
+              'X-SIGNATURE': signature
+            };
+          };
 
-        # Example: Fetch exchange rate
-        def fetch_rate():
-            api_key = 'YOUR_API_KEY'
-            api_secret = 'YOUR_API_SECRET'
-            
-            request_body = {
-                'asset': 'USDT',
-                'network': 'BSC',
-                'amount': 100
-            }
-            
-            headers = generate_headers(api_key, api_secret, request_body)
-            
-            response = requests.post(
-                'https://sandbox.dollarpe.xyz/pos/api/v1/payout/fetch-rate',
-                headers=headers,
-                json=request_body
-            )
-            
-            data = response.json()
-            print(data)
-        ```
-      </Tab>
-    </Tabs>
-  </div>
-  
-<div style={{
-    borderRadius: "8px",
-    padding: "40px",
-    color: "var(--text-color)",
-    textAlign: "center",
-    marginBottom: "60px",
-    border: "1px solid var(--border-color)"
-  }}>
-    <h2 style={{fontSize: "28px", fontWeight: "700", marginBottom: "16px", color: "var(--text-color)"}}>
-      Ready to Get Started?
-    </h2>
-    <p style={{fontSize: "18px", marginBottom: "24px", maxWidth: "800px", margin: "0 auto 24px", color: "var(--text-secondary)"}}>
-      Join the growing number of businesses using DollarPe's API platform to offer seamless cryptocurrency-to-fiat payouts.
-    </p>
-    <div style={{display: "flex", justifyContent: "center", gap: "16px", flexWrap: "wrap"}}>
-      <a href="/guides/overview" style={{
-        display: "inline-block",
-        background: "#24cb71",
-        color: "white",
-        padding: "12px 24px",
-        borderRadius: "6px",
-        fontWeight: "600",
-        textDecoration: "none"
-      }}>
-        Start Integration
-      </a>
-      <a href="mailto:partners@dollarpe.xyz" style={{
-        display: "inline-block",
-        background: "transparent",
-        color: "#24cb71",
-        border: "1px solid #24cb71",
-        padding: "12px 24px",
-        borderRadius: "6px",
-        fontWeight: "600",
-        textDecoration: "none"
-      }}>
-        Contact Sales
-      </a>
+          // Example: Fetch exchange rate
+          async function fetchRate() {
+            const apiKey = 'YOUR_API_KEY';
+            const apiSecret = 'YOUR_API_SECRET';
+
+            const requestBody = {
+              asset: 'USDT',
+              network: 'BSC',
+              amount: 100
+            };
+
+            const headers = generateHeaders(apiKey, apiSecret, requestBody);
+
+            const response = await fetch('https://sandbox.dollarpe.xyz/cms/api/v1/payout/fetch-rate', {
+              method: 'POST',
+              headers,
+              body: JSON.stringify(requestBody)
+            });
+
+            const data = await response.json();
+            console.log(data);
+          }
+          ```
+        </Tab>
+
+        <Tab title="Python">
+          ```python
+          import time
+          import json
+          import hmac
+          import base64
+          import hashlib
+          import requests
+
+          # Generate authentication headers
+          def generate_headers(api_key, api_secret, body={}):
+              timestamp = int(time.time())
+              sorted_body = json.dumps(body, sort_keys=True)
+              message = f"{api_key}|{timestamp}|{sorted_body}"
+
+              signature = base64.b64encode(
+                  hmac.new(
+                      api_secret.encode('utf-8'),
+                      message.encode('utf-8'),
+                      hashlib.sha256
+                  ).digest()
+              ).decode('utf-8')
+
+              return {
+                  'Content-Type': 'application/json',
+                  'X-API-KEY': api_key,
+                  'X-TIMESTAMP': str(timestamp),
+                  'X-SIGNATURE': signature
+              }
+
+          # Example: Fetch exchange rate
+          def fetch_rate():
+              api_key = 'YOUR_API_KEY'
+              api_secret = 'YOUR_API_SECRET'
+
+              request_body = {
+                  'asset': 'USDT',
+                  'network': 'BSC',
+                  'amount': 100
+              }
+
+              headers = generate_headers(api_key, api_secret, request_body)
+
+              response = requests.post(
+                  'https://sandbox.dollarpe.xyz/pos/api/v1/payout/fetch-rate',
+                  headers=headers,
+                  json=request_body
+              )
+
+              data = response.json()
+              print(data)
+          ```
+        </Tab>
+      </Tabs>
     </div>
+
   </div>
-  
-  <div style={{marginBottom: "40px"}}>
-    <h2 style={{
-      fontSize: "32px",
+
+{" "}
+
+<div
+  style={{
+    background: "var(--card-bg)",
+    borderRadius: "12px",
+    padding: "48px",
+    textAlign: "center",
+    marginBottom: "80px",
+    boxShadow: "var(--card-shadow)",
+    border: "1px solid var(--border-color)",
+  }}
+>
+  <h2
+    style={{
+      fontSize: "36px",
       fontWeight: "700",
       marginBottom: "24px",
-      color: "var(--text-color)"
+      color: "var(--text-color)",
+    }}
+  >
+    Ready to Get Started?
+  </h2>
+  <p
+    style={{
+      fontSize: "18px",
+      color: "var(--text-secondary)",
+      maxWidth: "800px",
+      margin: "0 auto 32px",
+      lineHeight: "1.7",
+    }}
+  >
+    Join the growing number of businesses using DollarPe's API platform to offer
+    seamless cryptocurrency-to-fiat payouts.
+  </p>
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      gap: "16px",
+      flexWrap: "wrap",
+    }}
+  >
+    <a
+      href="/guides/overview"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        background: "#24cb71",
+        color: "white",
+        padding: "16px 32px",
+        borderRadius: "8px",
+        fontWeight: "600",
+        fontSize: "18px",
+        textDecoration: "none",
+        transition: "all 0.2s ease",
+        boxShadow: "0 4px 6px rgba(37, 203, 113, 0.25)",
+      }}
+    >
+      Start Integration
+    </a>
+    <a
+      href="mailto:partners@dollarpe.xyz"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        background: "transparent",
+        color: "#24cb71",
+        border: "2px solid #24cb71",
+        padding: "16px 32px",
+        borderRadius: "8px",
+        fontWeight: "600",
+        fontSize: "18px",
+        textDecoration: "none",
+        transition: "all 0.2s ease",
+      }}
+    >
+      Contact Sales
+    </a>
+  </div>
+</div>
+
+  <div style={{marginBottom: "80px"}}>
+    <h2 style={{
+      fontSize: "36px",
+      fontWeight: "700",
+      marginBottom: "48px",
+      color: "var(--text-color)",
+      textAlign: "center"
     }}>
       Resources & Support
     </h2>
     
     <div style={{
       display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-      gap: "24px"
+      gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+      gap: "32px"
     }}>
-      <a href="/api-reference" style={{
-        display: "flex",
-        flexDirection: "column",
-        background: "white",
-        borderRadius: "8px",
-        padding: "24px",
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-        textDecoration: "none",
-        color: "inherit"
-      }}>
-        <h3 style={{fontSize: "18px", fontWeight: "700", marginBottom: "12px", color: "#1e293b"}}>
-          API Reference
-        </h3>
-        <p style={{fontSize: "16px", color: "#64748b", lineHeight: "1.6", flex: "1"}}>
-          Comprehensive documentation for all our API endpoints with examples.
-        </p>
-        <span style={{color: "#24cb71", fontWeight: "600", marginTop: "12px", fontSize: "14px"}}>
-          View Documentation →
-        </span>
-      </a>
-      
-      <a href="/guides" style={{
-        display: "flex",
-        flexDirection: "column",
-        background: "white",
-        borderRadius: "8px",
-        padding: "24px",
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-        textDecoration: "none",
-        color: "inherit"
-      }}>
-        <h3 style={{fontSize: "18px", fontWeight: "700", marginBottom: "12px", color: "#1e293b"}}>
-          Integration Guides
-        </h3>
-        <p style={{fontSize: "16px", color: "#64748b", lineHeight: "1.6", flex: "1"}}>
-          Step-by-step tutorials and best practices for implementing our APIs.
-        </p>
-        <span style={{color: "#24cb71", fontWeight: "600", marginTop: "12px", fontSize: "14px"}}>
-          View Guides →
-        </span>
-      </a>
-      
-      <a href="mailto:support@dollarpe.xyz" style={{
-        display: "flex",
-        flexDirection: "column",
-        background: "white",
-        borderRadius: "8px",
-        padding: "24px",
-        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-        textDecoration: "none",
-        color: "inherit"
-      }}>
-        <h3 style={{fontSize: "18px", fontWeight: "700", marginBottom: "12px", color: "#1e293b"}}>
-          Technical Support
-        </h3>
-        <p style={{fontSize: "16px", color: "#64748b", lineHeight: "1.6", flex: "1"}}>
-          Get help from our dedicated support team for any integration issues.
-        </p>
-        <span style={{color: "#24cb71", fontWeight: "600", marginTop: "12px", fontSize: "14px"}}>
-          Contact Support →
-        </span>
-      </a>
+      {[
+        {
+          title: "API Reference",
+          description: "Comprehensive documentation for all our API endpoints with examples.",
+          link: "/api-reference",
+          linkText: "View Documentation"
+        },
+        {
+          title: "Integration Guides",
+          description: "Step-by-step tutorials and best practices for implementing our APIs.",
+          link: "/guides",
+          linkText: "View Guides"
+        },
+        {
+          title: "Technical Support",
+          description: "Get help from our dedicated support team for any integration issues.",
+          link: "mailto:support@dollarpe.xyz",
+          linkText: "Contact Support"
+        }
+      ].map((item) => (
+        <div key={item.title} style={{
+          background: "var(--card-bg)",
+          borderRadius: "8px",
+          padding: "24px",
+          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+          transition: "all 0.2s ease",
+          border: "1px solid var(--border-color)"
+        }}>
+          <h3 style={{
+            fontSize: "18px",
+            fontWeight: "700",
+            marginBottom: "12px",
+            color: "var(--text-color)"
+          }}>
+            {item.title}
+          </h3>
+          <p style={{
+            fontSize: "16px",
+            color: "var(--text-secondary)",
+            lineHeight: "1.6",
+            marginBottom: "16px"
+          }}>
+            {item.description}
+          </p>
+          <a href={item.link} style={{
+            color: "#24cb71",
+            fontWeight: "600",
+            textDecoration: "none",
+            fontSize: "16px",
+            display: "inline-flex",
+            alignItems: "center"
+          }}>
+            {item.linkText} <span style={{marginLeft: "8px"}}>→</span>
+          </a>
+        </div>
+      ))}
     </div>
   </div>
 </div>
