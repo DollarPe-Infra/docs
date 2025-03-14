@@ -966,6 +966,10 @@
                           "type": "null",
                           "example": null
                         },
+                        "utr": {
+                          "type": "string",
+                          "example": "RATN0329SJDH0"
+                        },
                         "transaction_hash": {
                           "type": "string",
                           "example": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406684d4f809ac"
@@ -1172,6 +1176,10 @@
                                 "type": "null",
                                 "example": null
                               },
+                              "utr": {
+                                "type": "string",
+                                "example": "RATN0329SJDH0"
+                              },
                               "transaction_hash": {
                                 "type": "string",
                                 "example": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406684d4f809ac"
@@ -1309,7 +1317,7 @@
                     "description": "Phone number of the customer",
                     "example": "9911002211"
                   },
-                  "country": {
+                  "alpha_3_country_code": {
                     "type": "string",
                     "description": "Country code",
                     "example": "IND"
@@ -1318,11 +1326,6 @@
                     "type": "string",
                     "description": "Optional customer reference ID",
                     "example": "test123"
-                  },
-                  "type": {
-                    "type": "string",
-                    "description": "Type of customer",
-                    "example": "individual"
                   }
                 }
               }
@@ -1376,6 +1379,10 @@
                         "type": {
                           "type": "string",
                           "example": "INDIVIDUAL"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "UNVERIFIED"
                         }
                       }
                     }
@@ -1531,6 +1538,10 @@
                         "type": {
                           "type": "string",
                           "example": "INDIVIDUAL"
+                        },
+                        "failure_reason": {
+                          "type": "null",
+                          "example": null
                         }
                       }
                     }
@@ -1689,6 +1700,10 @@
                               "type": {
                                 "type": "string",
                                 "example": "INDIVIDUAL"
+                              },
+                              "failure_reason": {
+                                "type": "null",
+                                "example": null
                               }
                             }
                           }
@@ -1840,7 +1855,45 @@
                       "example": "Success"
                     },
                     "data": {
-                      "type": "object"
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "550e8400-e29b-41d4-a716-446655440000"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "UNVERIFIED"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    },
+                    "data": {
+                      "type": "null"
                     }
                   }
                 }
@@ -1905,7 +1958,45 @@
                       "example": "Success"
                     },
                     "data": {
-                      "type": "object"
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "550e8400-e29b-41d4-a716-446655440000"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "UNVERIFIED"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    },
+                    "data": {
+                      "type": "null"
                     }
                   }
                 }
@@ -2005,7 +2096,45 @@
                       "example": "Success"
                     },
                     "data": {
-                      "type": "object"
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "550e8400-e29b-41d4-a716-446655440000"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "UNVERIFIED"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    },
+                    "data": {
+                      "type": "null"
                     }
                   }
                 }

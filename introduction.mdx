@@ -470,7 +470,7 @@ mode: "custom"
 
             const headers = generateHeaders(apiKey, apiSecret, requestBody);
 
-            const response = await fetch('https://sandbox.dollarpe.xyz/cms/api/v1/payout/fetch-rate', {
+            const response = await fetch('https://sandbox.dollarpe.xyz/pos/api/v1/payout/fetch-rate', {
               method: 'POST',
               headers,
               body: JSON.stringify(requestBody)
