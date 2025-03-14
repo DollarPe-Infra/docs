@@ -282,6 +282,7 @@ After sending the funds, create a payout request with the transaction details:
       "id": "5b75096f-de8d-44b4-9230-d94e6948abb6",
       "quotation_id": "2e104290-07c8-49f1-a5ca-0d27f0078f8a",
       "customer_id": "def8b740-99f9-4cba-bc9e-99de57e927b4",
+      "status": "PROCESSING",
       "client_reference_id": "testUser123",
       "bank_id": "e75f62f0-db9e-4904-8103-d6f14f67f5dc",
       "asset": "USDT",
@@ -294,11 +295,9 @@ After sending the funds, create a payout request with the transaction details:
         "dollarpe_fees": 21.04,
         "tds_fees": 41.86
       },
-      "memo": "123456",
       "wallet_address": "0x2EAf174Bf1CD624eD63e3C8c74Dd66B66e5cb273",
       "transaction_hash": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406884d14f8108bc",
-      "created_at": "2025-03-08T07:31:24.770179Z",
-      "status": "PROCESSING"
+      "created_at": "2025-03-08T07:31:24.770179Z"
     }
   }
   ```
@@ -335,10 +334,10 @@ After initiating the payout, you need to track its status by polling the API:
     "message": "Success",
     "data": {
       "id": "08441dd3-8cc0-405c-932b-7fdbc8894f66",
-      "quotation_d": "08441dd3-8cc0-405c-932b-7fdbc8894f66",
-      "customer_d": "dfd8db74-2fbb-46d1-9a93-b90f156e13b4",
-      "status": "CRYPTO_RECEIVED",
-      "client_reference_d": "testUser123",
+      "quotation_id": "08441dd3-8cc0-405c-932b-7fdbc8894f66",
+      "customer_id": "dfd8db74-2fbb-46d1-9a93-b90f156e13b4",
+      "status": "PROCESSING",
+      "client_reference_id": "testUser123",
       "bank_id": "e75f62f0-db9e-4904-8103-d6f14f67f5dc",
       "asset": "USDT",
       "network": "POLYGON",
@@ -352,6 +351,8 @@ After initiating the payout, you need to track its status by polling the API:
       },
       "transaction_hash": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406684d4f809ac",
       "wallet_address": "0x71C7656EC7ab88b098def1B5f6d8976F",
+      "failure_reason": null, // Contains failure reason if status is "FAILED",
+      "utr": null, // Contains UTR if status is "SUCCESS",
       "created_at": "2025-02-11T01:30:08.000Z",
       "updated_at": "2025-02-11T01:30:08.000Z"
     }
@@ -366,10 +367,8 @@ If using the polling approach, we recommend checking no more frequently than onc
 
 **Possible Status Values:**
 - `PROCESSING`: Initial state, waiting for crypto confirmation
-- `CRYPTO_RECEIVED`: Cryptocurrency has been received and verified
-- `BANK_TRANSFER_INITIATED`: Fiat transfer to bank has been initiated
-- `COMPLETED`: Payout has been successfully completed
-- `FAILED`: Payout has failed for some reason
+- `SUCCESS`: Payout has been successfully completed and UTR is generated
+- `FAILED`: Payout has failed and failure_reason is updated
 
 ### Step 6: Handle Transaction Completion
 

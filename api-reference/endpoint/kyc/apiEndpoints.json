@@ -35,11 +35,11 @@
                 },
                 "full_name": {
                   "type": "string",
-                  "example": "Apoorv Goyal"
+                  "example": "John Doe"
                 },
                 "phone": {
                   "type": "string",
-                  "example": "9910402972"
+                  "example": "9911002211"
                 },
                 "full_address": {
                   "type": "string",

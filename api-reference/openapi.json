@@ -1297,17 +1297,17 @@
                   "full_name": {
                     "type": "string",
                     "description": "Full name of the customer",
-                    "example": "Apoorv Goyal"
+                    "example": "John Doe"
                   },
                   "email": {
                     "type": "string",
                     "description": "Email address of the customer",
-                    "example": "apoorv@dollarpe.com"
+                    "example": "john@example.com"
                   },
                   "phone": {
                     "type": "string",
                     "description": "Phone number of the customer",
-                    "example": "9910402972"
+                    "example": "9911002211"
                   },
                   "country": {
                     "type": "string",
@@ -1768,11 +1768,11 @@
                   },
                   "full_name": {
                     "type": "string",
-                    "example": "Apoorv Goyal"
+                    "example": "John Doe"
                   },
                   "phone": {
                     "type": "string",
-                    "example": "9910402972"
+                    "example": "9911002211"
                   },
                   "full_address": {
                     "type": "string",
