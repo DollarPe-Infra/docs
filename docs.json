@@ -144,12 +144,6 @@
           "sdks/python",
           "sdks/nodejs"
         ]
-      },
-      {
-        "tab": "Changelog",
-        "pages": [
-          "changelog/introduction"
-        ]
       }
     ],
     "global": {}
