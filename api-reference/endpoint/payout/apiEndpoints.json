@@ -899,9 +899,13 @@
                         "type": "string",
                         "example": "589020123123"
                       },
-                      "error_message": {
+                      "failure_reason": {
+                        "type": "null",
+                        "example": null
+                      },
+                      "utr": {
                         "type": "string",
-                        "example": ""
+                        "example": "RATN0329SJDH0"
                       },
                       "transaction_hash": {
                         "type": "string",
@@ -1103,9 +1107,13 @@
                               "type": "string",
                               "example": "589020123123"
                             },
-                            "error_message": {
+                            "failure_reason": {
+                              "type": "null",
+                              "example": null
+                            },
+                            "utr": {
                               "type": "string",
-                              "example": ""
+                              "example": "RATN0329SJDH0"
                             },
                             "transaction_hash": {
                               "type": "string",

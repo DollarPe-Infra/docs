@@ -33,20 +33,15 @@
                   "description": "Phone number of the customer",
                   "example": "9911002211"
                 },
-                "country": {
+                "alpha_3_country_code": {
                   "type": "string",
                   "description": "Country code",
                   "example": "IND"
                 },
-                "customer_reference_id": {
+                "client_reference_id": {
                   "type": "string",
                   "description": "Optional customer reference ID",
                   "example": "test123"
-                },
-                "type": {
-                  "type": "string",
-                  "description": "Type of customer",
-                  "example": "individual"
                 }
               }
             }
@@ -77,7 +72,7 @@
                         "format": "uuid",
                         "example": "550e8400-e29b-41d4-a716-446655440000"
                       },
-                      "customer_reference_id": {
+                      "client_reference_id": {
                         "type": "string",
                         "example": "test123"
                       },
@@ -100,6 +95,10 @@
                       "type": {
                         "type": "string",
                         "example": "INDIVIDUAL"
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "UNVERIFIED"
                       }
                     }
                   }
@@ -242,13 +241,17 @@
                         "type": "string",
                         "example": "USA"
                       },
-                      "customer_reference_id": {
+                      "client_reference_id": {
                         "type": "string",
                         "example": "cust_12345"
                       },
                       "type": {
                         "type": "string",
                         "example": "INDIVIDUAL"
+                      },
+                      "failure_reason": {
+                        "type": "null",
+                        "example": null
                       }
                     }
                   }
@@ -396,13 +399,17 @@
                               "type": "string",
                               "example": "USA"
                             },
-                            "customer_reference_id": {
+                            "client_reference_id": {
                               "type": "string",
                               "example": "cust_12345"
                             },
                             "type": {
                               "type": "string",
                               "example": "INDIVIDUAL"
+                            },
+                            "failure_reason": {
+                              "type": "null",
+                              "example": null
                             }
                           }
                         }

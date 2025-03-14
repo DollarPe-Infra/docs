@@ -962,9 +962,9 @@
                           "type": "string",
                           "example": "589020123123"
                         },
-                        "error_message": {
-                          "type": "string",
-                          "example": ""
+                        "failure_reason": {
+                          "type": "null",
+                          "example": null
                         },
                         "transaction_hash": {
                           "type": "string",
@@ -1168,9 +1168,9 @@
                                 "type": "string",
                                 "example": "589020123123"
                               },
-                              "error_message": {
-                                "type": "string",
-                                "example": ""
+                              "failure_reason": {
+                                "type": "null",
+                                "example": null
                               },
                               "transaction_hash": {
                                 "type": "string",
@@ -1314,7 +1314,7 @@
                     "description": "Country code",
                     "example": "IND"
                   },
-                  "customer_reference_id": {
+                  "client_reference_id": {
                     "type": "string",
                     "description": "Optional customer reference ID",
                     "example": "test123"
@@ -1353,7 +1353,7 @@
                           "format": "uuid",
                           "example": "550e8400-e29b-41d4-a716-446655440000"
                         },
-                        "customer_reference_id": {
+                        "client_reference_id": {
                           "type": "string",
                           "example": "test123"
                         },
@@ -1524,7 +1524,7 @@
                           "type": "string",
                           "example": "USA"
                         },
-                        "customer_reference_id": {
+                        "client_reference_id": {
                           "type": "string",
                           "example": "cust_12345"
                         },
@@ -1682,7 +1682,7 @@
                                 "type": "string",
                                 "example": "USA"
                               },
-                              "customer_reference_id": {
+                              "client_reference_id": {
                                 "type": "string",
                                 "example": "cust_12345"
                               },
