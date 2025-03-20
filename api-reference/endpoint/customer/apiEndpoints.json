@@ -16,7 +16,7 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": ["full_name", "email", "phone", "country", "type"],
+              "required": ["full_name", "email", "phone", "alpha_3_country_code"],
               "properties": {
                 "full_name": {
                   "type": "string",

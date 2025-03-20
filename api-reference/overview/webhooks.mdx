@@ -15,12 +15,11 @@ All webhook notifications follow this consistent structure:
 
 ```json
 {
-  "type": "string",    // The entity type (e.g., "payout", "customer")
-  "event": "string",   // The state change event
-  "timestamp": "ISO-8601 timestamp",
-  "data": {
-    // Event-specific payload
-  }
+  "type": "string",           // The entity type (e.g., "PAYOUT", "CUSTOMER")
+  "id": "string"              // Unique ID of the entity 
+  "event": "string",          // The state change event
+  "failure_reason": "string", // In case of FAILED event
+  "timestamp": "ISO-8601 timestamp"
 }
 ```
 
@@ -33,21 +32,17 @@ Payout webhooks are triggered when the status of a payout changes. Below are the
 | Event | Description |
 |-------|-------------|
 | `SUCCESS` | The payout has been successfully completed |
-| `FAILED` | The payout has failed (e.g., insufficient funds) |
+| `FAILED` | The payout has failed (e.g., AML Screening failed) |
 | `REFUNDED` | The payout amount has been reversed |
 
 Example payout webhook payload:
 ```json
 {
-  "type": "payout",
+  "type": "PAYOUT",
+  "id": "550e8400-e29b-41d4-a716-446655440000",
   "event": "SUCCESS",
-  "timestamp": "2024-03-13T10:00:00Z",
-  "data": {
-    "payout_id": "po_123456789",
-    "amount": "1000.00",
-    "currency": "USD",
-    "status": "SUCCESS"
-  }
+  "failure_reason": null,
+  "timestamp": "2024-03-13T10:00:00Z"
 }
 ```
 
@@ -57,23 +52,16 @@ Customer webhooks are triggered when a customer's verification status changes. B
 
 | Event | Description |
 |-------|-------------|
-| `PROCESSING` | Customer's KYC verification is under review |
 | `VERIFIED` | Customer has completed KYC verification |
 | `FAILED` | Customer verification failed or account suspended |
 
 Example customer webhook payload:
 ```json
 {
-  "type": "customer",
-  "event": "VERIFIED",
-  "timestamp": "2024-03-13T10:00:00Z",
-  "data": {
-    "customer_id": "cust_123456789",
-    "status": "VERIFIED",
-    "verification_details": {
-      "verified_at": "2024-03-13T10:00:00Z",
-      "verification_method": "KYC"
-    }
-  }
+  "type": "CUSTOMER",
+  "event": "FAILED",
+  "id": "12348400-e29b-41d4-a716-446655440000",
+  "failure_reason": "TAX_VERIFICATION_FAILED",
+  "timestamp": "2024-03-13T10:00:00Z"
 }
 ```

@@ -1,6 +1,6 @@
 {
   "/payout/fetch-rate": {
-    "post": {
+    "get": {
       "tags": ["Payout"],
       "x-title": "Fetch Rate",
       "description": "Fetch exchange rate for a given asset and network combination",
@@ -10,35 +10,38 @@
           "description": "Payout API Base URL"
         }
       ],
-      "requestBody": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "required": ["asset", "network", "amount"],
-              "properties": {
-                "asset": {
-                  "type": "string",
-                  "description": "The cryptocurrency asset code",
-                  "example": "USDT"
-                },
-                "network": {
-                  "type": "string",
-                  "description": "The blockchain network",
-                  "example": "BSC"
-                },
-                "amount": {
-                  "type": "number",
-                  "format": "decimal",
-                  "description": "The amount to convert",
-                  "example": 100.5
-                }
-              }
-            }
+      "parameters": [
+        {
+          "name": "asset",
+          "in": "path",
+          "required": true,
+          "description": "The crypto asset for which quotation is requested",
+          "schema": {
+            "type": "string",
+            "example": "USDT"
+          }
+        },
+        {
+          "name": "network",
+          "in": "path",
+          "required": true,
+          "description": "The network of the crypto asset",
+          "schema": {
+            "type": "string",
+            "example": "BSC"
+          }
+        },
+        {
+          "name": "fiat",
+          "in": "path",
+          "required": true,
+          "description": "The fiat currency in which the quotation is requested",
+          "schema": {
+            "type": "string",
+            "example": "INR"
           }
         }
-      },
+      ],
       "responses": {
         "200": {
           "description": "Successful response",
@@ -171,7 +174,8 @@
                 "fiat",
                 "network",
                 "sending_amount",
-                "customer_id"
+                "customer_id",
+                "bank_id"
               ],
               "properties": {
                 "asset": {
@@ -199,6 +203,12 @@
                   "format": "uuid",
                   "description": "Customer's unique identifier",
                   "example": "def8b740-99f9-4cba-bc9e-99de57e927b4"
+                },
+                "bank_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "description": "Customer's Bank's unique identifier in which the payout will be maid",
+                  "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
                 }
               }
             }
@@ -228,6 +238,16 @@
                         "type": "string",
                         "format": "uuid",
                         "example": "2e104290-07c8-49f1-a5ca-0d27f0078f8a"
+                      },
+                      "customer_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "def8b740-99f9-4cba-bc9e-99de57e927b4"
+                      },
+                      "bank_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
                       },
                       "asset": {
                         "type": "string",
@@ -377,7 +397,7 @@
           "schema": {
             "type": "string",
             "format": "uuid",
-            "example": "f8a38fe3-4df7-4ec7-9764-c670839afc7a"
+            "example": "2e104290-07c8-49f1-a5ca-0d27f0078f8a"
           }
         }
       ],
@@ -403,30 +423,26 @@
                       "id": {
                         "type": "string",
                         "format": "uuid",
-                        "example": "b569d6f9-94c4-4ed3-8a8a-9cfb0aeb7e05"
+                        "example": "2e104290-07c8-49f1-a5ca-0d27f0078f8a"
                       },
-                      "quotation_id": {
+                      "order_id": {
                         "type": "string",
                         "format": "uuid",
-                        "example": "f8a38fe3-4df7-4ec7-9764-c670839afc7a"
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
                       },
                       "customer_id": {
                         "type": "string",
                         "format": "uuid",
-                        "example": "d04e1a29-e360-499b-a02f-93ce6cea1d01"
-                      },
-                      "status": {
-                        "type": "string",
-                        "example": "PROCESSING"
-                      },
-                      "client_reference_id": {
-                        "type": "string",
-                        "example": "testing123"
+                        "example": "def8b740-99f9-4cba-bc9e-99de57e927b4"
                       },
                       "bank_id": {
                         "type": "string",
                         "format": "uuid",
-                        "example": "c7ca3d66-b21d-4372-805c-c1a3fd0a60a9"
+                        "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "PROCESSING"
                       },
                       "asset": {
                         "type": "string",
@@ -465,10 +481,6 @@
                           }
                         }
                       },
-                      "transaction_hash": {
-                        "type": "string",
-                        "example": "0x51e5419ae04caafbf8b2a8627ed94a81086d81b45f9314fbe332239961012475"
-                      },
                       "wallet_address": {
                         "type": "string",
                         "nullable": true,
@@ -479,7 +491,7 @@
                         "format": "date-time",
                         "example": "2025-03-04T15:54:20+00:00"
                       },
-                      "updated_at": {
+                      "expiry_time": {
                         "type": "string",
                         "format": "date-time",
                         "example": "2025-03-04T15:59:20+00:00"
@@ -576,7 +588,6 @@
               "required": [
                 "quotation_id",
                 "customer_id",
-                "bank_id",
                 "transaction_hash"
               ],
               "properties": {
@@ -596,12 +607,6 @@
                   "type": "string",
                   "description": "Optional client reference ID for tracking",
                   "example": "testUser123"
-                },
-                "bank_id": {
-                  "type": "string",
-                  "format": "uuid",
-                  "description": "The unique identifier of the bank account",
-                  "example": "e75f62f0-db9e-4904-8103-d6f14f67f5dc"
                 },
                 "transaction_hash": {
                   "type": "string",
@@ -845,10 +850,6 @@
                         "format": "uuid",
                         "example": "dfd8db74-2fbb-46d1-9a93-b90f156e13b4"
                       },
-                      "status": {
-                        "type": "string",
-                        "example": "SUCCESS"
-                      },
                       "client_reference_id": {
                         "type": "string",
                         "example": "testUser123"
@@ -895,9 +896,17 @@
                           }
                         }
                       },
-                      "reference_number": {
+                      "transaction_hash": {
                         "type": "string",
-                        "example": "589020123123"
+                        "example": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406684d4f809ac"
+                      },
+                      "wallet_address": {
+                        "type": "string",
+                        "example": "0x71C7656EC7ab88b098def1B5f6d8976F"
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "SUCCESS"
                       },
                       "failure_reason": {
                         "type": "null",
@@ -906,14 +915,6 @@
                       "utr": {
                         "type": "string",
                         "example": "RATN0329SJDH0"
-                      },
-                      "transaction_hash": {
-                        "type": "string",
-                        "example": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406684d4f809ac"
-                      },
-                      "wallet_address": {
-                        "type": "string",
-                        "example": "0x71C7656EC7ab88b098def1B5f6d8976F"
                       },
                       "created_at": {
                         "type": "string",
@@ -1051,10 +1052,6 @@
                               "format": "uuid",
                               "example": "dfd8db74-2fbb-46d1-9a93-b90f156e13b4"
                             },
-                            "status": {
-                              "type": "string",
-                              "example": "SUCCESS"
-                            },
                             "client_reference_id": {
                               "type": "string",
                               "example": "testUser123"
@@ -1084,7 +1081,7 @@
                               "type": "string",
                               "example": "89.4"
                             },
-                            "receiving_amount": {
+                            "receiveing_amount": {
                               "type": "string",
                               "example": "870"
                             },
@@ -1092,28 +1089,14 @@
                               "type": "object",
                               "properties": {
                                 "tds_fees": {
-                                  "type": "number",
-                                  "format": "float",
-                                  "example": 41.86
+                                  "type": "string",
+                                  "example": ""
                                 },
                                 "dollarpe_fees": {
-                                  "type": "number",
-                                  "format": "float",
-                                  "example": 21.04
+                                  "type": "string",
+                                  "example": ""
                                 }
                               }
-                            },
-                            "reference_number": {
-                              "type": "string",
-                              "example": "589020123123"
-                            },
-                            "failure_reason": {
-                              "type": "null",
-                              "example": null
-                            },
-                            "utr": {
-                              "type": "string",
-                              "example": "RATN0329SJDH0"
                             },
                             "transaction_hash": {
                               "type": "string",
@@ -1122,6 +1105,18 @@
                             "wallet_address": {
                               "type": "string",
                               "example": "0x71C7656EC7ab88b098def1B5f6d8976F"
+                            },
+                            "status": {
+                              "type": "string",
+                              "example": "SUCCESS"
+                            },
+                            "failure_reason": {
+                              "type": "null",
+                              "example": null
+                            },
+                            "utr": {
+                              "type": "string",
+                              "example": "RATN0329SJDH0"
                             },
                             "created_at": {
                               "type": "string",
@@ -1172,6 +1167,104 @@
                   },
                   "data": {
                     "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/payout/mock-payout-status": {
+    "patch": {
+      "tags": ["Payout"],
+      "x-title": "Mock Payout Status",
+      "description": "Mock Payout Status (Sandbox Environment Only)",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
+          "description": "Payout API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["payout_id", "payout_status"],
+              "properties": {
+                "payout_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                },
+                "payout_status": {
+                  "type": "string",
+                  "example": "SUCCESS"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Payout Status updated successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "payout_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                      },
+                      "payout_status": {
+                        "type": "string",
+                        "example": "SUCCESS"
+                      }
+                    }
                   }
                 }
               }

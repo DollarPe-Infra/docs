@@ -86,7 +86,8 @@
                 "pages": [
                   "api-reference/endpoint/kyc/add-kyc-data",
                   "api-reference/endpoint/kyc/update-tax-info",
-                  "api-reference/endpoint/kyc/update-document-info"
+                  "api-reference/endpoint/kyc/update-document-info",
+                  "api-reference/endpoint/kyc/mock-kyc-status"
                 ]
               },
               {
@@ -120,7 +121,8 @@
                 "pages": [
                   "api-reference/endpoint/payout/initiate",
                   "api-reference/endpoint/payout/{payout_id}",
-                  "api-reference/endpoint/payout/history"
+                  "api-reference/endpoint/payout/history",
+                  "api-reference/endpoint/payout/mock-payout-status"
                 ]
               }
             ]
@@ -143,12 +145,6 @@
         "pages": [
           "sdks/python",
           "sdks/nodejs"
-        ]
-      },
-      {
-        "tab": "Changelog",
-        "pages": [
-          "changelog/introduction"
         ]
       }
     ],
