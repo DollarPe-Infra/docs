@@ -186,7 +186,8 @@ After getting the current rate, create a quotation to lock in the rate and recei
     "fiat": "inr",
     "network": "bsc",
     "sending_amount": "51",
-    "customer_id": "def8b740-99f9-4cba-bc9e-99de57e927b4"
+    "customer_id": "def8b740-99f9-4cba-bc9e-99de57e927b4",
+    "bank_account_id": "4e6f1b20-a73c-11ec-b909-0242ac120002"
   }
   ```
   </Tab>
@@ -198,6 +199,8 @@ After getting the current rate, create a quotation to lock in the rate and recei
     "message": "Success",
     "data": {
       "id": "2e104290-07c8-49f1-a5ca-0d27f0078f8a",
+      "customer_id": "def8b740-99f9-4cba-bc9e-99de57e927b4",
+      "bank_id": "4e6f1b20-a73c-11ec-b909-0242ac120002",
       "asset": "USDT",
       "network": "BSC",
       "fiat": "INR",
@@ -267,7 +270,6 @@ After sending the funds, create a payout request with the transaction details:
     "quotation_id": "2e104290-07c8-49f1-a5ca-0d27f0078f8a",
     "customer_id": "def8b740-99f9-4cba-bc9e-99de57e927b4",
     "client_reference_id": "testUser123",
-    "bank_id": "e75f62f0-db9e-4904-8103-d6f14f67f5dc",
     "transaction_hash": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406884d14f8108bc"
   }
   ```
@@ -282,7 +284,6 @@ After sending the funds, create a payout request with the transaction details:
       "id": "5b75096f-de8d-44b4-9230-d94e6948abb6",
       "quotation_id": "2e104290-07c8-49f1-a5ca-0d27f0078f8a",
       "customer_id": "def8b740-99f9-4cba-bc9e-99de57e927b4",
-      "status": "PROCESSING",
       "client_reference_id": "testUser123",
       "bank_id": "e75f62f0-db9e-4904-8103-d6f14f67f5dc",
       "asset": "USDT",
@@ -297,7 +298,8 @@ After sending the funds, create a payout request with the transaction details:
       },
       "wallet_address": "0x2EAf174Bf1CD624eD63e3C8c74Dd66B66e5cb273",
       "transaction_hash": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406884d14f8108bc",
-      "created_at": "2025-03-08T07:31:24.770179Z"
+      "created_at": "2025-03-08T07:31:24.770179Z",
+      "status": "PROCESSING"
     }
   }
   ```
@@ -336,7 +338,6 @@ After initiating the payout, you need to track its status by polling the API:
       "id": "08441dd3-8cc0-405c-932b-7fdbc8894f66",
       "quotation_id": "08441dd3-8cc0-405c-932b-7fdbc8894f66",
       "customer_id": "dfd8db74-2fbb-46d1-9a93-b90f156e13b4",
-      "status": "PROCESSING",
       "client_reference_id": "testUser123",
       "bank_id": "e75f62f0-db9e-4904-8103-d6f14f67f5dc",
       "asset": "USDT",
@@ -351,8 +352,9 @@ After initiating the payout, you need to track its status by polling the API:
       },
       "transaction_hash": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406684d4f809ac",
       "wallet_address": "0x71C7656EC7ab88b098def1B5f6d8976F",
-      "failure_reason": null, // Contains failure reason if status is "FAILED",
-      "utr": null, // Contains UTR if status is "SUCCESS",
+      "status": "SUCCESS",
+      "failure_reason": null,
+      "utr": "RATN0329SJDH0",
       "created_at": "2025-02-11T01:30:08.000Z",
       "updated_at": "2025-02-11T01:30:08.000Z"
     }

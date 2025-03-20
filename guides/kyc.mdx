@@ -250,9 +250,9 @@ Webhooks provide real-time updates about KYC status changes. Configure your webh
 ```javascript
 // Sample webhook payload
 {
-  "type": "customer",
+  "type": "CUSTOMER",
   "id": "075986f3-282b-4555-bfcd-fad973e32596",
-  "status": "VERIFIED", // or "FAILED"
+  "event": "VERIFIED", // or "FAILED"
   "failure_reason": null, // Contains failure reason if status is "FAILED"
   "timestamp": "2025-03-12T14:30:00Z"
 }
@@ -389,12 +389,15 @@ Once KYC verification is successful, you can add the customer's bank account:
     "status": true,
     "message": "Success",
     "data": {
-        "id": "4e6f1b20-a73c-11ec-b909-0242ac120002",
-        "customer_id": "075986f3-282b-4555-bfcd-fad973e32596",
-        "account_number": "123456789012",
-        "ifsc_code": "ABC123456"
+      "id": "4e6f1b20-a73c-11ec-b909-0242ac120002",
+      "customer_id": "075986f3-282b-4555-bfcd-fad973e32596",
+      "account_number": "123456789012",
+      "ifsc_code": "ABC123456",
+      "vpa": null,
+      "bank_account_type": "ACCOUNT_DETAILS",
+      "bank_account_status": "VERIFIED"
     }
-}
+  }
   ```
   </Tab>
 </Tabs>
