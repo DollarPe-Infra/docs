@@ -2363,7 +2363,7 @@
         }
       }
     },
-    "/bank/add-account": {
+    "/bank/create": {
       "post": {
         "tags": [
           "Bank"

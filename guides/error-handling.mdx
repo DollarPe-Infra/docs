@@ -1,45 +1,154 @@
 ---
-title: 'Error Handling'
-description: 'Guide to handling errors in DollarPe API'
-icon: 'circle-exclamation'
+title: "Error Handling"
+description: "Comprehensive guide to error handling in DollarPe API"
+icon: "circle-exclamation"
 ---
 
 ## Error Response Format
 
 <Tabs>
-  <Tab title = "400">
+  <Tab title="400 [Bad Request]">
+    ```json
+    {
+        "status": false,
+        "message": "Bad Request",
+        "data": null,
+        "errors": {
+            "field_name": [
+                "Error message"
+            ]
+        }
+    }
+    ```
+  </Tab>
+  <Tab title="500 [Internal Server Error]">
+    ```json
+    {
+        "success": false,
+        "message": "Internal Server Error",
+        "errors": "Unexpected error occurred. Please try again later.",
+        "data": null
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Error Categories
+
+### 1. Malformed JSON/Invalid Headers
+
+Invalid request format or header issues.
+
 ```json
 {
   "status": false,
   "message": "Bad Request",
+  "data": null,
   "errors": {
-      "field_name": [
-          "Error message"
-      ]
-  },
-  "data": null
+    "signature": ["Invalid Signature"]
+  }
 }
 ```
-</Tab>
-  <Tab title = "500">
-  ```json
+
+### 2. Object Integrity
+
+Errors related to object existence or access.
+
+```json
 {
-    "success": false,
-    "message": "Internal Server Error",
-    "errors": "Unexpected error occurred. Please try again later.",
-    "data": null
+  "status": false,
+  "message": "Bad Request",
+  "data": null,
+  "errors": {
+    "customer": ["Customer not found or access denied."]
+  }
 }
 ```
-  </Tab>
-</Tabs>
 
-## Common Error Codes
+### 3. Missing Required Fields
 
-### Authentication Errors (4xx)
-- `401_UNAUTHORIZED`: Invalid or missing API credentials
+When mandatory fields are not provided.
 
-### Validation Errors (4xx)
-- `400_BAD_REQUEST`: Invalid request parameters
+```json
+{
+  "status": false,
+  "message": "Bad Request",
+  "data": null,
+  "errors": {
+    "customer_id": ["This field is required."],
+    "tax_number": ["This field is required."]
+  }
+}
+```
 
-### System Errors (5xx)
-- `500_INTERNAL_ERROR`: Unexpected server error
+### 4. Bland Values
+
+Empty or blank field values.
+
+```json
+{
+  "status": false,
+  "message": "Bad Request",
+  "data": null,
+  "errors": {
+    "customer_id": ["This field may not be blank."],
+    "tax_number": ["This field may not be blank."]
+  }
+}
+```
+
+### 5. Length Violation
+
+Field length constraints violations.
+
+```json
+{
+  "status": false,
+  "message": "Bad Request",
+  "data": null,
+  "errors": {
+    "name": ["Ensure this field has no more than 255 characters."]
+  }
+}
+```
+
+### 6. Invalid Format
+
+Incorrect data format submissions.
+
+```json
+{
+  "status": false,
+  "message": "Bad Request",
+  "data": null,
+  "errors": {
+    "email": ["Enter a valid email address."]
+  }
+}
+```
+
+### 7. Business Logic
+
+Business rule violations and constraints.
+
+```json
+{
+  "status": false,
+  "message": "Bad Request",
+  "data": null,
+  "errors": {
+    "transaction": ["Transaction hash already linked to a payout"],
+    "email": ["Email already in use."]
+  }
+}
+```
+
+## HTTP Status Codes
+
+- `400 Bad Request`: Used for all validation errors, malformed requests, and business logic violations. This includes invalid input data, missing required fields, format violations, and business rule conflicts.
+
+- `401 Unauthorized`: Returned when authentication fails or is missing. This typically occurs when API keys are invalid, expired, or not provided.
+
+- `404 Not Found`: Returned when the requested resource does not exist. This could be attempting to access an invalid endpoint or a resource that has been deleted.
+
+- `500 Internal Server Error`: Used for unexpected server-side errors. This indicates something went wrong on our servers and the request could not be completed. These errors should be reported to our support team.
