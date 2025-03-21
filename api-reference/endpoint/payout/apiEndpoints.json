@@ -1228,7 +1228,7 @@
     "patch": {
       "tags": ["Payout"],
       "x-title": "Mock Payout Status",
-      "description": "Mock Payout Status (Sandbox Environment Only)",
+      "description": "Mock Payout Status [Sandbox Environment Only]",
       "servers": [
         {
           "url": "https://sandbox.dollarpe.xyz/pos/api/v1",

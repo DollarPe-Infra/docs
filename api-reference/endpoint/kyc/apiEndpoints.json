@@ -383,7 +383,7 @@
     "patch": {
       "tags": ["KYC"],
       "x-title": "Mock KYC Status",
-      "description": "Mock KYC Status of the customer (Sandbox Environment Only)",
+      "description": "Mock KYC Status of the customer [Sandbox Environment Only]",
       "servers": [
         {
           "url": "https://sandbox.dollarpe.xyz/cms/api/v1",

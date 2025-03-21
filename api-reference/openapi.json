@@ -1295,7 +1295,7 @@
           "Payout"
         ],
         "x-title": "Mock Payout Status",
-        "description": "Mock Payout Status (Sandbox Environment Only)",
+        "description": "Mock Payout Status [Sandbox Environment Only]",
         "servers": [
           {
             "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
@@ -2266,7 +2266,7 @@
           "KYC"
         ],
         "x-title": "Mock KYC Status",
-        "description": "Mock KYC Status of the customer (Sandbox Environment Only)",
+        "description": "Mock KYC Status of the customer [Sandbox Environment Only]",
         "servers": [
           {
             "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
