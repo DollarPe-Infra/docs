@@ -585,11 +585,7 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": [
-                "quotation_id",
-                "customer_id",
-                "transaction_hash"
-              ],
+              "required": ["quotation_id", "customer_id", "transaction_hash"],
               "properties": {
                 "quotation_id": {
                   "type": "string",
@@ -967,7 +963,7 @@
     "get": {
       "tags": ["Payout"],
       "x-title": "Fetch Payout History",
-      "description": "Fetch paginated list of payouts",
+      "description": "Fetch filtered list of payouts",
       "servers": [
         {
           "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
@@ -976,23 +972,46 @@
       ],
       "parameters": [
         {
-          "name": "page_number",
+          "name": "payout_status",
           "in": "query",
           "required": false,
-          "description": "Page number for pagination",
+          "description": "Filter payouts by status (e.g., SUCCESS, FAILED, PROCESSING)",
           "schema": {
             "type": "string",
-            "example": "1"
+            "example": "SUCCESS"
           }
         },
         {
-          "name": "page_size",
+          "name": "customer_id",
           "in": "query",
           "required": false,
-          "description": "Number of items per page (max 100)",
+          "description": "Filter payouts by customer ID",
           "schema": {
             "type": "string",
-            "example": "20"
+            "format": "uuid",
+            "example": "dfd8db74-2fbb-46d1-9a93-b90f156e13b4"
+          }
+        },
+        {
+          "name": "start_date",
+          "in": "query",
+          "required": false,
+          "description": "Filter payouts created on or after this date (YYYY-MM-DD). Must be used together with end_date.",
+          "schema": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-01-01"
+          }
+        },
+        {
+          "name": "end_date",
+          "in": "query",
+          "required": false,
+          "description": "Filter payouts created on or before this date (YYYY-MM-DD). Must be used together with start_date.",
+          "schema": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-01-31"
           }
         }
       ],
@@ -1030,7 +1049,7 @@
                         "type": "string",
                         "nullable": true,
                         "description": "URL for previous page",
-                        "example": "<url>"
+                        "example": null
                       },
                       "results": {
                         "type": "array",
@@ -1156,12 +1175,14 @@
                   "errors": {
                     "type": "object",
                     "properties": {
-                      "page_size": {
+                      "date_range": {
                         "type": "array",
                         "items": {
                           "type": "string"
                         },
-                        "example": ["page_size cannot be more than 100"]
+                        "example": [
+                          "start_date and end_date must be used together"
+                        ]
                       }
                     }
                   },

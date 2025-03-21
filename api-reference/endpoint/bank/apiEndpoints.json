@@ -181,7 +181,7 @@
       }
     }
   },
-  "/bank/get-bank-accounts/{customer_id}/{bank_id}": {
+  "/bank/{customer_id}/{bank_id}": {
     "get": {
       "tags": ["Bank"],
       "x-title": "Fetch Bank Account",
@@ -335,7 +335,7 @@
       }
     }
   },
-  "/bank/get-bank-accounts/{customer_id}": {
+  "/bank/list/{customer_id}": {
     "get": {
       "tags": ["Bank"],
       "x-title": "Fetch Bank Accounts",

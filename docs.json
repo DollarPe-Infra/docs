@@ -94,8 +94,8 @@
                 "group": "Bank",
                 "pages": [
                   "api-reference/endpoint/bank/add-account",
-                  "api-reference/endpoint/bank/get-bank-accounts-{customer_id}-{bank_id}",
-                  "api-reference/endpoint/bank/get-bank-accounts-{customer_id}"
+                  "api-reference/endpoint/bank/{customer_id}-{bank_id}",
+                  "api-reference/endpoint/bank/list-{customer_id}"
                 ]
               }
             ]
