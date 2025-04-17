@@ -28,15 +28,20 @@
             ]
           },
           {
-            "group": "Core Features",
+            "group": "How KYC Works?",
             "pages": [
-              "guides/kyc",
-              "guides/payout"
+              "guides/kyc/kyc-methods",
+              "guides/kyc/kyc-sharing",
+              "guides/kyc/kyc-sdk"
             ]
           },
           {
             "group": "Development & Testing",
             "pages": [
+              "guides/introduction",
+              "guides/authentication",
+              "guides/webhooks",
+              "guides/status-reference",
               "guides/sandbox-testing",
               "guides/error-handling"
             ]
@@ -58,16 +63,13 @@
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "API Reference (Other Applications)",
         "groups": [
           {
-            "group": "Overview",
+            "group": "Integration Guides",
             "pages": [
-              "api-reference/overview/introduction",
-              "api-reference/overview/authentication",
-              "api-reference/overview/webhooks",
-              "api-reference/overview/status-reference"
-              
+              "api-reference-other/integration-guides/kyc-integration-guide",
+              "api-reference-other/integration-guides/payout-integration-guide"
             ]
           },
           {
@@ -76,53 +78,60 @@
               {
                 "group": "Onboarding",
                 "pages": [
-                  "api-reference/endpoint/customer/create",
-                  "api-reference/endpoint/customer/{customer_id}",
-                  "api-reference/endpoint/customer/list"
+                  "api-reference-other/endpoint/customer/create",
+                  "api-reference-other/endpoint/customer/{customer_id}",
+                  "api-reference-other/endpoint/customer/list"
                 ]
               },
               {
-                "group": "KYC",
+                "group": "KYC (Sharing)",
                 "pages": [
-                  "api-reference/endpoint/kyc/add-kyc-data",
-                  "api-reference/endpoint/kyc/update-tax-info",
-                  "api-reference/endpoint/kyc/update-document-info",
-                  "api-reference/endpoint/kyc/mock-kyc-status"
+                  "api-reference-other/endpoint/kyc/add-kyc-data",
+                  "api-reference-other/endpoint/kyc/update-tax-info",
+                  "api-reference-other/endpoint/kyc/update-document-info",
+                  "api-reference-other/endpoint/kyc/mock-kyc-status"
+                ]
+              },
+              {
+                "group": "KYC (SDK)",
+                "pages": [
+                  "api-reference-other/endpoint/kyc/generate-link"
                 ]
               },
               {
                 "group": "Bank",
                 "pages": [
-                  "api-reference/endpoint/bank/create",
-                  "api-reference/endpoint/bank/{customer_id}-{bank_id}",
-                  "api-reference/endpoint/bank/list-{customer_id}"
+                  "api-reference-other/endpoint/bank/create",
+                  "api-reference-other/endpoint/bank/{customer_id}-{bank_id}",
+                  "api-reference-other/endpoint/bank/list-{customer_id}",
+                  "api-reference-other/endpoint/bank/submit-bank-statement"
                 ]
               }
             ]
           },
           {
-            "group": "Transactions",
+            "group": "Payout (off-ramp)",
             "pages": [
               {
                 "group": "Rate",
                 "pages": [
-                  "api-reference/endpoint/payout/fetch-rate"
+                  "api-reference-other/endpoint/payout/fetch-rate"
                 ]
               },
               {
                 "group": "Quotation",
                 "pages": [
-                  "api-reference/endpoint/payout/quotation",
-                  "api-reference/endpoint/payout/quotation-{quotation_id}"
+                  "api-reference-other/endpoint/payout/quotation",
+                  "api-reference-other/endpoint/payout/quotation-{quotation_id}"
                 ]
               },
               {
                 "group": "Payout",
                 "pages": [
-                  "api-reference/endpoint/payout/initiate",
-                  "api-reference/endpoint/payout/{payout_id}",
-                  "api-reference/endpoint/payout/history",
-                  "api-reference/endpoint/payout/mock-payout-status"
+                  "api-reference-other/endpoint/payout/initiate",
+                  "api-reference-other/endpoint/payout/{payout_id}",
+                  "api-reference-other/endpoint/payout/history",
+                  "api-reference-other/endpoint/payout/mock-payout-status"
                 ]
               }
             ]
@@ -133,7 +142,116 @@
               {
                 "group": "Configure Webhook",
                 "pages": [
-                  "api-reference/endpoint/organizations/api-webhooks"
+                  "api-reference-other/endpoint/organizations/api-webhooks"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference (Centralized Exchanges)",
+        "groups": [
+          {
+            "group": "Integration Guides",
+            "pages": [
+              "api-reference-exchange/integration-guides/kyc-integration-guide",
+              "api-reference-exchange/integration-guides/payout-integration-guide",
+              "api-reference-exchange/integration-guides/payin-integration-guide"
+            ]
+          },
+          {
+            "group": "Customer",
+            "pages": [
+              {
+                "group": "Onboarding",
+                "pages": [
+                  "api-reference-exchange/endpoint/customer/create",
+                  "api-reference-exchange/endpoint/customer/{customer_id}",
+                  "api-reference-exchange/endpoint/customer/list"
+                ]
+              },
+              {
+                "group": "KYC",
+                "pages": [
+                  "api-reference-exchange/endpoint/kyc/add-kyc-data",
+                  "api-reference-exchange/endpoint/kyc/update-tax-info",
+                  "api-reference-exchange/endpoint/kyc/update-document-info",
+                  "api-reference-exchange/endpoint/kyc/mock-kyc-status"
+                ]
+              },
+              {
+                "group": "Bank",
+                "pages": [
+                  "api-reference-exchange/endpoint/bank/create",
+                  "api-reference-exchange/endpoint/bank/{customer_id}-{bank_id}",
+                  "api-reference-exchange/endpoint/bank/list-{customer_id}",
+                  "api-reference-exchange/endpoint/bank/submit-bank-statement"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Payout (off-ramp)",
+            "pages": [
+              {
+                "group": "Rate",
+                "pages": [
+                  "api-reference-exchange/endpoint/payout/fetch-rate"
+                ]
+              },
+              {
+                "group": "Quotation",
+                "pages": [
+                  "api-reference-exchange/endpoint/payout/quotation",
+                  "api-reference-exchange/endpoint/payout/quotation-{quotation_id}"
+                ]
+              },
+              {
+                "group": "Payout Order",
+                "pages": [
+                  "api-reference-exchange/endpoint/payout/initiate",
+                  "api-reference-exchange/endpoint/payout/{payout_id}",
+                  "api-reference-exchange/endpoint/payout/history",
+                  "api-reference-exchange/endpoint/payout/mock-payout-status"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Payin (on-ramp)",
+            "pages": [
+              {
+                "group": "Rate",
+                "pages": [
+                  "api-reference-exchange/endpoint/payin/fetch-rate"
+                ]
+              },
+              {
+                "group": "Quotation",
+                "pages": [
+                  "api-reference-exchange/endpoint/payin/quotation",
+                  "api-reference-exchange/endpoint/payin/quotation-{quotation_id}"
+                ]
+              },
+              {
+                "group": "Payin Order",
+                "pages": [
+                  "api-reference-exchange/endpoint/payin/initiate",
+                  "api-reference-exchange/endpoint/payin/{payin_id}",
+                  "api-reference-exchange/endpoint/payin/history",
+                  "api-reference-exchange/endpoint/payin/mock-payin-status"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              {
+                "group": "Configure Webhook",
+                "pages": [
+                  "api-reference-exchange/endpoint/organizations/api-webhooks"
                 ]
               }
             ]

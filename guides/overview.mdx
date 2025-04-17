@@ -121,11 +121,11 @@ const generateHeaders = (apiKey, apiSecret, body = {}) => {
 Implement our KYC flow to verify your customers' identities:
 
 <Accordion title="KYC Implementation Steps">
-1. Create a customer profile using [/customer/create](/api-reference/endpoint/customer/create)
-2. Submit KYC documents and information using [/kyc/add-kyc-data](/api-reference/endpoint/kyc/add-kyc-data)
-3. Monitor verification status via [/customer/{customer_id}](/api-reference/endpoint/customer/{customer_id}) or webhooks
-4. Handle verification issues if needed using [/kyc/update-tax-info](/api-reference/endpoint/kyc/update-tax-info) or [/kyc/update-document-info](/api-reference/endpoint/kyc/update-document-info)
-5. Add bank account details once verified using [/bank/add-account](/api-reference/endpoint/bank/add-account)
+1. Create a customer profile using [/customer/create](/api-reference-other/endpoint/customer/create)
+2. Submit KYC documents and information using [/kyc/add-kyc-data](/api-reference-other/endpoint/kyc/add-kyc-data)
+3. Monitor verification status via [/customer/{customer_id}](/api-reference-other/endpoint/customer/{customer_id}) or webhooks
+4. Handle verification issues if needed using [/kyc/update-tax-info](/api-reference-other/endpoint/kyc/update-tax-info) or [/kyc/update-document-info](/api-reference-other/endpoint/kyc/update-document-info)
+5. Add bank account details once verified using [/bank/add-account](/api-reference-other/endpoint/bank/add-account)
 
 See our [KYC Integration Guide](/guides/kyc) for detailed implementation steps.
 </Accordion>
@@ -135,11 +135,11 @@ See our [KYC Integration Guide](/guides/kyc) for detailed implementation steps.
 Connect to our payout system to enable cryptocurrency-to-fiat transfers:
 
 <Accordion title="Payout Implementation Steps">
-1. Fetch current exchange rates using [/payout/fetch-rate](/api-reference/endpoint/payout/fetch-rate)
-2. Create a quotation using [/payout/quotation](/api-reference/endpoint/payout/quotation)
+1. Fetch current exchange rates using [/payout/fetch-rate](/api-reference-other/endpoint/payout/fetch-rate)
+2. Create a quotation using [/payout/quotation](/api-reference-other/endpoint/payout/quotation)
 3. Send cryptocurrency to the provided DollarPe wallet address
-4. Initiate the payout with transaction details using [/payout/initiate](/api-reference/endpoint/payout/initiate)
-5. Monitor the transaction status using [/payout/payout_id](/api-reference/endpoint/payout/{payout_id}) or webhooks
+4. Initiate the payout with transaction details using [/payout/initiate](/api-reference-other/endpoint/payout/initiate)
+5. Monitor the transaction status using [/payout/payout_id](/api-reference-other/endpoint/payout/{payout_id}) or webhooks
 
 See our [Payout Integration Guide](/guides/payout) for detailed implementation steps.
 </Accordion>

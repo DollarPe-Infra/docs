@@ -1,13 +1,13 @@
 {
-  "/bank/create": {
+  "/customer/create": {
     "post": {
-      "tags": ["Bank"],
-      "x-title": "Add Bank Account",
-      "description": "Add a new bank account for a customer.",
+      "tags": ["Customer"],
+      "x-title": "Create Customer",
+      "description": "Create a new customer",
       "servers": [
         {
           "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
-          "description": "Bank API Base URL"
+          "description": "Customer API Base URL"
         }
       ],
       "requestBody": {
@@ -16,53 +16,41 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": ["customer_id"],
-              "oneOf": [
-                {
-                  "required": ["account_number", "ifsc"],
-                  "properties": {
-                    "customer_id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "description": "Customer's unique identifier",
-                      "example": "c2cf861b-342b-4318-a90e-85cd0312e82f"
-                    },
-                    "account_number": {
-                      "type": "string",
-                      "description": "Bank account number",
-                      "example": "7627389201"
-                    },
-                    "ifsc": {
-                      "type": "string",
-                      "description": "IFSC code of the bank",
-                      "example": "SBI0001829IU"
-                    }
-                  }
+              "required": ["full_name", "email", "alpha_3_country_code"],
+              "properties": {
+                "full_name": {
+                  "type": "string",
+                  "description": "Full name of the customer",
+                  "example": "John Doe"
                 },
-                {
-                  "required": ["vpa"],
-                  "properties": {
-                    "customer_id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "description": "Customer's unique identifier",
-                      "example": "c2cf861b-342b-4318-a90e-85cd0312e82f"
-                    },
-                    "vpa": {
-                      "type": "string",
-                      "description": "Virtual Payment Address (UPI ID)",
-                      "example": "johndoe@oksbi"
-                    }
-                  }
+                "email": {
+                  "type": "string",
+                  "description": "Email address of the customer",
+                  "example": "john@example.com"
+                },
+                "phone": {
+                  "type": "string",
+                  "description": "Phone number of the customer",
+                  "example": "9911002211"
+                },
+                "alpha_3_country_code": {
+                  "type": "string",
+                  "description": "Country code",
+                  "example": "IND"
+                },
+                "client_reference_id": {
+                  "type": "string",
+                  "description": "Optional customer reference ID",
+                  "example": "test123"
                 }
-              ]
+              }
             }
           }
         }
       },
       "responses": {
         "200": {
-          "description": "Bank account added successfully",
+          "description": "Customer created successfully",
           "content": {
             "application/json": {
               "schema": {
@@ -82,32 +70,35 @@
                       "id": {
                         "type": "string",
                         "format": "uuid",
-                        "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
-                      },
-                      "customer_id": {
-                        "type": "string",
-                        "format": "uuid",
                         "example": "550e8400-e29b-41d4-a716-446655440000"
                       },
-                      "account_number": {
+                      "client_reference_id": {
                         "type": "string",
-                        "example": "123456789012"
+                        "example": "test123"
                       },
-                      "ifsc_code": {
+                      "full_name": {
                         "type": "string",
-                        "example": "ABC123456"
+                        "example": "John Doe"
                       },
-                      "vpa": {
+                      "email": {
                         "type": "string",
-                        "example": "testing@upi"
+                        "example": "john.doe@example.com"
                       },
-                      "bank_account_type": {
+                      "phone": {
                         "type": "string",
-                        "example": "ACCOUNT_DETAILS"
+                        "example": "+1234567890"
                       },
-                      "bank_account_status": {
+                      "country": {
                         "type": "string",
-                        "example": "VERIFIED"
+                        "example": "USA"
+                      },
+                      "type": {
+                        "type": "string",
+                        "example": "INDIVIDUAL"
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "UNVERIFIED"
                       }
                     }
                   }
@@ -133,14 +124,15 @@
                   },
                   "errors": {
                     "type": "object",
-                    "properties": {
-                      "account_number": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "example": ["account_number is required"]
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
                       }
+                    },
+                    "example": {
+                      "type": ["type is required"],
+                      "email": ["email is required"]
                     }
                   },
                   "data": {
@@ -181,15 +173,15 @@
       }
     }
   },
-  "/bank/{customer_id}/{bank_id}": {
+  "/customer/{customer_id}": {
     "get": {
-      "tags": ["Bank"],
-      "x-title": "Fetch Bank Account",
-      "description": "Fetch details of a specific bank account",
+      "tags": ["Customer"],
+      "x-title": "Fetch Customer",
+      "description": "Fetch details of a customer by ID",
       "servers": [
         {
           "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
-          "description": "Bank API Base URL"
+          "description": "Customer API Base URL"
         }
       ],
       "parameters": [
@@ -197,26 +189,17 @@
           "name": "customer_id",
           "in": "path",
           "required": true,
-          "description": "Customer's unique identifier",
+          "description": "The unique identifier of the customer",
           "schema": {
             "type": "string",
-            "format": "uuid"
-          }
-        },
-        {
-          "name": "bank_id",
-          "in": "path",
-          "required": true,
-          "description": "Bank account's unique identifier",
-          "schema": {
-            "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
           }
         }
       ],
       "responses": {
         "200": {
-          "description": "Bank account details fetched successfully",
+          "description": "Customer details fetched successfully",
           "content": {
             "application/json": {
               "schema": {
@@ -236,32 +219,39 @@
                       "id": {
                         "type": "string",
                         "format": "uuid",
-                        "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
-                      },
-                      "customer_id": {
-                        "type": "string",
-                        "format": "uuid",
                         "example": "550e8400-e29b-41d4-a716-446655440000"
                       },
-                      "account_number": {
-                        "type": "string",
-                        "example": "123456789012"
-                      },
-                      "ifsc_code": {
-                        "type": "string",
-                        "example": "ABC123456"
-                      },
-                      "vpa": {
-                        "type": "string",
-                        "example": "testing@upi"
-                      },
-                      "bank_account_type": {
-                        "type": "string",
-                        "example": "ACCOUNT_DETAILS"
-                      },
-                      "bank_account_status": {
+                      "status": {
                         "type": "string",
                         "example": "VERIFIED"
+                      },
+                      "full_name": {
+                        "type": "string",
+                        "example": "John Doe"
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "john.doe@example.com"
+                      },
+                      "phone": {
+                        "type": "string",
+                        "example": "+1234567890"
+                      },
+                      "country": {
+                        "type": "string",
+                        "example": "USA"
+                      },
+                      "client_reference_id": {
+                        "type": "string",
+                        "example": "cust_12345"
+                      },
+                      "type": {
+                        "type": "string",
+                        "example": "INDIVIDUAL"
+                      },
+                      "failure_reason": {
+                        "type": "null",
+                        "example": null
                       }
                     }
                   }
@@ -287,14 +277,14 @@
                   },
                   "errors": {
                     "type": "object",
-                    "properties": {
-                      "bank_id": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "example": ["bank_id is required"]
+                    "additionalProperties": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
                       }
+                    },
+                    "example": {
+                      "customer_id": ["customer_id is required"]
                     }
                   },
                   "data": {
@@ -335,32 +325,20 @@
       }
     }
   },
-  "/bank/list/{customer_id}": {
+  "/customer/list": {
     "get": {
-      "tags": ["Bank"],
-      "x-title": "Fetch Bank Accounts",
-      "description": "Fetch all bank accounts for a customer",
+      "tags": ["Customer"],
+      "x-title": "List Customers",
+      "description": "List all customers",
       "servers": [
         {
           "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
-          "description": "Bank API Base URL"
-        }
-      ],
-      "parameters": [
-        {
-          "name": "customer_id",
-          "in": "path",
-          "required": true,
-          "description": "Customer's unique identifier",
-          "schema": {
-            "type": "string",
-            "format": "uuid"
-          }
+          "description": "Customer API Base URL"
         }
       ],
       "responses": {
         "200": {
-          "description": "Bank accounts fetched successfully",
+          "description": "List of customers fetched successfully",
           "content": {
             "application/json": {
               "schema": {
@@ -399,72 +377,44 @@
                             "id": {
                               "type": "string",
                               "format": "uuid",
-                              "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
-                            },
-                            "customer_id": {
-                              "type": "string",
-                              "format": "uuid",
                               "example": "550e8400-e29b-41d4-a716-446655440000"
                             },
-                            "account_number": {
-                              "type": "string",
-                              "example": "123456789012"
-                            },
-                            "ifsc_code": {
-                              "type": "string",
-                              "example": "ABC123456"
-                            },
-                            "vpa": {
-                              "type": "string",
-                              "example": "testing@upi"
-                            },
-                            "bank_account_type": {
-                              "type": "string",
-                              "example": "ACCOUNT_DETAILS"
-                            },
-                            "bank_account_status": {
+                            "status": {
                               "type": "string",
                               "example": "VERIFIED"
+                            },
+                            "full_name": {
+                              "type": "string",
+                              "example": "John Doe"
+                            },
+                            "email": {
+                              "type": "string",
+                              "example": "john.doe@example.com"
+                            },
+                            "phone": {
+                              "type": "string",
+                              "example": "+1234567890"
+                            },
+                            "country": {
+                              "type": "string",
+                              "example": "USA"
+                            },
+                            "client_reference_id": {
+                              "type": "string",
+                              "example": "cust_12345"
+                            },
+                            "type": {
+                              "type": "string",
+                              "example": "INDIVIDUAL"
+                            },
+                            "failure_reason": {
+                              "type": "null",
+                              "example": null
                             }
                           }
                         }
                       }
                     }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "400": {
-          "description": "Bad Request",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "status": {
-                    "type": "boolean",
-                    "example": false
-                  },
-                  "message": {
-                    "type": "string",
-                    "example": "Bad Request"
-                  },
-                  "errors": {
-                    "type": "object",
-                    "properties": {
-                      "customer_id": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "example": ["customer_id is required"]
-                      }
-                    }
-                  },
-                  "data": {
-                    "type": "null"
                   }
                 }
               }

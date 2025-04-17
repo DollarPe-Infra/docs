@@ -1,0 +1,610 @@
+{
+  "/bank/create": {
+    "post": {
+      "tags": ["Bank"],
+      "x-title": "Add Bank Account",
+      "description": "Add a new bank account for a customer.",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+          "description": "Bank API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["customer_id"],
+              "oneOf": [
+                {
+                  "required": ["account_number", "ifsc"],
+                  "properties": {
+                    "customer_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Customer's unique identifier",
+                      "example": "c2cf861b-342b-4318-a90e-85cd0312e82f"
+                    },
+                    "account_number": {
+                      "type": "string",
+                      "description": "Bank account number",
+                      "example": "7627389201"
+                    },
+                    "ifsc": {
+                      "type": "string",
+                      "description": "IFSC code of the bank",
+                      "example": "SBI0001829IU"
+                    }
+                  }
+                },
+                {
+                  "required": ["vpa"],
+                  "properties": {
+                    "customer_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Customer's unique identifier",
+                      "example": "c2cf861b-342b-4318-a90e-85cd0312e82f"
+                    },
+                    "vpa": {
+                      "type": "string",
+                      "description": "Virtual Payment Address (UPI ID)",
+                      "example": "johndoe@oksbi"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Bank account added successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                      },
+                      "customer_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                      },
+                      "account_number": {
+                        "type": "string",
+                        "example": "123456789012"
+                      },
+                      "ifsc_code": {
+                        "type": "string",
+                        "example": "ABC123456"
+                      },
+                      "vpa": {
+                        "type": "string",
+                        "example": "testing@upi"
+                      },
+                      "bank_account_type": {
+                        "type": "string",
+                        "example": "ACCOUNT_DETAILS"
+                      },
+                      "bank_account_status": {
+                        "type": "string",
+                        "example": "VERIFIED"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Bad Request"
+                  },
+                  "errors": {
+                    "type": "object",
+                    "properties": {
+                      "account_number": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "example": ["account_number is required"]
+                      }
+                    }
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/bank/{customer_id}/{bank_id}": {
+    "get": {
+      "tags": ["Bank"],
+      "x-title": "Fetch Bank Account",
+      "description": "Fetch details of a specific bank account",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+          "description": "Bank API Base URL"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "description": "Customer's unique identifier",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        {
+          "name": "bank_id",
+          "in": "path",
+          "required": true,
+          "description": "Bank account's unique identifier",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Bank account details fetched successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                      },
+                      "customer_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                      },
+                      "account_number": {
+                        "type": "string",
+                        "example": "123456789012"
+                      },
+                      "ifsc_code": {
+                        "type": "string",
+                        "example": "ABC123456"
+                      },
+                      "vpa": {
+                        "type": "string",
+                        "example": "testing@upi"
+                      },
+                      "bank_account_type": {
+                        "type": "string",
+                        "example": "ACCOUNT_DETAILS"
+                      },
+                      "bank_account_status": {
+                        "type": "string",
+                        "example": "VERIFIED"
+                      },
+                      "is_bank_statement_analysed": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "bank_statement_analysis_failure_reason": {
+                        "type": "null"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Bad Request"
+                  },
+                  "errors": {
+                    "type": "object",
+                    "properties": {
+                      "bank_id": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "example": ["bank_id is required"]
+                      }
+                    }
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/bank/list/{customer_id}": {
+    "get": {
+      "tags": ["Bank"],
+      "x-title": "Fetch Bank Accounts",
+      "description": "Fetch all bank accounts for a customer",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+          "description": "Bank API Base URL"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "description": "Customer's unique identifier",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Bank accounts fetched successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "count": {
+                        "type": "integer",
+                        "example": 1
+                      },
+                      "next": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": null
+                      },
+                      "previous": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "<url>"
+                      },
+                      "results": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                            },
+                            "customer_id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "example": "550e8400-e29b-41d4-a716-446655440000"
+                            },
+                            "account_number": {
+                              "type": "string",
+                              "example": "123456789012"
+                            },
+                            "ifsc_code": {
+                              "type": "string",
+                              "example": "ABC123456"
+                            },
+                            "vpa": {
+                              "type": "string",
+                              "example": "testing@upi"
+                            },
+                            "bank_account_type": {
+                              "type": "string",
+                              "example": "ACCOUNT_DETAILS"
+                            },
+                            "bank_account_status": {
+                              "type": "string",
+                              "example": "VERIFIED"
+                            },
+                            "is_bank_statement_analysed": {
+                              "type": "boolean",
+                              "example": true
+                            },
+                            "bank_statement_analysis_failure_reason": {
+                              "type": "null"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Bad Request"
+                  },
+                  "errors": {
+                    "type": "object",
+                    "properties": {
+                      "customer_id": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "example": ["customer_id is required"]
+                      }
+                    }
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/bank/submit-bank-statement": {
+    "post": {
+      "tags": ["Bank"],
+      "x-title": "Submit Bank Statement",
+      "description": "Submit's bank statement for analysis (required before onramp)",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+          "description": "Bank API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["bank_id", "source_of_funds", "bank_statement_url"],
+              "properties": {
+                "bank_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                },
+                "source_of_funds": {
+                  "type": "string",
+                  "enum": ["SALARY", "RENTAL_INCOME", "BUSINESS_INCOME", "LOAN", "SAVINGS", "OTHERS"],
+                  "example": "SALARY"
+                },
+                "bank_statement_url": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Bank Statement Submitted",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

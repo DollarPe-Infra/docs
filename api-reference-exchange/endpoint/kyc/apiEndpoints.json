@@ -19,13 +19,15 @@
               "required": [
                 "customer_id",
                 "full_name",
-                "phone",
                 "full_address",
                 "dob",
+                "registered_date",
                 "document_type",
                 "document_front_image_url",
                 "document_back_image_url",
-                "document_details"
+                "document_details",
+                "selfie_url",
+                "selfie_verification_status"
               ],
               "properties": {
                 "customer_id": {
@@ -50,13 +52,18 @@
                   "format": "date",
                   "example": "DD-MM-YYYY"
                 },
+                "registered_date": {
+                  "type": "string",
+                  "format": "date",
+                  "example": "DD-MM-YYYY"
+                },
                 "tax_number": {
                   "type": "string",
                   "example": "CLBPG5935N"
                 },
                 "document_type": {
                   "type": "string",
-                  "enum": ["AADHAAR", "PASSPORT"],
+                  "enum": ["AADHAAR", "PASSPORT", "VOTER_ID", "DRIVING_LICENSE"],
                   "example": "AADHAAR"
                 },
                 "document_front_image_url": {
@@ -79,6 +86,14 @@
                       "type": "object"
                     }
                   }
+                },
+                "selfie_url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "selfie_verification_status": {
+                  "type": "boolean",
+                  "example": true
                 }
               }
             }
@@ -279,13 +294,17 @@
                   "format": "uuid",
                   "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
                 },
+                "phone": {
+                  "type": "string",
+                  "example": "9911002211"
+                },
                 "full_address": {
                   "type": "string",
                   "example": "FULL_ADDRESS_OF_THE_CUSTOMER"
                 },
                 "document_type": {
                   "type": "string",
-                  "enum": ["AADHAAR", "PASSPORT"],
+                  "enum": ["AADHAAR", "PASSPORT", "VOTER_ID", "DRIVING_LICENSE"],
                   "example": "AADHAAR"
                 },
                 "document_front_image_url": {

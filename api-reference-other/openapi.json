@@ -1414,7 +1414,6 @@
                 "required": [
                   "full_name",
                   "email",
-                  "phone",
                   "alpha_3_country_code"
                 ],
                 "properties": {
@@ -1883,13 +1882,15 @@
                 "required": [
                   "customer_id",
                   "full_name",
-                  "phone",
                   "full_address",
                   "dob",
+                  "registered_date",
                   "document_type",
                   "document_front_image_url",
                   "document_back_image_url",
-                  "document_details"
+                  "document_details",
+                  "selfie_url",
+                  "selfie_verification_status"
                 ],
                 "properties": {
                   "customer_id": {
@@ -1914,6 +1915,11 @@
                     "format": "date",
                     "example": "DD-MM-YYYY"
                   },
+                  "registered_date": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "DD-MM-YYYY"
+                  },
                   "tax_number": {
                     "type": "string",
                     "example": "CLBPG5935N"
@@ -1922,7 +1928,9 @@
                     "type": "string",
                     "enum": [
                       "AADHAAR",
-                      "PASSPORT"
+                      "PASSPORT",
+                      "VOTER_ID",
+                      "DRIVING_LICENSE"
                     ],
                     "example": "AADHAAR"
                   },
@@ -1948,6 +1956,14 @@
                         "type": "object"
                       }
                     }
+                  },
+                  "selfie_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "selfie_verification_status": {
+                    "type": "boolean",
+                    "example": true
                   }
                 }
               }
@@ -2155,6 +2171,10 @@
                     "format": "uuid",
                     "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
                   },
+                  "phone": {
+                    "type": "string",
+                    "example": "9911002211"
+                  },
                   "full_address": {
                     "type": "string",
                     "example": "FULL_ADDRESS_OF_THE_CUSTOMER"
@@ -2163,7 +2183,9 @@
                     "type": "string",
                     "enum": [
                       "AADHAAR",
-                      "PASSPORT"
+                      "PASSPORT",
+                      "VOTER_ID",
+                      "DRIVING_LICENSE"
                     ],
                     "example": "AADHAAR"
                   },
@@ -2325,6 +2347,109 @@
                         "status": {
                           "type": "string",
                           "example": "VERIFIED"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/kyc/generate-link": {
+      "post": {
+        "tags": [
+          "KYC"
+        ],
+        "x-title": "Generate KYC Link",
+        "description": "Generates a KYC Link for the user",
+        "servers": [
+          {
+            "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+            "description": "KYC API Base URL"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "customer_id",
+                  "redirect_url"
+                ],
+                "properties": {
+                  "customer_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                  },
+                  "redirect_url": {
+                    "type": "string",
+                    "example": "https://dollarpe.xyz"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "KYC Link generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "customer_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "550e8400-e29b-41d4-a716-446655440000"
+                        },
+                        "url": {
+                          "type": "string",
+                          "example": "https://hyperverge.co/"
                         }
                       }
                     }
@@ -2639,6 +2764,13 @@
                         "bank_account_status": {
                           "type": "string",
                           "example": "VERIFIED"
+                        },
+                        "is_bank_statement_analysed": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "bank_statement_analysis_failure_reason": {
+                          "type": "null"
                         }
                       }
                     }
@@ -2806,6 +2938,13 @@
                               "bank_account_status": {
                                 "type": "string",
                                 "example": "VERIFIED"
+                              },
+                              "is_bank_statement_analysed": {
+                                "type": "boolean",
+                                "example": true
+                              },
+                              "bank_statement_analysis_failure_reason": {
+                                "type": "null"
                               }
                             }
                           }
@@ -2848,6 +2987,111 @@
                     },
                     "data": {
                       "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bank/submit-bank-statement": {
+      "post": {
+        "tags": [
+          "Bank"
+        ],
+        "x-title": "Submit Bank Statement",
+        "description": "Submit's bank statement for analysis (required before onramp)",
+        "servers": [
+          {
+            "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+            "description": "Bank API Base URL"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "bank_id",
+                  "source_of_funds",
+                  "bank_statement_url"
+                ],
+                "properties": {
+                  "bank_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                  },
+                  "source_of_funds": {
+                    "type": "string",
+                    "enum": [
+                      "SALARY",
+                      "RENTAL_INCOME",
+                      "BUSINESS_INCOME",
+                      "LOAN",
+                      "SAVINGS",
+                      "OTHERS"
+                    ],
+                    "example": "SALARY"
+                  },
+                  "bank_statement_url": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bank Statement Submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object"
                     }
                   }
                 }
