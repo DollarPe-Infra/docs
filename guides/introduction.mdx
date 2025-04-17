@@ -17,10 +17,10 @@ DollarPe's API platform provides a suite of services that work together to creat
   <Card title="Customer API" icon="user" href="/api-reference-other/endpoint/customer/create">
     Create and manage customer profiles with unique identifiers.
   </Card>
-  <Card title="KYC API" icon="id-card" href="/api-reference-other/endpoint/kyc/add-kyc-data">
+  <Card title="KYC API" icon="id-card" href="/api-reference-other/endpoint/kyc/generate-link">
     Handle customer verification and compliance processes.
   </Card>
-  <Card title="Bank API" icon="building-columns" href="/api-reference-other/endpoint/bank/add-account">
+  <Card title="Bank API" icon="building-columns" href="/api-reference-other/endpoint/bank/create">
     Manage bank account integrations for fiat payouts.
   </Card>
   <Card title="Payout API" icon="money-bill-transfer" href="/api-reference-other/endpoint/payout/initiate">
@@ -45,7 +45,7 @@ Before integrating with our API, ensure you have the following prerequisites in 
     - **Production** - For live transactions (real funds)
   </Step>
   <Step title="Set Up Authentication">
-    Implement our [authentication system](/api-reference-other/overview/authentication) to secure your API requests.
+    Implement our [authentication system](/guides/authentication) to secure your API requests.
   </Step>
   <Step title="Configure Webhooks">
     Set up a publicly accessible HTTPS endpoint to receive real-time transaction updates via our [webhook system](/api-reference-other/endpoint/organizations/api-webhooks).
@@ -65,6 +65,7 @@ Access DollarPe API through our dedicated environments:
     <ResponseField name="API Endpoints" type="string">
       - Customer API: `https://sandbox.dollarpe.xyz/cms/api/v1`
       - Payout API: `https://sandbox.dollarpe.xyz/pos/api/v1`
+      - Payin API: `https://sandbox.dollarpe.xyz/pis/api/v1`
       - Webhook API: `https://sandbox.dollarpe.xyz/org/api/v1`
     </ResponseField>
     
@@ -117,7 +118,7 @@ All API requests require authentication using three custom headers:
   An HMAC SHA256 signature of the request, encoded in Base64.
 </ResponseField>
 
-For detailed instructions on generating these headers, see our [Authentication Guide](/api-reference-other/overview/authentication).
+For detailed instructions on generating these headers, see our [Authentication Guide](/guides/introduction).
 
 ## Response Format
 
