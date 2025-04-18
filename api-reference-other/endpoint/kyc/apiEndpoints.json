@@ -1,0 +1,597 @@
+{
+  "/kyc/add-kyc-data": {
+    "post": {
+      "tags": ["KYC"],
+      "x-title": "Add KYC Data",
+      "description": "Add KYC information for a customer",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+          "description": "KYC API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "customer_id",
+                "full_name",
+                "full_address",
+                "dob",
+                "registered_date",
+                "document_type",
+                "document_front_image_url",
+                "document_back_image_url",
+                "document_details",
+                "selfie_url",
+                "selfie_verification_status"
+              ],
+              "properties": {
+                "customer_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                },
+                "full_name": {
+                  "type": "string",
+                  "example": "John Doe"
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "9911002211"
+                },
+                "full_address": {
+                  "type": "string",
+                  "example": "FULL_ADDRESS_OF_THE_CUSTOMER"
+                },
+                "dob": {
+                  "type": "string",
+                  "format": "date",
+                  "example": "DD-MM-YYYY"
+                },
+                "registered_date": {
+                  "type": "string",
+                  "format": "date",
+                  "example": "DD-MM-YYYY"
+                },
+                "tax_number": {
+                  "type": "string",
+                  "example": "CLBPG5935N"
+                },
+                "document_type": {
+                  "type": "string",
+                  "enum": ["AADHAAR", "PASSPORT", "VOTER_ID", "DRIVING_LICENSE"],
+                  "example": "AADHAAR"
+                },
+                "document_front_image_url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "document_back_image_url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "document_details": {
+                  "type": "object",
+                  "required": ["document_number"],
+                  "properties": {
+                    "document_number": {
+                      "type": "string",
+                      "example": "123456123456"
+                    },
+                    "additional_data": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "selfie_url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "selfie_verification_status": {
+                  "type": "boolean",
+                  "example": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "KYC data added successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "PROCESSING"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/kyc/update-tax-info": {
+    "patch": {
+      "tags": ["KYC"],
+      "x-title": "Update Tax Information",
+      "description": "Update customer's tax information",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+          "description": "KYC API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["customer_id", "tax_number"],
+              "properties": {
+                "customer_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                },
+                "tax_number": {
+                  "type": "string",
+                  "example": "CLBPG5935N"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Tax information updated successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "UNVERIFIED"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/kyc/update-document-info": {
+    "patch": {
+      "tags": ["KYC"],
+      "x-title": "Update Document Information",
+      "description": "Update customer's document information",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+          "description": "KYC API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "customer_id",
+                "full_address",
+                "document_type",
+                "document_front_image_url",
+                "document_back_image_url",
+                "document_details"
+              ],
+              "properties": {
+                "customer_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "9911002211"
+                },
+                "full_address": {
+                  "type": "string",
+                  "example": "FULL_ADDRESS_OF_THE_CUSTOMER"
+                },
+                "document_type": {
+                  "type": "string",
+                  "enum": ["AADHAAR", "PASSPORT", "VOTER_ID", "DRIVING_LICENSE"],
+                  "example": "AADHAAR"
+                },
+                "document_front_image_url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "document_back_image_url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "document_details": {
+                  "type": "object",
+                  "required": ["document_number"],
+                  "properties": {
+                    "document_number": {
+                      "type": "string",
+                      "example": "123456123456"
+                    },
+                    "additional_data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Document information updated successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "UNVERIFIED"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/kyc/mock-kyc-status": {
+    "patch": {
+      "tags": ["KYC"],
+      "x-title": "Mock KYC Status",
+      "description": "Mock KYC Status of the customer [Sandbox Environment Only]",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+          "description": "KYC API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["customer_id", "kyc_status"],
+              "properties": {
+                "customer_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                },
+                "kyc_status": {
+                  "type": "string",
+                  "example": "VERIFIED"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "KYC Status updated successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "VERIFIED"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/kyc/generate-link": {
+    "post": {
+      "tags": ["KYC"],
+      "x-title": "Generate KYC Link",
+      "description": "Generates a KYC Link for the user",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+          "description": "KYC API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["customer_id", "redirect_url"],
+              "properties": {
+                "customer_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "redirect_url": {
+                  "type": "string",
+                  "example": "https://dollarpe.xyz"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "KYC Link generated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "customer_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                      },
+                      "url": {
+                        "type": "string",
+                        "example": "https://hyperverge.co/"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

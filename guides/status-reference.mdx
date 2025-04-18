@@ -1,0 +1,111 @@
+---
+title: 'Status Reference'
+icon: 'list-check'
+---
+
+This page provides a comprehensive list of all possible status values and their transitions for payouts, quotations, and customers in our platform.
+
+## Customer Status
+
+### Available States
+| State | Description |
+|-------|-------------|
+| `UNVERIFIED` | Initial state for newly created customer accounts |
+| `PROCESSING` | Customer's KYC verification is being processed |
+| `VERIFIED` | Customer has completed KYC verification successfully |
+| `FAILED` | Customer verification failed or account has been suspended |
+
+### Status Flow
+```mermaid
+graph LR
+    A[UNVERIFIED] --> B[PROCESSING]
+    B --> C[VERIFIED]
+    B --> D[FAILED]
+    style C fill:#4CAF50,color:#fff
+    style D fill:#FF5252,color:#fff
+```
+
+## Status Colors
+
+The flow diagrams use the following color coding:
+- **Green** (`#4CAF50`): Success/Completed State
+- **Red** (`#FF5252`): Failed/Error State
+- **Orange** (`#FFA726`): Reversed/Refunded State
+
+## Bank Statement Analysis Status
+
+### Available States
+| State | Description |
+|-------|-------------|
+| `PROCESSING` | Bank statement analysis is in processing |
+| `SUCCESS` | Bank statement analysis failed and the bank account can be used for payin |
+| `FAILED` | Bank statement analysis failed and the bank account cannot be used for payin |
+
+### Status Flow
+```mermaid
+graph LR
+    A[PROCESSING] --> B[SUCCESS]
+    A --> C[FAILED]
+    style B fill:#4CAF50,color:#fff
+    style C fill:#FF5252,color:#fff
+```
+
+## Quotation Status
+
+### Available States
+| State | Description |
+|-------|-------------|
+| `LINKED` | Quotation is associated with an order and ready for processing |
+| `UNLINKED` | Quotation exists but is not associated with any order |
+| `EXPIRED` | Quotation has exceeded its validity period and cannot be used |
+
+### Status Flow
+```mermaid
+graph LR
+    A[UNLINKED] --> B[LINKED]
+    A --> C[EXPIRED]
+    style B fill:#4CAF50,color:#fff
+    style C fill:#FF5252,color:#fff
+```
+
+## Payout Status
+
+### Available States
+| State | Description |
+|-------|-------------|
+| `PROCESSING` | The payout is currently being processed through our system |
+| `SUCCESS` | The payout has been successfully completed and funds have been transferred to the beneficiary |
+| `FAILED` | The payout has failed due to issues like insufficient funds or invalid account details |
+| `REFUNDED` | The payout amount has been successfully reversed and returned to the source account (if applicable) |
+
+### Status Flow
+```mermaid
+graph LR
+    A[PROCESSING] --> B[SUCCESS]
+    A --> C[FAILED]
+    C --> D[REFUNDED]
+    style B fill:#4CAF50,color:#fff
+    style C fill:#FF5252,color:#fff
+    style D fill:#FFA726,color:#fff
+```
+
+## Payin Status
+
+### Available States
+| State | Description |
+|-------|-------------|
+| `PROCESSING` | The payin is currently being processed through our system |
+| `SUCCESS` | The payin has been successfully completed and funds have been transferred to the beneficiary |
+| `FAILED` | The payin has failed due to issues like insufficient funds or invalid account details |
+| `REFUNDED` | The payin amount has been successfully reversed and returned to the source account (if applicable) |
+
+### Status Flow
+```mermaid
+graph LR
+    A[PROCESSING] --> B[SUCCESS]
+    A --> C[FAILED]
+    C --> D[REFUNDED]
+    style B fill:#4CAF50,color:#fff
+    style C fill:#FF5252,color:#fff
+    style D fill:#FFA726,color:#fff
+```

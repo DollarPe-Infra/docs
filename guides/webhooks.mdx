@@ -1,0 +1,117 @@
+---
+title: 'Webhooks'
+icon: 'webhook'
+---
+
+Webhooks allow you to receive real-time notifications about various events that occur in your integration. When an event happens, we'll send an HTTP POST request to the webhook URL you've configured.
+
+<Note>
+To configure your webhook URL please refer to the [Webhook Configuration](/api-reference-other/endpoint/organizations/api-webhooks) guide.
+</Note>
+
+## Webhook Structure
+
+All webhook notifications follow this consistent structure:
+
+```json
+{
+  "type": "string",           // The entity type (e.g., "PAYOUT", "PAYIN", "CUSTOMER", "BANK_STATEMENT")
+  "id": "string"              // Unique ID of the entity 
+  "event": "string",          // The state change event
+  "timestamp": "ISO-8601 timestamp",
+  "metadata": {
+    "failure_reason": "string", // In case of FAILED event,
+    .
+    .
+    .
+  }
+}
+```
+
+## Webhook Events
+
+### Customer Events
+
+Customer webhooks are triggered when a customer's verification status changes. Below are the possible customer states:
+
+| Event | Description |
+|-------|-------------|
+| `VERIFIED` | Customer has completed KYC verification |
+| `FAILED` | Customer verification failed or account suspended |
+
+Example customer webhook payload:
+```json
+{
+  "type": "CUSTOMER",
+  "event": "FAILED",
+  "id": "12348400-e29b-41d4-a716-446655440000",
+  "timestamp": "2024-03-13T10:00:00Z",
+  "metadata": {
+    "failure_reason": "TAX_VERIFICATION_FAILED"
+  }
+}
+```
+
+### Bank Statement Events
+
+Bank Statement webhooks are triggered when a customer's bank statement is analysed. Below are the possible states:
+
+| Event | Description |
+|-------|-------------|
+| `SUCCESS` | Bank statement is analysed successfully and the bank account can be used for payins |
+| `FAILED` | Bank statement analysis failed and the bank account cannot be used for payins |
+
+Example customer webhook payload:
+```json
+{
+  "type": "BANK_STATEMENT",
+  "event": "SUCCESS",
+  "id": "12348400-e29b-41d4-a716-446655440000",
+  "timestamp": "2024-03-13T10:00:00Z",
+  "metadata": {}
+}
+```
+
+### Payout Events
+
+Payout webhooks are triggered when the status of a payout changes. Below are the possible payout states:
+
+| Event | Description |
+|-------|-------------|
+| `SUCCESS` | The payout has been successfully completed |
+| `FAILED` | The payout has failed (e.g., AML Screening failed) |
+| `REFUNDED` | The payout amount has been reversed |
+
+Example payout webhook payload:
+```json
+{
+  "type": "PAYOUT",
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "event": "SUCCESS",
+  "timestamp": "2024-03-13T10:00:00Z",
+  "metadata": {
+    "utr": "RATN12341234XYZ"
+  }
+}
+```
+
+### Payin Events
+
+Payin webhooks are triggered when the status of a payin changes. Below are the possible payin states:
+
+| Event | Description |
+|-------|-------------|
+| `SUCCESS` | The payin has been successfully completed |
+| `FAILED` | The payin has failed (e.g., AML Screening failed) |
+| `REFUNDED` | The payin amount has been reversed |
+
+Example payin webhook payload:
+```json
+{
+  "type": "PAYIN",
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "event": "SUCCESS",
+  "timestamp": "2024-03-13T10:00:00Z",
+  "metadata": {}
+}
+```

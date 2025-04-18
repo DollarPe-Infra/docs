@@ -1,0 +1,10 @@
+---
+title: 'Mock Payout Status [Sandbox Only]'
+openapi: 'PATCH /payout/mock-payout-status'
+---
+
+<Note>
+This endpoint is available only in the **Sandbox environment** and allows you to simulate payout status changes for testing purposes.
+
+This endpoint only works for payouts that are currently in the **`PROCESSING`** state. Attempting to change the status of payouts in other states will not have any effect.
+</Note>

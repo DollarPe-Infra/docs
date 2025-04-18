@@ -1,0 +1,16 @@
+---
+title: 'Mock KYC Status [Sandbox Only]'
+openapi: 'PATCH /kyc/mock-kyc-status'
+---
+
+<Note>
+This endpoint is available only in the **Sandbox environment** and allows you to simulate KYC status changes for testing purposes.
+
+This endpoint follows specific state transition rules:
+
+- If current status is **UNVERIFIED**: No status changes are allowed
+- If current status is **FAILED** or **VERIFIED**: Can only be changed to **UNVERIFIED**
+- If current status is **PROCESSING**: Can be changed to **TAX_VERIFICATION_FAILED**, **DOCUMENT_VERIFICATION_FAILED**, **VERIFIED**, or **UNVERIFIED**
+
+Attempting to change the status outside of these allowed transitions will result in an error.
+</Note>
