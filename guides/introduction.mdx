@@ -7,11 +7,13 @@ icon: "play"
   # DollarPe API Reference
 </Highlight>
 
-Welcome to DollarPe's API documentation. This comprehensive guide will help you integrate our cryptocurrency-to-fiat payout solutions into your applications quickly and efficiently. Our APIs enable you to offer seamless crypto-to-INR transfers to your customers while we handle the complex aspects of blockchain transactions, KYC verification, and banking operations.
+This all-in-one guide walks you through integrating our **fiat-to-crypto** pay-in and **crypto-to-fiat** payout solutions into your application with speed and ease.
+
+With our APIs, you can offer your customers smooth **fiat-to-crypto** and **crypto-to-fiat** transfers — while we take care of the heavy lifting, including blockchain transactions, KYC checks, and banking infrastructure.
 
 ## API Overview
 
-DollarPe's API platform provides a suite of services that work together to create a complete payout solution:
+DollarPe's API platform offers a suite of services designed to work together, enabling a complete end-to-end payout solution:
 
 <CardGroup cols={3}>
   <Card title="Customer API" icon="user" href="/api-reference-other/endpoint/customer/create">
@@ -23,32 +25,36 @@ DollarPe's API platform provides a suite of services that work together to creat
   <Card title="Bank API" icon="building-columns" href="/api-reference-other/endpoint/bank/create">
     Manage bank account integrations for fiat payouts.
   </Card>
+  <Card title="Payin API" icon="arrow-down-left" href="/api-reference-exchange/endpoint/payin/initiate">
+    Accept fiat deposits and convert them into cryptocurrency for your users.
+  </Card>
   <Card title="Payout API" icon="money-bill-transfer" href="/api-reference-other/endpoint/payout/initiate">
-    Process cryptocurrency-to-fiat conversions and transfers.
+    Process crypto-to-fiat conversions and initiate bank transfers.
   </Card>
   <Card title="Webhook API" icon="bell" href="/api-reference-other/endpoint/organizations/api-webhooks">
     Configure real-time notifications for transaction updates.
   </Card>
 </CardGroup>
 
+
 ## Getting Started
 
-Before integrating with our API, ensure you have the following prerequisites in place:
+Before integrating with our API, make sure you have the following prerequisites ready:
 
 <Steps>
   <Step title="Obtain API Credentials">
-    Contact our [support team](mailto:support@dollarpe.xyz) to receive your unique API Key and API Secret for authentication.
+    Reach out to our [support team](mailto:support@dollarpe.xyz) to get your unique API Key and API Secret for authentication.
   </Step>
   <Step title="Choose Environment">
-    Select the appropriate environment for your development stage:
-    - **Sandbox** - For testing and development (no real funds)
-    - **Production** - For live transactions (real funds)
+    Pick the appropriate environment based on your development phase:
+    - **Sandbox** – For testing and development (no real funds involved)
+    - **Production** – For live usage with real transactions
   </Step>
   <Step title="Set Up Authentication">
-    Implement our [authentication system](/guides/authentication) to secure your API requests.
+    Integrate our [authentication system](/guides/authentication) to securely authorize your API requests.
   </Step>
   <Step title="Configure Webhooks">
-    Set up a publicly accessible HTTPS endpoint to receive real-time transaction updates via our [webhook system](/api-reference-other/endpoint/organizations/api-webhooks).
+    Create a publicly accessible HTTPS endpoint to receive real-time updates using our [webhook system](/api-reference-other/endpoint/organizations/api-webhooks).
   </Step>
 </Steps>
 
@@ -118,7 +124,7 @@ All API requests require authentication using three custom headers:
   An HMAC SHA256 signature of the request, encoded in Base64.
 </ResponseField>
 
-For detailed instructions on generating these headers, see our [Authentication Guide](/guides/introduction).
+For detailed instructions on generating these headers, see our [Authentication Guide](/guides/authentication).
 
 ## Response Format
 
@@ -162,11 +168,12 @@ Our API follows a consistent response format across all endpoints:
 
 ## Testing Your Integration
 
-Before going live, thoroughly test your integration in our Sandbox environment:
+Before moving to production, thoroughly validate your integration in our Sandbox environment:
 
-1. Use Sandbox API credentials and base URLs
-2. Test the complete customer journey from registration to payout
-3. Verify webhook notifications are properly received and processed
-4. Test error scenarios and implement appropriate error handling
+1. Use your Sandbox API credentials and base URLs.
+2. Simulate the full customer flow — from user registration to successful transactions.
+3. Ensure webhook notifications are received and processed correctly.
+4. Implement status polling endpoints as a fallback mechanism in case webhooks fail.
+5. Test various error scenarios and implement robust error handling.
 
-For detailed testing instructions, see our [Sandbox Testing Guide](/guides/sandbox-testing).
+For a step-by-step walkthrough, check out our [Sandbox Testing Guide](/guides/sandbox-testing).

@@ -1,29 +1,65 @@
 ---
-title: 'Best Practices'
-description: 'Comprehensive guide covering essential prerequisites and validation requirements for DollarPe API integrations, including payout processing, customer creation.'
-icon: 'shield-check'
+title: "Best Practices"
+description: "Comprehensive guide covering essential pre-requisites and validation requirements for DollarPe API integrations, including payin and payout processing."
+icon: "shield-check"
 ---
 
-## Payout Prerequisites
+## Pre-Integration Checklist
 
-Before initiating a payout, verify these requirements:
+Before initiating any transaction (payin or payout), ensure you have:
 
-### Quotation Validation
-- ✅ **quotation_id** validation:
-  - Must exist and be valid
-  - Must not be linked to any existing order
-  - Must not be expired
+- Completed onboarding process with all required documentation
+- Active API credentials with proper permissions
+- Tested End to End flow on Sandbox environment
+- Implemented robust error handling and monitoring
+- Configured webhook for status updates
+- Status polling endpoints as fallback mecahnism incase there is delay in webhook
 
-### Transaction Details
-- ✅ **Asset Requirements**:
-  - Only use supported [stablecoins and blockchains](/guides/support/stablecoins_and_blockchains)
-  - Transaction amount must **exactly match** quotation amount
+## PAYIN
 
-- ✅ **Wallet Requirements**:
-  - **Source**: Must be sent from **whitelisted** wallet address only
-    - Wallet must be pre-approved during onboarding
-  - **Destination**: Must be sent **only** to wallet address provided in quotation response
+### Bank Transfer Requirements
 
-- ✅ **Transaction Validation**:
-  - Crypto transaction hash must be **unique**
-  - Hash must not be linked to any other orders
+#### Account Details Validation
+
+- Send money only to the bank account details received in the quotation response
+- Money must be sent from a bank account registered in the same name as provided during KYC
+- The sender's name on the bank account must match the KYC verified name
+- Transfers from third-party accounts are not allowed
+
+#### Amount Validation
+
+- Transfer amount must exactly match the amount specified in the quotation
+- No partial or split payments are allowed
+- Ensure the exact amount is transferred in a single transaction
+
+## PAYOUT
+
+### Transaction Requirements
+
+#### Quotation Validation
+
+- Valid and non-expired quotation ID
+- Quotation must not be used for any other transaction
+- Transaction amount must match quotation amount
+
+#### Asset Requirements
+
+- Use only supported [stablecoins and blockchains](/guides/support/stablecoins_and_blockchains)
+- Transaction must be for the same asset as specified in the quotation
+- Transaction amount must exactly match the quotation amount
+
+#### Wallet Requirements
+
+- Source wallet must be whitelisted and pre-approved during onboarding
+- Destination wallet must be the one provided in the quotation response
+- Transaction hash must be unique and not linked to any other orders
+
+## Integration Testing
+
+### Pre-Production Testing
+
+- Test all integration points in sandbox environment
+- Verify webhook handling and retry mechanisms
+- Test error scenarios and edge cases
+- Validate transaction status updates
+- Verify rate limiting implementation
