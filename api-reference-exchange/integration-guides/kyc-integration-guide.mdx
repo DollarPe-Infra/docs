@@ -24,7 +24,7 @@ The KYC integration follows these main steps:
 
 1. Create a customer profile
 2. Submit their KYC documents and information
-3. Monitor verification status (usually completed in 5-120 minutes)
+3. Monitor verification status (usually completed in 60 seconds to 120 minutes)
 4. Handle any verification issues
 5. Add bank account details once verified
 6. Begin transactions
@@ -243,10 +243,10 @@ For best results, use a secure file upload service to store document images and 
 
 ### Step 3: Track Verification Status
 
-After submitting KYC data, our system begins the verification process, which typically takes between 5-120 minutes to complete. There are two ways to monitor this status:
+After submitting KYC data, our system begins the verification process, which typically takes between 60 seconds to 120 minutes to complete. There are two ways to monitor this status:
 
 <Note>
-**Verification Timeframe**: Most verifications complete within 5-120 minutes. You should communicate this expected timeline to your users to set proper expectations.
+**Verification Timeframe**: Most verifications complete within 60 seconds to 120 minutes. You should communicate this expected timeline to your users to set proper expectations.
 </Note>
 
 #### Option A: Webhook Integration (Recommended)
@@ -257,10 +257,12 @@ Webhooks provide real-time updates about KYC status changes. Configure your webh
 // Sample webhook payload
 {
   "type": "CUSTOMER",
-  "id": "075986f3-282b-4555-bfcd-fad973e32596",
-  "event": "VERIFIED", // or "FAILED"
-  "failure_reason": null, // Contains failure reason if status is "FAILED"
-  "timestamp": "2025-03-12T14:30:00Z"
+  "event": "FAILED",
+  "id": "12348400-e29b-41d4-a716-446655440000",
+  "timestamp": "2024-03-13T10:00:00Z",
+  "metadata": {
+    "failure_reason": "TAX_VERIFICATION_FAILED"
+  }
 }
 ```
 
@@ -297,7 +299,7 @@ If webhooks aren't feasible, you can periodically check the status using the cus
 </Tabs>
 
 <Tip>
-If using the polling approach, we recommend checking no more frequently than once every 5 minutes to avoid API rate limits.
+If using the polling approach, we recommend checking no more frequently than once every 60 seconds to avoid API rate limits.
 </Tip>
 
 ### Step 4: Handle Verification Issues
@@ -441,7 +443,7 @@ Check your webhook URL configuration and ensure your server is properly acknowle
 </Accordion>
 
 <Accordion title="Verification Taking Too Long">
-Most verifications complete within 5-120 minutes. If it's taking longer, check the status via API polling. For delays exceeding 3 hours, contact [support team](mailto:support@dollarpe.xyz).
+Most verifications complete within 60 seconds to 120 minutes. If it's taking longer, check the status via API polling. For delays exceeding 3 hours, contact [support team](mailto:support@dollarpe.xyz).
 </Accordion>
 
 <Accordion title="API Connection Issues">
