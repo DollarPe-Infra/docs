@@ -23,7 +23,29 @@ Before going live with your integration, ensure you've completed all the followi
 - [ ] Ensure bank account details match KYC information
 </Accordion>
 
-### 2. Critical Payout Requirements
+### 2. Critical PayIn Requirements
+
+<Accordion title="PayIn Security Requirements">
+#### Bank Transfer Security
+- [ ] Send funds ONLY to bank details returned in quotation
+- [ ] Implement strict validation checks before sending fiat
+- [ ] Double-check bank account details match quotation
+
+#### Transaction Management
+- [ ] Send EXACTLY the amount specified in quotation
+- [ ] Complete transfers BEFORE quotation expiry_time
+- [ ] Verify bank transfer confirmation
+- [ ] Use correct UTR/Reference number for payins
+
+#### Monitoring & Timing
+- [ ] Create new quotations for expired ones
+- [ ] Implement comprehensive transaction monitoring
+- [ ] Set up failure alerts
+- [ ] Establish delayed transaction handling process (>24h)
+</Accordion>
+
+
+### 3. Critical Payout Requirements
 
 <Accordion title="Payout Security Requirements">
 #### Wallet Security
@@ -44,7 +66,7 @@ Before going live with your integration, ensure you've completed all the followi
 - [ ] Establish delayed transaction handling process (>24h)
 </Accordion>
 
-### 3. Testing & Verification
+### 4. Testing & Verification
 
 <Accordion title="Payout Flow Testing">
 #### Basic Testing
@@ -60,7 +82,7 @@ Before going live with your integration, ensure you've completed all the followi
 - [ ] Test failure scenarios and recovery
 </Accordion>
 
-### 4. Webhook Integration
+### 5. Webhook Integration
 
 <Accordion title="Webhook Setup & Testing">
 #### Configuration
@@ -75,7 +97,7 @@ Before going live with your integration, ensure you've completed all the followi
 - [ ] Implement idempotent processing
 </Accordion>
 
-### 5. Error Handling
+### 6. Error Handling
 
 <Accordion title="Error Management">
 #### Technical Testing
@@ -90,7 +112,7 @@ Before going live with your integration, ensure you've completed all the followi
 - [ ] Maintain detailed transaction logs
 </Accordion>
 
-### 6. Production Deployment
+### 7. Production Deployment
 
 <Accordion title="Production Readiness">
 #### Setup
