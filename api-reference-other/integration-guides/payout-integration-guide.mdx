@@ -22,8 +22,8 @@ Payouts enable your application to seamlessly transfer funds to your customers' 
 </Note>
 
 <Warning>
-  **Warning**: Send funds and initiate the payout before the quotation
-  expiry time.
+  **Warning**: Send funds and initiate the payout before the quotation expiry
+  time.
 </Warning>
 
 ## Integration at a Glance
@@ -46,8 +46,9 @@ The Payout integration flow for **[Other Applications]** involves the following 
 flowchart TD
     Start([Start Process]) --> CheckKYC[Check KYC & Bank Status]
     CheckKYC -->|YES| AMLScreening[AML Screening]
-    CheckKYC -->|NO| AddKYC[Complete KYC & Bank Verification]
-    
+    CheckKYC -->|NO| AddKYC["Complete KYC & Bank 
+    Verification"]
+
     AddKYC -->|API Call| KycAPI[/API: /kyc/add-kyc-data/]
     KycAPI --> CheckKYC
 
@@ -99,6 +100,7 @@ sequenceDiagram
     participant API as DollarPe API
     participant Blockchain as Blockchain Network
     participant Bank as Banking System
+    participant Webhook as Webhook System
 
     App->>API: Check KYC & Bank Status
     API->>App: Return KYC & Bank Status
@@ -129,11 +131,19 @@ sequenceDiagram
                 Blockchain->>API: Transaction Confirmed
                 API->>Bank: Initiate Bank Transfer
                 Bank->>API: Transfer Successful
-                App->>API: Poll for Status Updates
+
+                API->>Webhook: Send Status Update (COMPLETED)
+                Webhook->>App: Webhook Notification (COMPLETED)
+
+                App->>API: Poll for Status Updates (optional)
                 API->>App: Status: COMPLETED
             else Failed Transaction
                 Blockchain->>API: Transaction Invalid/Not Found
-                App->>API: Poll for Status Updates
+
+                API->>Webhook: Send Status Update (FAILED)
+                Webhook->>App: Webhook Notification (FAILED)
+
+                App->>API: Poll for Status Updates (optional)
                 API->>App: Status: FAILED
                 App->>App: Handle Error & Notify User
             end
@@ -149,7 +159,120 @@ sequenceDiagram
 
 ## Step-by-Step Integration Guide
 
-### Step 1: Check Customer KYC and Bank Account status
+### Step 1: Fetch Configurations
+
+Before starting the integration, fetch the basic configuration to understand supported assets, networks, and limits:
+
+<Tabs>
+  <Tab title="API Request">
+  ```javascript
+  GET /payout/configuration
+  ```
+  </Tab>
+  
+  <Tab title="Response">
+  ```json
+  {
+    "status": true,
+    "message": "Success",
+    "data": {
+        "supported_fiats": [
+            "inr"
+        ],
+        "supported_assets": [
+            "usdt",
+            "usdc"
+        ],
+        "supported_networks": [
+            "polygon",
+            "eth",
+            "bsc",
+            "sepolia",
+            "solana",
+            "tron",
+            "arbitrum"
+        ],
+        "coin_limits": {
+            "usdt": {
+                "polygon": {
+                    "min": 30,
+                    "max": 5855
+                },
+                "eth": {
+                    "min": 30,
+                    "max": 5855
+                },
+                "bsc": {
+                    "min": 30,
+                    "max": 5855
+                },
+                "sepolia": {
+                    "min": 30,
+                    "max": 5855
+                },
+                "solana": {
+                    "min": 30,
+                    "max": 5855
+                },
+                "tron": {
+                    "min": 30,
+                    "max": 5855
+                },
+                "arbitrum": {
+                    "min": 30,
+                    "max": 5855
+                }
+            },
+            "usdc": {
+                "polygon": {
+                    "min": 30,
+                    "max": 5914
+                },
+                "eth": {
+                    "min": 30,
+                    "max": 5914
+                },
+                "bsc": {
+                    "min": 30,
+                    "max": 5914
+                },
+                "sepolia": {
+                    "min": 30,
+                    "max": 5914
+                },
+                "solana": {
+                    "min": 30,
+                    "max": 5914
+                },
+                "tron": {
+                    "min": 30,
+                    "max": 5914
+                },
+                "arbitrum": {
+                    "min": 30,
+                    "max": 5914
+                }
+            }
+        }
+    }
+}
+  ```
+  </Tab>
+</Tabs>
+
+**Key Fields:**
+
+- `supported_fiats`: List of supported fiat currencies
+- `supported_assets`: List of supported cryptocurrencies
+- `supported_networks`: List of supported blockchain networks
+- `coin_limits`: Minimum and maximum limits for each supported cryptocurrency
+
+<Tip>
+  If you are storing these configurations in your application to validate user inputs and
+  display appropriate options, make sure to update this data periodically.
+</Tip>
+
+### Step 2: Check Customer KYC and Bank Account status
 
 Before initiating any payout, ensure the customer is KYC-verified and has a verified bank account.
 
@@ -159,15 +282,19 @@ Before initiating any payout, ensure the customer is KYC-verified and has a veri
   GET /customer/{customer_id}
   Response:
   {
-    "status": true,
-    "message": "Success",
-    "data": {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "status": "VERIFIED",
-      "full_name": "John Doe",
-      "email": "john.doe@example.com",
-      "phone": "+1234567890"
-    }
+      "status": true,
+      "message": "Success",
+      "data": {
+          "id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
+          "client_reference_id": "client_id_1",
+          "full_name": "John Doe",
+          "email": "john@example.com",
+          "phone": "+911234123412",
+          "country": "IND",
+          "type": "INDIVIDUAL",
+          "status": "UNVERIFIED",
+          "failure_reason": null
+      }
   }
   ```
   </Tab>
@@ -199,7 +326,7 @@ Before initiating any payout, ensure the customer is KYC-verified and has a veri
   </Tab>
 </Tabs>
 
-### Step 2: Fetch Exchange Rate
+### Step 3: Fetch Exchange Rate
 
 Get the real-time exchange rate for a given crypto asset.
 
@@ -279,7 +406,7 @@ After getting the current rate, create a quotation to lock in the rate and recei
       "data": {
           "id": "c9f343b5-ff56-4d52-93af-0962f75242b7",
           "customer_id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
-          "bank_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
+          "bank_account_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
           "asset": "USDT",
           "network": "BSC",
           "fiat": "INR",
@@ -316,8 +443,7 @@ After getting the current rate, create a quotation to lock in the rate and recei
 - `expiry_time`: Time until the quotation expires
 
 <Note>
-  The quotation is valid for only 5 minutes as indicated by the `expiry_time`.
-  You must complete your transaction before this time expires.
+  You must complete your transaction before the `expiry_time`.
 </Note>
 
 ### Step 4: Send Crypto Funds
@@ -346,7 +472,7 @@ This step happens outside our API, using your preferred cryptocurrency wallet or
   verify all details are correct.
 </Tip>
 
-### Step 4: Initiate the Payout
+### Step 5: Initiate the Payout
 
 After sending the funds, create a payout request with the transaction details:
 
@@ -373,7 +499,7 @@ After sending the funds, create a payout request with the transaction details:
         "quotation_id": "c9f343b5-ff56-4d52-93af-0962f75242b7",
         "customer_id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
         "client_reference_id": "payout_first_test",
-        "bank_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
+        "bank_account_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
         "asset": "USDT",
         "network": "BSC",
         "fiat": "INR",
@@ -405,7 +531,7 @@ After sending the funds, create a payout request with the transaction details:
 - `quotation_id`: ID received from Step 2
 - `customer_id`: ID of the KYC-verified customer
 - `client_reference_id`: Your internal reference ID for tracking (optional)
-- `bank_id`: ID of the verified bank account
+- `bank_account_id`: ID of the verified bank account
 - `transaction_hash`: The blockchain transaction ID/hash from Step 3
 - `status`: Current status of the payout
 
@@ -414,9 +540,38 @@ After sending the funds, create a payout request with the transaction details:
   during high volume periods or in case of bank processing delays.
 </Note>
 
-### Step 5: Monitor Transaction Status
+### Step 6: Monitor Transaction Status
 
-After initiating the payout, you need to track its status by polling the API:
+After initiating the payout, you need to track its status. There are two ways to monitor this status:
+
+#### Option A: Webhook Integration (Recommended)
+
+Webhooks provide real-time updates about payout status changes. Configure your webhook endpoint to receive these notifications:
+
+```javascript
+// Sample webhook payload for payout status updates
+{
+  "type": "PAYOUT",
+  "id": "ac7c5360-0b57-4fb7-88f2-df1c371930ee",
+  "event": "COMPLETED", // or "FAILED", "PROCESSING"
+  "failure_reason": null, // Contains failure reason if status is "FAILED"
+  "timestamp": "2025-03-21T13:37:53.208137Z",
+  "data": {
+    "utr": "123456789012", // Bank reference number (only for COMPLETED status)
+    "receiving_amount": "858.96000000",
+    "fiat": "INR"
+  }
+}
+```
+
+<Tip>
+  If using webhooks, ensure your server acknowledges receipt with a 200 OK
+  response to prevent duplicate notifications.
+</Tip>
+
+#### Option B: Status Polling
+
+If webhooks aren't feasible, you can periodically check the status using the payout endpoint:
 
 <Tabs>
   <Tab title="API Request">
@@ -435,7 +590,7 @@ After initiating the payout, you need to track its status by polling the API:
         "quotation_id": "c9f343b5-ff56-4d52-93af-0962f75242b7",
         "customer_id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
         "client_reference_id": "payout_first_test",
-        "bank_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
+        "bank_account_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
         "asset": "USDT",
         "network": "BSC",
         "fiat": "INR",
@@ -465,13 +620,18 @@ After initiating the payout, you need to track its status by polling the API:
   </Tab>
 </Tabs>
 
+<Tip>
+  If using the polling approach, we recommend checking no more frequently than
+  once every 60 seconds to avoid API rate limits.
+</Tip>
+
 **Possible Status Values:**
 
 - `PROCESSING`: Initial state, waiting for crypto confirmation
 - `SUCCESS`: Payout has been successfully completed and UTR is generated
 - `FAILED`: Payout has failed and failure_reason is updated
 
-### Step 6: Handle Transaction Completion
+### Step 7: Handle Transaction Completion
 
 #### Successful Transactions
 
@@ -503,32 +663,6 @@ Before going live, test your integration thoroughly in our sandbox environment:
   using specific test values. Refer to our [Sandbox Testing
   Guide](/guides/sandbox-testing) for details.
 </Tip>
-
-## Common Issues & Solutions
-
-<Accordion title="Rate Changed Between Quotation and Transaction">
-  Exchange rates are locked once you create a quotation. However, if your
-  quotation expires, you'll need to create a new one with the current rate.
-  Always check the expiry time and complete your transaction before it expires.
-</Accordion>
-
-<Accordion title="Transaction Not Being Detected">
-  Ensure you're using the correct transaction hash and that the transaction has
-  sufficient blockchain confirmations. Most networks require at least 6-12
-  confirmations before a transaction is considered final.
-</Accordion>
-
-<Accordion title="Funds Not Received by Customer">
-  If the customer reports not receiving funds, verify the bank account details
-  and check the transaction status. If the status shows as completed but funds
-  haven't arrived, there might be a delay in the banking system.
-</Accordion>
-
-<Accordion title="Payout Taking Too Long">
-  Most payouts complete within 30-60 minutes, but can take up to 24 hours during
-  high volume periods or bank processing delays. If a payout is pending for more
-  than 24 hours, contact our support team.
-</Accordion>
 
 ## Getting Help
 
