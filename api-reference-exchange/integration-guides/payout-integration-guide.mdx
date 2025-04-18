@@ -4,32 +4,39 @@ icon: "book-open-cover"
 iconType: "solid"
 ---
 
-<Highlight>
-  # Payout Integration Guide
-</Highlight>
+<Highlight># Payout Integration Guide</Highlight>
 
-## What are Payouts and Why They Matter
+## What Are Payouts and Why They Matter
 
-Payouts allow your application to transfer funds to your customers' bank accounts using cryptocurrency as the funding source. This guide will walk you through integrating DollarPe's Payout system into your application, whether you're a developer or a business owner.
+Payouts enable your application to seamlessly transfer funds to your customers' bank accounts, using cryptocurrency as the funding source. Whether you're a developer or a business owner, this guide will help you integrate DollarPe's Payout system.
 
 <Note>
-**Before You Begin:**
-- Ensure you have completed the [authentication setup](/guides/introduction)
-- Configure your [webhook endpoint](/api-reference-other/endpoint/webhook) for real-time updates
-- Review [supported stablecoins and blockchains](/guides/support/stablecoins_and_blockchains)
-- Verify your users have completed KYC and have at least one verified bank account
+  **Prerequisites:** 
+  - Ensure you have completed the [authentication setup](/guides/authentication/authentication) 
+  - Configure your [webhook endpoint](/guides/webhook) for real-time updates 
+  - Review the following guides to ensure compatibility: 
+    - **[supported geographies](/guides/support/geographies)** 
+    - **[supported stablecoins and blockchains](/guides/support/stablecoins_and_blockchains)** 
+    - **[supported fiat methods](/guides/support/fiatMethods)** 
+  - Verify your users have completed KYC and have at least one verified bank account
 </Note>
+
+<Warning>
+  **Warning**: Initiate the payout before the quotation expiry time.
+</Warning>
 
 ## Integration at a Glance
 
-The Payout integration follows these main steps:
+The Payout integration flow for centralized exchanges involves the following key steps:
 
-1. Fetch current exchange rates
-2. Create a quotation
-3. Send cryptocurrency to the provided wallet address
-4. Initiate the payout with transaction details
-5. Monitor the transaction status
-6. Handle transaction completion
+1. **Validate user requirements** – Ensure the customer has completed KYC verification and has at least one verified bank account added
+2. **Fetch exchange rates** – Retrieve the latest cryptocurrency exchange rates
+3. **Create a quotation** – Generate a quote for the desired payout amount
+4. **Place exchange order** – Place an order on your centralized exchange
+5. **Initiate the payout** – Start the payout using the exchange order ID
+6. **Link exchange transfer ID** - Link the exchange transfer ID with the payout
+7. **Monitor transaction status** – Track the progress of the transaction
+8. **Handle completion** – Finalize the payout once the transaction is confirmed
 
 ## Visual Integration Flow
 
@@ -37,33 +44,36 @@ The Payout integration follows these main steps:
 
 ```mermaid
 flowchart TD
-    Start([Start Integration]) --> KYCCheck[Verify KYC'ed User with Bank Account]
-    
-    KYCCheck --> FetchRate[Fetch Current Rate]
-    FetchRate -->|API Call| FetchRateAPI[/API: /payout/fetch-rate/]
-    
-    FetchRateAPI --> CreateQuote[Create Quotation]
-    CreateQuote -->|API Call| QuoteAPI[/API: /payout/quotation/]
-    
-    QuoteAPI --> SendFunds[Send Crypto Funds]
-    SendFunds --> WalletTransfer[Transfer to Provided Wallet]
-    
-    WalletTransfer --> CreatePayout[Create Payout]
-    CreatePayout -->|API Call| PayoutAPI[/API: /payout/initiate/]
-    
-    PayoutAPI --> MonitorStatus{Monitor Status}
-    
-    MonitorStatus -->|Polling| StatusCheck[Poll Status API]
-    
-    StatusCheck --> StatusEval{Transaction Status}
-    
-    StatusEval -->|Success| Success[Payout Completed]
-    StatusEval -->|Failed| Failed[Payout Failed]
-    
-    Failed --> HandleFailure[Handle Failure]
-    HandleFailure --> ContactSupport[Contact Support if Needed]
-    
-    Success --> Complete([Integration Complete])
+    Start([Start Process]) --> CheckKYC["Check KYC & Bank Status"]
+    CheckKYC -->|YES| AMLScreening["AML Screening"]
+    CheckKYC -->|NO| AddKYC["Complete KYC & Bank Verification"]
+
+    AddKYC -->|API Call| KycAPI[/"API: /kyc/add-kyc-data/"/]
+    KycAPI --> CheckKYC
+
+    AMLScreening -->|PASSED| CreateQuote["Create Quotation"]
+    AMLScreening -->|FAILED| ContactSupport["Contact Support"]
+
+    CreateQuote -->|API Call| QuoteAPI[/"API: /payout/quotation/"/]
+    QuoteAPI --> PlaceOrder["Exchange places order"]
+    PlaceOrder -->|Get OrderId| InitiatePayout["Create Payout"]
+
+    InitiatePayout -->|API Call| PayoutAPI[/"API: /payout/initiate/"/]
+    PayoutAPI --> LinkTransfer["Link Exchange TransferId"]
+
+    LinkTransfer -->|API Call| LinkAPI[/"API: /update-transfer-id/"/]
+    LinkAPI --> WebhookNotification["Webhook Notification"]
+    LinkAPI --> PollStatus["Order Polling"]
+
+    WebhookNotification --> PayoutStatus{"Check Payout Status"}
+    PollStatus --> PayoutStatus
+
+    PayoutStatus -->|SUCCESS| PayoutDone["Payout Done"]
+    PayoutStatus -->|FAILED| HandleFail["Handle Failure"]
+    PayoutStatus -->|PROCESSING| WaitRetry["Recheck Later"]
+
+    HandleFail --> ContactSupport
+    PayoutDone --> End([End Process])
 
     classDef startEndNode fill:#dcedc8,stroke:#558b2f,stroke-width:2px,color:#000
     classDef mainNode fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
@@ -72,68 +82,129 @@ flowchart TD
     classDef failureNode fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000
     classDef waitNode fill:#fff8e1,stroke:#ff8f00,stroke-width:2px,color:#000
 
-    class Start,Complete startEndNode
-    class KYCCheck,FetchRate,CreateQuote,SendFunds,WalletTransfer,CreatePayout,HandleFailure,ContactSupport mainNode
-    class FetchRateAPI,QuoteAPI,PayoutAPI,StatusCheck apiNode
-    class Success stateNode
-    class Failed failureNode
-    class MonitorStatus,StatusEval waitNode
+    class Start,End startEndNode
+    class CheckKYC,AddKYC,AMLScreening,CreateQuote,PlaceOrder,InitiatePayout,LinkTransfer,HandleFail,ContactSupport,WaitRetry mainNode
+    class KycAPI,QuoteAPI,PayoutAPI,LinkAPI apiNode
+    class WebhookNotification,PollStatus waitNode
+    class PayoutDone stateNode
+    class PayoutStatus decision
 ```
-
-<Note>
-**Important Timing**: Quotations are typically valid for 5 minutes. Send funds and initiate the payout before the quotation expiry time.
-</Note>
 
 ### Sequence Diagram: Detailed Process Flow
 
 ```mermaid
 sequenceDiagram
-    participant App as Your Application
+    participant Exchange as Centralized Exchange
     participant API as DollarPe API
-    participant Blockchain as Blockchain Network
     participant Bank as Banking System
-    
-    App->>API: Fetch Current Rate
-    API->>App: Return Current Exchange Rate
-    
-    App->>API: Create Quotation
-    API->>App: Return Quotation with Wallet Address
-    
-    App->>Blockchain: Send Crypto Funds to Wallet
-    Note over App,Blockchain: Must use exact amount and correct address
-    
-    App->>API: Initiate Payout with Transaction Hash
-    API->>App: Payout Created with payout_id
-    API->>Blockchain: Verify Transaction on Blockchain
-    
-    alt Successful Transaction
-        Blockchain->>API: Transaction Confirmed
-        API->>Bank: Initiate Bank Transfer
-        Bank->>API: Transfer Successful
-        App->>API: Poll for Status Updates
-        API->>App: Status: COMPLETED
-    else Failed Transaction
-        Blockchain->>API: Transaction Invalid/Not Found
-        App->>API: Poll for Status Updates
-        API->>App: Status: FAILED
-        App->>App: Handle Error & Notify User
+
+    Exchange->>API: Check KYC & Bank Status
+    API->>Exchange: Return KYC & Bank Status
+
+    alt KYC & Bank Verified
+        Exchange->>API: Create Quotation
+        Note over API: Internal AML Screening
+        alt AML Passed
+            API->>Exchange: Return Quotation
+        else AML Failed
+            API->>Exchange: Return AML Error
+            Exchange->>Exchange: Contact Support
+        end
+
+        Exchange->>Exchange: Place Order in Exchange System
+        Note over Exchange: Internal Order Processing
+        Exchange->>Exchange: Get OrderId
+
+        Exchange->>API: Initiate Payout with OrderId
+        API->>Exchange: Payout Created with payout_id
+
+        Exchange->>API: Link Exchange TransferId
+        API->>Exchange: TransferId Linked Successfully
+
+        par Webhook Notification
+            API->>Exchange: Status Updates via Webhook
+        and Order Polling
+            Exchange->>API: Poll for Status Updates
+            API->>Exchange: Return Current Status
+        end
+
+        alt Successful Transaction
+            API->>Bank: Initiate Bank Transfer
+            Bank->>API: Transfer Successful
+            API->>Exchange: Status: SUCCESS
+        else Failed Transaction
+            API->>Exchange: Status: FAILED
+            Exchange->>Exchange: Handle Error & Notify User
+        end
+    else KYC & Bank Not Verified
+        API->>Exchange: KYC/Bank Verification Required
+        Exchange->>Exchange: Complete KYC & Bank Verification
     end
 ```
 
 ## Step-by-Step Integration Guide
 
-### Step 1: Fetch Current Exchange Rate
+### Step 1: Check Customer KYC and Bank Account status
 
-First, retrieve the current exchange rate to provide accurate pricing information to your users.
+Before initiating any payout, ensure the customer is KYC-verified and has a verified bank account.
+
+<Tabs>
+  <Tab title="Fetch Customer Info">
+  ```javascript
+  GET /customer/{customer_id}
+  Response:
+  {
+    "status": true,
+    "message": "Success",
+    "data": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "status": "VERIFIED",
+      "full_name": "John Doe",
+      "email": "john.doe@example.com",
+      "phone": "+1234567890"
+    }
+  }
+  ```
+  </Tab>
+  
+  <Tab title="Fetch Bank Account Info">
+  ```javascript
+  GET /bank/list/{customer_id}
+  {
+    "status": true,
+    "message": "Success",
+    "data": {
+      "count": 1,
+      "next": null,
+      "previous": "<url>",
+      "results": [
+        {
+          "id": "4e6f1b20-a73c-11ec-b909-0242ac120002",
+          "customer_id": "550e8400-e29b-41d4-a716-446655440000",
+          "account_number": "123456789012",
+          "ifsc_code": "ABC123456",
+          "vpa": "testing@upi",
+          "bank_account_type": "ACCOUNT_DETAILS",
+          "bank_account_status": "VERIFIED"
+        }
+      ]
+    }
+  }
+  ```
+  </Tab>
+</Tabs>
+
+### Step 2: Fetch Exchange Rate
+
+Get the real-time exchange rate for a given crypto asset.
 
 <Tabs>
   <Tab title="API Request">
   ```javascript
-  POST /payout/fetch-rate
+  GET /payout/fetch-rate
   {
-    "asset": "USDT",
-    "network": "BSC",
-    "amount": 100.5
+    "asset": "usdt",
+    "fiat": "inr",
   }
   ```
   </Tab>
@@ -145,7 +216,6 @@ First, retrieve the current exchange rate to provide accurate pricing informatio
     "message": "Success",
     "data": {
       "asset": "USDT",
-      "network": "BSC",
       "fiat": "INR",
       "rate": 87.2
     }
@@ -155,27 +225,19 @@ First, retrieve the current exchange rate to provide accurate pricing informatio
 </Tabs>
 
 **Key Fields:**
+
 - `asset`: Cryptocurrency to be used (e.g., "USDT", "USDC")
-- `network`: Blockchain network (e.g., "BSC", "POLYGON", "TRON")
 - `amount`: Amount in cryptocurrency
 - `rate`: Current exchange rate (amount of fiat per 1 unit of crypto)
 
 <Tip>
-Rates fluctuate constantly based on market conditions. We recommend fetching a new rate before each transaction to ensure accuracy.
+  Rates fluctuate constantly based on market conditions. We recommend fetching a
+  new rate before each transaction to ensure accuracy.
 </Tip>
 
-### Step 2: Create a Quotation
+### Step 3: Create a Quotation
 
-After getting the current rate, create a quotation to lock in the rate and receive the wallet address for sending funds.
-
-<Warning>
-**CRITICAL SECURITY NOTICE**: 
-- You MUST whitelist the wallet address provided in the quotation response
-- You MUST send funds ONLY through this whitelisted wallet address
-- Funds sent from non-whitelisted addresses or to incorrect addresses WILL BE PERMANENTLY LOST
-- Only use supported asset and network combinations
-- Double-check all details before proceeding
-</Warning>
+After getting the current rate, create a quotation to lock in the rate.
 
 <Tabs>
   <Tab title="API Request">
@@ -184,7 +246,6 @@ After getting the current rate, create a quotation to lock in the rate and recei
   {
     "asset": "usdt",
     "fiat": "inr",
-    "network": "bsc",
     "sending_amount": "51",
     "customer_id": "def8b740-99f9-4cba-bc9e-99de57e927b4",
     "bank_account_id": "4e6f1b20-a73c-11ec-b909-0242ac120002"
@@ -195,72 +256,55 @@ After getting the current rate, create a quotation to lock in the rate and recei
   <Tab title="Response">
   ```json
   {
-    "status": true,
-    "message": "Success",
-    "data": {
-      "id": "2e104290-07c8-49f1-a5ca-0d27f0078f8a",
-      "customer_id": "def8b740-99f9-4cba-bc9e-99de57e927b4",
-      "bank_id": "4e6f1b20-a73c-11ec-b909-0242ac120002",
-      "asset": "USDT",
-      "network": "BSC",
-      "fiat": "INR",
-      "sending_amount": 51,
-      "rate": 82.5,
-      "receiving_amount": 4144.6,
-      "fees": {
-        "dollarpe_fees": 21.04,
-        "tds_fees": 41.86
-      },
-      "wallet_address": "0x2EAf174Bf1CD624eD63e3C8c74Dd66B66e5cb273",
-      "created_at": "2025-03-08T07:31:11.163005Z",
-      "expiry_time": "2025-03-08T07:36:11.163005Z"
-    }
+      "status": true,
+      "message": "Success",
+      "data": {
+          "id": "c9f343b5-ff56-4d52-93af-0962f75242b7",
+          "customer_id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
+          "bank_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
+          "asset": "USDT",
+          "fiat": "INR",
+          "sending_amount": 10,
+          "rate": 87.2,
+          "receiving_amount": 858.96,
+          "fees": {
+              "client_fee_fiat": "",
+              "client_fee_crypto": "",
+              "dollarpe_fee": "",
+              "pg_fee": "",
+              "client_gst_fiat": "",
+              "client_gst_crypto": "",
+              "dollarpe_gst": "",
+              "pg_gst": "",
+              "tds": "",
+              "gross_exchange_rate": ""
+          },
+          "created_at": "2025-03-21T13:29:07.828029Z",
+          "expiry_time": "2025-03-21T13:39:07.828029Z"
+      }
   }
   ```
   </Tab>
 </Tabs>
 
 **Key Fields:**
+
 - `asset`: Cryptocurrency to be used
-- `network`: Blockchain network for the transaction
 - `fiat`: Fiat currency to receive (e.g., "INR" for Indian Rupee)
 - `sending_amount`: Amount in cryptocurrency
 - `customer_id`: ID of the KYC-verified customer
 - `wallet_address`: Address to send funds to (MUST be whitelisted)
 - `expiry_time`: Time until the quotation expires
 
-<Note>
-The quotation is valid for only 5 minutes as indicated by the `expiry_time`. You must complete your transaction before this time expires.
-</Note>
+<Note>You must complete your transaction before this time expires.</Note>
 
-### Step 3: Send Crypto Funds
+### Step 4: Place Exchange Order
 
-Once you have the quotation, send the cryptocurrency to the provided wallet address:
+Once you have the quotation, place an order on your centralized exchange. This order will be used to initiate the payout process.
 
-<Warning>
-**IMPORTANT SAFEGUARDS**: 
-- You MUST whitelist and use ONLY the wallet address provided in the quotation
-- Send EXACTLY the amount specified in the quotation
-- Ensure you select the CORRECT blockchain network
-- Complete the transfer BEFORE the quotation expires
-- Failure to follow these guidelines will result in PERMANENT LOSS OF FUNDS
-</Warning>
+### Step 5: Initiate the Payout
 
-This step happens outside our API, using your preferred cryptocurrency wallet or exchange. Ensure you:
-
-1. Whitelist the wallet address exactly as provided in the quotation
-2. Double-check the network selection matches what you specified in the quotation
-3. Send the exact amount specified in the `sending_amount` field
-4. Obtain the transaction hash (txid) after sending
-5. Verify the transaction is confirmed on the blockchain
-
-<Tip>
-For large transactions, we recommend doing a small test transaction first to verify all details are correct.
-</Tip>
-
-### Step 4: Initiate the Payout
-
-After sending the funds, create a payout request with the transaction details:
+After placing an order on your centralized exchange, create a payout request with the exchange order ID:
 
 <Tabs>
   <Tab title="API Request">
@@ -270,7 +314,7 @@ After sending the funds, create a payout request with the transaction details:
     "quotation_id": "2e104290-07c8-49f1-a5ca-0d27f0078f8a",
     "customer_id": "def8b740-99f9-4cba-bc9e-99de57e927b4",
     "client_reference_id": "testUser123",
-    "transaction_hash": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406884d14f8108bc"
+    "exchange_order_id": "898990982672892"
   }
   ```
   </Tab>
@@ -281,25 +325,31 @@ After sending the funds, create a payout request with the transaction details:
     "status": true,
     "message": "Success",
     "data": {
-      "id": "5b75096f-de8d-44b4-9230-d94e6948abb6",
-      "quotation_id": "2e104290-07c8-49f1-a5ca-0d27f0078f8a",
-      "customer_id": "def8b740-99f9-4cba-bc9e-99de57e927b4",
-      "client_reference_id": "testUser123",
-      "bank_id": "e75f62f0-db9e-4904-8103-d6f14f67f5dc",
-      "asset": "USDT",
-      "network": "BSC",
-      "fiat": "INR",
-      "rate": 82.5,
-      "sending_amount": 51,
-      "receiving_amount": 4144.6,
-      "fees": {
-        "dollarpe_fees": 21.04,
-        "tds_fees": 41.86
-      },
-      "wallet_address": "0x2EAf174Bf1CD624eD63e3C8c74Dd66B66e5cb273",
-      "transaction_hash": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406884d14f8108bc",
-      "created_at": "2025-03-08T07:31:24.770179Z",
-      "status": "PROCESSING"
+        "id": "ac7c5360-0b57-4fb7-88f2-df1c371930ee",
+        "quotation_id": "c9f343b5-ff56-4d52-93af-0962f75242b7",
+        "customer_id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
+        "client_reference_id": "payout_first_test",
+        "bank_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
+        "asset": "USDT",
+        "fiat": "INR",
+        "rate": 87.2,
+        "sending_amount": 10,
+        "receiving_amount": 858.96,
+        "fees": {
+            "client_fee_fiat": "",
+            "client_fee_crypto": "",
+            "dollarpe_fee": "",
+            "pg_fee": "",
+            "client_gst_fiat": "",
+            "client_gst_crypto": "",
+            "dollarpe_gst": "",
+            "pg_gst": "",
+            "tds": "",
+            "gross_exchange_rate": ""
+        },
+        "exchange_order_id": "898990982672892",
+        "created_at": "2025-03-21T13:37:53.208137Z",
+        "status": "PROCESSING"
     }
   }
   ```
@@ -307,18 +357,20 @@ After sending the funds, create a payout request with the transaction details:
 </Tabs>
 
 **Key Fields:**
-- `quotation_id`: ID received from Step 2
+
+- `quotation_id`: ID received from Step 3
 - `customer_id`: ID of the KYC-verified customer
 - `client_reference_id`: Your internal reference ID for tracking (optional)
 - `bank_id`: ID of the verified bank account
-- `transaction_hash`: The blockchain transaction ID/hash from Step 3
+- `exchange_order_id`: ID of the order placed at the centralized exchange
 - `status`: Current status of the payout
 
 <Note>
-Most payouts are processed within 30-60 minutes, but can take up to 24 hours during high volume periods or in case of bank processing delays.
+  Most payouts are processed within 30-60 minutes, but can take up to 24 hours
+  during high volume periods or in case of bank processing delays.
 </Note>
 
-### Step 5: Monitor Transaction Status
+### Step 6: Monitor Transaction Status
 
 After initiating the payout, you need to track its status by polling the API:
 
@@ -335,44 +387,48 @@ After initiating the payout, you need to track its status by polling the API:
     "status": true,
     "message": "Success",
     "data": {
-      "id": "08441dd3-8cc0-405c-932b-7fdbc8894f66",
-      "quotation_id": "08441dd3-8cc0-405c-932b-7fdbc8894f66",
-      "customer_id": "dfd8db74-2fbb-46d1-9a93-b90f156e13b4",
-      "client_reference_id": "testUser123",
-      "bank_id": "e75f62f0-db9e-4904-8103-d6f14f67f5dc",
-      "asset": "USDT",
-      "network": "POLYGON",
-      "fiat": "INR",
-      "sending_amount": "10",
-      "rate": "89.4",
-      "receiveing_amount": "870",
-      "fees": {
-        "tds_fees": "",
-        "dollarpe_fees": ""
-      },
-      "transaction_hash": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406684d4f809ac",
-      "wallet_address": "0x71C7656EC7ab88b098def1B5f6d8976F",
-      "status": "SUCCESS",
-      "failure_reason": null,
-      "utr": "RATN0329SJDH0",
-      "created_at": "2025-02-11T01:30:08.000Z",
-      "updated_at": "2025-02-11T01:30:08.000Z"
+        "id": "ac7c5360-0b57-4fb7-88f2-df1c371930ee",
+        "quotation_id": "c9f343b5-ff56-4d52-93af-0962f75242b7",
+        "customer_id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
+        "client_reference_id": "payout_first_test",
+        "bank_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
+        "asset": "USDT",
+        "network": "BSC",
+        "fiat": "INR",
+        "sending_amount": "10.00000000",
+        "rate": "87.20000000",
+        "receiving_amount": "858.96000000",
+        "fees": {
+              "client_fee_fiat": "",
+              "client_fee_crypto": "",
+              "dollarpe_fee": "",
+              "pg_fee": "",
+              "client_gst_fiat": "",
+              "client_gst_crypto": "",
+              "dollarpe_gst": "",
+              "pg_gst": "",
+              "tds": "",
+              "gross_exchange_rate": ""
+          },
+        "exchange_order_id": "",
+        "status": "PROCESSING",
+        "utr": null,
+        "failure_reason": "",
+        "created_at": "2025-03-21T13:37:53.208137Z",
+        "updated_at": "2025-03-21T13:37:53.208142Z"
     }
   }
   ```
   </Tab>
 </Tabs>
 
-<Tip>
-If using the polling approach, we recommend checking no more frequently than once every 5 minutes to avoid API rate limits.
-</Tip>
-
 **Possible Status Values:**
+
 - `PROCESSING`: Initial state, waiting for crypto confirmation
 - `SUCCESS`: Payout has been successfully completed and UTR is generated
 - `FAILED`: Payout has failed and failure_reason is updated
 
-### Step 6: Handle Transaction Completion
+### Step 7: Handle Transaction Completion
 
 #### Successful Transactions
 
@@ -384,8 +440,44 @@ When a payout is completed successfully:
 4. Store the transaction details for future reference and customer support
 
 <Warning>
-If your transaction fails due to sending funds to the wrong address or network, recovery may not be possible. Always double-check these details before sending.
+  If your transaction fails due to sending funds to the wrong address or
+  network, recovery may not be possible. Always double-check these details
+  before sending.
 </Warning>
+
+### Step 8: Link Exchange Order ID with Exchange Transfer ID
+
+After the payout is successful, you must link the exchange transfer ID related to the crypto sent with the exchange order ID:
+
+<Tabs>
+  <Tab title="API Request">
+  ```javascript
+  PATCH /payout/update-transfer-id
+  {
+    "exchange_order_id": "92823910232129090",
+    "exchange_transfer_id": "9282391023212"
+  }
+  ```
+  </Tab>
+  
+  <Tab title="Response">
+  ```json
+  {
+    "status": true,
+    "message": "Success",
+    "data": {
+        "exchange_order_id": "92823910232129090",
+        "exchange_transfer_id": "9282391023212"
+    }
+  }
+  ```
+  </Tab>
+</Tabs>
+
+**Key Fields:**
+
+- `exchange_order_id`: The order ID from your centralized exchange
+- `exchange_transfer_id`: The transfer ID associated with the crypto transaction
 
 ## Testing Your Integration
 
@@ -398,66 +490,46 @@ Before going live, test your integration thoroughly in our sandbox environment:
 3. Test both successful and failed transaction scenarios
 
 <Tip>
-In the sandbox environment, you can simulate different failure scenarios by using specific test values. Refer to our [Sandbox Testing Guide](/guides/sandbox-testing) for details.
+  In the sandbox environment, you can simulate different failure scenarios by
+  using specific test values. Refer to our [Sandbox Testing
+  Guide](/guides/sandbox-testing) for details.
 </Tip>
 
 ## Common Issues & Solutions
 
 <Accordion title="Rate Changed Between Quotation and Transaction">
-Exchange rates are locked once you create a quotation. However, if your quotation expires, you'll need to create a new one with the current rate. Always check the expiry time and complete your transaction before it expires.
+  Exchange rates are locked once you create a quotation. However, if your
+  quotation expires, you'll need to create a new one with the current rate.
+  Always check the expiry time and complete your transaction before it expires.
 </Accordion>
 
 <Accordion title="Transaction Not Being Detected">
-Ensure you're using the correct transaction hash and that the transaction has sufficient blockchain confirmations. Most networks require at least 6-12 confirmations before a transaction is considered final.
+  Ensure you're using the correct transaction hash and that the transaction has
+  sufficient blockchain confirmations. Most networks require at least 6-12
+  confirmations before a transaction is considered final.
 </Accordion>
 
 <Accordion title="Funds Not Received by Customer">
-If the customer reports not receiving funds, verify the bank account details and check the transaction status. If the status shows as completed but funds haven't arrived, there might be a delay in the banking system.
+  If the customer reports not receiving funds, verify the bank account details
+  and check the transaction status. If the status shows as completed but funds
+  haven't arrived, there might be a delay in the banking system.
 </Accordion>
 
 <Accordion title="Payout Taking Too Long">
-Most payouts complete within 30-60 minutes, but can take up to 24 hours during high volume periods or bank processing delays. If a payout is pending for more than 24 hours, contact our support team.
+  Most payouts complete within 30-60 minutes, but can take up to 24 hours during
+  high volume periods or bank processing delays. If a payout is pending for more
+  than 24 hours, contact our support team.
 </Accordion>
-
-## Best Practices for Smooth Payouts
-
-1. **Wallet Address Security**
-   - Always whitelist the wallet address provided in the quotation
-   - Never send funds from non-whitelisted addresses
-   - Implement strict validation checks before sending crypto
-
-2. **Provide Clear Instructions to Users**
-   - Explain the process and expected timeframes
-   - Set expectations about processing times
-   - Give guidance on what to do if they don't receive funds
-
-3. **Implement Proper Error Handling**
-   - Display user-friendly error messages
-   - Provide specific guidance on how to correct issues
-   - Keep track of transaction IDs for troubleshooting
-
-4. **Security Best Practices**
-   - Always verify wallet addresses before sending
-   - Implement multi-factor authentication for large transfers
-   - Keep transaction logs for audit purposes
-
-5. **Optimize for Mobile Users**
-   - Design mobile-friendly transaction forms
-   - Provide QR codes for wallet addresses
-   - Test the flow on multiple device types
-
-<Tip>
-Create a transaction history dashboard for users to track their payouts, including status updates, transaction details, and bank references. This reduces support inquiries and improves user experience.
-</Tip>
 
 ## Getting Help
 
 If you encounter any issues with your payout integration:
 
-- Check our [API documentation](/api-reference-other) for detailed endpoint information
+- Check our [API documentation](/api-reference) for detailed endpoint information
 - Visit the [Troubleshooting Guide](/guides/troubleshooting) for common solutions
 - Contact our [support team](mailto:support@dollarpe.xyz) with your customer_id and transaction logs
 
 <Note>
-Our support team is available 24/7 to help with integration issues. For urgent matters, use the in-app chat or call our technical support hotline.
+  Our support team is available 24/7 to help with integration issues. For urgent
+  matters, use the in-app chat or call our technical support hotline.
 </Note>

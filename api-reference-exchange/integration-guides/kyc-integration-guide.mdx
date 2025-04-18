@@ -79,7 +79,7 @@ flowchart TD
 ```
 
 <Note>
-**Processing Time**: KYC verification typically takes 5-120 minutes to complete. Design your user experience accordingly.
+**Processing Time**: KYC verification typically takes 60 seconds to 120 minutes to complete. Design your user experience accordingly.
 </Note>
 
 ### Sequence Diagram: Detailed Process Flow
@@ -134,10 +134,10 @@ First, register your customer in the system. This creates a unique customer ID t
   ```javascript
   POST /customer/create
   {
-    "client_reference_id": "cus_12345abcde",
+    "client_reference_id": "cus_12345abcde", // optional
     "full_name": "JOHN DOE",
     "email": "john@example.com",
-    "phone": "9911002211",
+    "phone": "9911002211", // optional
     "alpha_3_country_code": "IND"
   }
   ```
@@ -182,7 +182,7 @@ Once the customer profile is created, collect and submit their KYC details.
 **Document Requirements:**
 - Clear, high-resolution images
 - All document text must be legible
-- Supported document types: AADHAAR, PASSPORT
+- Supported document types: AADHAAR, PASSPORT, VOTER_ID, DRIVING_LICENSE
 - Make sure the customer's face is clearly visible in photo ID
 </Warning>
 
@@ -193,17 +193,20 @@ Once the customer profile is created, collect and submit their KYC details.
   {
     "customer_id": "075986f3-282b-4555-bfcd-fad973e32596",
     "full_name": "John Doe",
-    "phone": "9911002211",
+    "phone": "9911002211", // optional
     "full_address": "123 Main St, City",
     "dob": "01-01-1990",
-    "tax_number": "ABCDE1234F",
+    "registered_date": "01-01-2025",
+    "tax_number": "ABCDE1234F", // optional
     "document_type": "AADHAAR",
     "document_front_image_url": "https://...",
     "document_back_image_url": "https://...",
     "document_details": {
       "document_number": "123456789012",
       "additional_data": {}
-    }
+    },
+    "selfie_url": "https://...",
+    "selfie_verification_status": true
   }
   ```
   </Tab>
@@ -226,10 +229,13 @@ Once the customer profile is created, collect and submit their KYC details.
 - `customer_id`: ID received from Step 1
 - `full_address`: Complete residential address
 - `dob`: Date of birth (format: DD-MM-YYYY)
+- `registered_date`: Date on which the user registered with centralized exchange
 - `tax_number`: PAN as applicable
 - `document_type`: Type of ID document submitted
 - `document_front_image_url` & `document_back_image_url`: Secure URLs to uploaded document images
 - `document_number`: Aadhaar Number or Passport's File Number based on document_type
+- `selfie_url`: Secure URL to uploaded selfie image
+- `selfie_verification_status`: Status of the selfie verification
 
 <Tip>
 For best results, use a secure file upload service to store document images and provide the URLs to our API. Never send document images as base64 strings.
