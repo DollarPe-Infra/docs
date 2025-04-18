@@ -218,7 +218,152 @@ const addTestBankAccount = async (customerId) => {
 };
 ```
 
+<Note>
+In the sandbox environment, transaction processing is accelerated. Status changes that might take hours in production typically happen within minutes in sandbox.
+</Note>
+
+## Testing Payin Flow in Sandbox
+
+### Fetching Payin Configuration
+
+Fetch payin configuration for supported assets, limits:
+
+```javascript
+// Example: Fetch payin configuration
+const fetchPayinConfiguration = async () => {
+  const headers = generateHeaders(config.apiKey, config.apiSecret);
+
+  const response = await fetch(`${config.baseUrl}/pis/api/v1/payin/configuration`, {
+    method: 'GET',
+    headers: headers
+  });
+  
+  return await response.json();
+};
+```
+
+### Fetching Test Rates
+
+Fetch test exchange rates using the same API as production:
+
+```javascript
+// Example: Fetch test exchange rate
+const fetchTestRate = async () => {
+  const requestBody = {
+    "asset": "USDT",
+    "fiat": "INR",
+  };
+  
+  const headers = generateHeaders(config.apiKey, config.apiSecret, requestBody);
+  
+  const response = await fetch(`${config.baseUrl}/pis/api/v1/payin/fetch-rate`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(requestBody)
+  });
+  
+  return await response.json();
+};
+```
+
+### Creating Test Quotations
+
+Create test quotations:
+
+```javascript
+// Example: Create a test quotation
+const createTestQuotation = async (customerId, bankId, selfieUrl, ipAddress, deviceId) => {
+  const requestBody = {
+    "asset": "USDC",
+    "fiat": "INR",
+    "sending_amount": "10000",
+    "customer_id": customerId,
+    "bank_id": bankId,
+    "payment_method": "BANK_TRANSFER",
+    "selfie_url": selfieUrl,
+    "risk_parameters": {
+        "ip_address": ipAddress,
+        "device_id": deviceId
+        "suspicious_activity_report": "True",
+        "law_enforcement_agency_report": "False"
+    }
+}
+  
+  const headers = generateHeaders(config.apiKey, config.apiSecret, requestBody);
+  
+  const response = await fetch(`${config.baseUrl}/pis/api/v1/payin/quotation`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(requestBody)
+  });
+  
+  return await response.json();
+};
+```
+
+### Initiating Test Payin
+
+Initiate test payin using the random utr:
+
+```javascript
+// Example: Initiate a test payin
+const initiateTestPayin = async (quotationId, customerId, utr) => {
+  const requestBody = {
+    "quotation_id": quotationId,
+    "customer_id": customerId,
+    "client_reference_id": "test123",
+    "utr": utr,
+  };
+  
+  const headers = generateHeaders(config.apiKey, config.apiSecret, requestBody);
+  
+  const response = await fetch(`${config.baseUrl}/pis/api/v1/payin/initiate`, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(requestBody)
+  });
+  
+  return await response.json();
+};
+```
+
+### Monitoring Test Transaction Status
+
+Monitor the status of your test payin:
+
+```javascript
+// Example: Check test payin status
+const checkTestPayinStatus = async (payinId) => {
+  const headers = generateHeaders(config.apiKey, config.apiSecret);
+  
+  const response = await fetch(`${config.baseUrl}/pis/api/v1/payin/${payinId}`, {
+    method: 'GET',
+    headers: headers
+  });
+  
+  return await response.json();
+};
+```
+
 ## Testing Payout Flow in Sandbox
+
+### Fetching Payout Configuration
+
+Fetch payout configuration for supported assets, limits:
+
+```javascript
+// Example: Fetch payout configuration
+const fetchPayoutConfiguration = async () => {
+  const headers = generateHeaders(config.apiKey, config.apiSecret);
+
+  const response = await fetch(`${config.baseUrl}/pos/api/v1/payout/configuration`, {
+    method: 'GET',
+    headers: headers
+  });
+  
+  return await response.json();
+};
+```
 
 ### Fetching Test Rates
 
@@ -230,7 +375,7 @@ const fetchTestRate = async () => {
   const requestBody = {
     "asset": "USDT",
     "network": "BSC",
-    "amount": 100
+    "fiat": "INR",
   };
   
   const headers = generateHeaders(config.apiKey, config.apiSecret, requestBody);
@@ -329,10 +474,6 @@ const checkTestPayoutStatus = async (payoutId) => {
 };
 ```
 
-<Note>
-In the sandbox environment, transaction processing is accelerated. Status changes that might take hours in production typically happen within minutes in sandbox.
-</Note>
-
 ## Testing Webhook Integration
 
 Configure your webhook endpoint to receive test notifications:
@@ -362,43 +503,57 @@ For local development, use tools like [ngrok](https://ngrok.com/) to create a pu
 
 ## Sandbox Testing Checklist
 
-Use this checklist to ensure you've thoroughly tested your integration:
+Use this checklist to verify that your integration is fully tested and production-ready:
 
 <Accordion title="Customer and KYC Testing">
-- [ ] Create a test customer
-- [ ] Submit KYC information
-- [ ] Test successful KYC verification
-- [ ] Test KYC verification failure scenarios
-- [ ] Update failed KYC information
-- [ ] Add bank account details
+- [ ] Create a test customer profile
+- [ ] Submit KYC details for verification
+- [ ] Confirm successful KYC approval flow
+- [ ] Simulate KYC rejection and error responses
+- [ ] Update and resubmit failed KYC information
+- [ ] Add and verify bank account details
+</Accordion>
+
+<Accordion title="Payin Flow Testing">
+- [ ] Retrieve payin configurations
+- [ ] Fetch exchange rates for payin
+- [ ] Generate and review quotations
+- [ ] Handle expired quotation scenarios
+- [ ] Simulate fiat transfer using provided bank details
+- [ ] Initiate payin with transaction reference
+- [ ] Use mock status endpoint to change transaction status
+- [ ] Monitor status updates throughout the payin flow
+- [ ] Confirm successful payin completion
+- [ ] Simulate and handle payin failure scenarios
 </Accordion>
 
 <Accordion title="Payout Flow Testing">
-- [ ] Fetch current exchange rates
-- [ ] Create quotations
-- [ ] Test quotation expiry handling
-- [ ] Send test cryptocurrency (using test networks)
-- [ ] Initiate payouts with transaction details
-- [ ] Monitor transaction status changes
-- [ ] Test successful payout completion
-- [ ] Test payout failure scenarios
+- [ ] Retrieve payout configurations
+- [ ] Fetch exchange rates for payout
+- [ ] Generate and review quotations
+- [ ] Handle expired quotation scenarios
+- [ ] Simulate crypto transfer using testnet
+- [ ] Initiate payout with transaction reference
+- [ ] Use mock status endpoint to change transaction status
+- [ ] Monitor status updates throughout the payout flow
+- [ ] Confirm successful payout completion
+- [ ] Simulate and handle payout failure scenarios
 </Accordion>
 
 <Accordion title="Webhook Testing">
-- [ ] Configure webhook URL
-- [ ] Verify webhook receives KYC status updates
-- [ ] Verify webhook receives transaction status updates
-- [ ] Test webhook error handling
+- [ ] Set up and configure your webhook endpoint
+- [ ] Confirm webhook receives KYC status events
+- [ ] Confirm webhook receives transaction status events
+- [ ] Implement and test webhook retry or failure handling
 </Accordion>
 
 <Accordion title="Error Handling Testing">
-- [ ] Test API authentication failures
-- [ ] Test invalid input validation
-- [ ] Test rate limit handling
-- [ ] Test timeout scenarios
-- [ ] Verify error messages are properly displayed to users
+- [ ] Simulate invalid or expired API credentials
+- [ ] Submit invalid or incomplete request payloads
+- [ ] Test rate limiting and throttling responses
+- [ ] Simulate network timeouts and delayed responses
+- [ ] Ensure user-facing error messages are clear and actionable
 </Accordion>
-
 
 ## Transitioning to Production
 

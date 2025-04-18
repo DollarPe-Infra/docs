@@ -6,36 +6,39 @@ iconType: "solid"
 
 <Highlight># Quickstart</Highlight>
 
-DollarPe provides a comprehensive suite of APIs that enable businesses to offer cryptocurrency onramp and offramp services to their customers. Our platform handles the complex aspects of cryptocurrency transactions, KYC verification, and banking operations, allowing you to focus on your core business while offering seamless crypto-fiat conversion solutions.
+DollarPe provides a comprehensive suite of APIs that enable businesses to offer **fiat-to-crypto** (onramp) and **crypto-to-fiat** (offramp) services to their customers. Our platform handles the complex aspects of cryptocurrency transactions, KYC verification, and banking operations, allowing you to focus on your core business while offering seamless crypto-fiat conversion solutions.
 
 <Note>
-  **Partner Integration Benefits:** - Offer crypto-to-fiat (offramp) and
-  fiat-to-crypto (onramp) services without building blockchain infrastructure -
-  Leverage our compliant KYC and banking relationships - Access competitive
-  exchange rates and low transaction fees - Provide your customers with fast,
-  reliable conversion options
+  **Partner Integration Benefits** 
+  - Enable **fiat-to-crypto** and **crypto-to-fiat** conversions without the complexity of building blockchain infrastructure 
+  - Leverage our pre-built KYC verification and banking relationships to meet global compliance requirements 
+  - Access industry-leading exchange rates and minimal transaction fees to maximize your profitability 
+  - Deliver fast, reliable conversion options that enhance customer satisfaction and retention
 </Note>
 
 ## Integration Journey
 
-As a DollarPe API partner, your integration journey involves these key steps:
+As a DollarPe partner, your integration journey involves these key steps:
 
 <CardGroup cols={2}>
-  <Card
-    title="Payout Integration"
-    icon="money-bill-trend-up"
-    href="/api-reference-other/integration-guides/payout-integration-guide"
-  >
-    Connect to our payout system to enable cryptocurrency-to-fiat transfers to
-    bank accounts.
+  <Card title="Getting Started" icon="rocket" href="/guides/introduction">
+    Learn the basics of DollarPe integration, including authentication,
+    environment setup, and initial configuration.
   </Card>
   <Card
-    title="PayIn Integration"
-    icon="bitcoin"
-    href="/api-reference-exchange/integration-guides/payin-integration-guide"
+    title="Stablecoins & Blockchains"
+    icon="coins"
+    href="/guides/support/stablecoins_and_blockchains"
   >
-    Connect to our payin system to enable fiat-to-cryptocurrency transfers to
-    wallet addresses.
+    Understand our supported cryptocurrencies and blockchain asset, networks for
+    optimal implementation.
+  </Card>
+  <Card
+    title="Fiat Payment Methods"
+    icon="credit-card"
+    href="/guides/support/fiatMethods"
+  >
+    Explore the available fiat options you can offer to your customers.
   </Card>
   <Card
     title="KYC Integration"
@@ -46,26 +49,28 @@ As a DollarPe API partner, your integration journey involves these key steps:
     users.
   </Card>
   <Card
-    title="Supported Geographies"
-    icon="earth-americas"
-    href="/guides/support/geographies"
+    title="PayIn Integration"
+    icon="bitcoin"
+    href="/api-reference-exchange/integration-guides/payin-integration-guide"
   >
-    Explore the available fiat options you can offer to your customers.
+    Connect to our payin system to enable <strong>fiat-to-crypto</strong>{" "}
+    transfers to wallet addresses.
   </Card>
   <Card
-    title="Stablecoins & Blockchains"
-    icon="coins"
-    href="/guides/support/stablecoins_and_blockchains"
+    title="Payout Integration"
+    icon="money-bill-trend-up"
+    href="/api-reference-other/integration-guides/payout-integration-guide"
   >
-    Understand our supported cryptocurrencies and blockchain networks for
-    optimal implementation.
+    Connect to our payout system to enable <strong>crypto-to-fiat</strong>{" "}
+    transfers to bank accounts.
   </Card>
-  <Card
-    title="Fiat Payment Methods"
-    icon="credit-card"
-    href="/guides/support/fiatMethods"
-  >
-    Explore the available fiat options you can offer to your customers.
+  <Card title="Webhooks & Notifications" icon="bell" href="/guides/webhooks">
+    Set up webhooks to receive real-time updates on transaction statuses and
+    important events.
+  </Card>
+  <Card title="Testing & Sandbox" icon="vial" href="/guides/sandbox-testing">
+    Learn how to test your integration in our sandbox environment before going
+    live.
   </Card>
 </CardGroup>
 
@@ -75,8 +80,9 @@ The typical partner integration flow follows these steps:
 
 ```mermaid
 flowchart TD
-    Start([Start Partner Integration]) --> Auth[Set Up API Authentication]
-    Auth --> Webhook[Configure Webhooks for Notifications]
+    Start([Start Integration]) --> Auth[Set Up API Authentication]
+    Auth --> Webhook[Configure Webhooks for
+    Notifications]
 
     Webhook --> KYC[Implement Customer KYC Flow]
     KYC --> KYCVerified{KYC Verified?}
@@ -85,7 +91,12 @@ flowchart TD
     HandleKYCFailure --> KYC
 
     KYCVerified -->|Yes| AddBank[Add Customer Bank Account]
-    AddBank --> FlowType{Choose Flow}
+    AddBank --> BankVerified{Bank Verified?}
+
+    BankVerified -->|No| HandleBankFailure[Handle Bank Verification Failure]
+    HandleBankFailure --> AddBank
+
+    BankVerified -->|Yes| FlowType{Choose Flow}
 
     FlowType -->|Payout| PayoutFlow[Fetch Payout Configurations]
     PayoutFlow --> FetchRate[Fetch Current Exchange Rate]
@@ -102,16 +113,18 @@ flowchart TD
     InitiatePayIn --> MonitorPayInStatus[Monitor PayIn Status]
     MonitorPayInStatus --> Complete
 
-    classDef startEndNode fill:#dcedc8,stroke:#558b2f,stroke-width:2px,color:#000
-    classDef mainNode fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
-    classDef decisionNode fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px,color:#000
-    classDef successNode fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000
-    classDef failureNode fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000
+    classDef startEndNode fill:#dcedc8,stroke:#558b2f,stroke-width:1px,color:#000,font-size:12px
+    classDef mainNode fill:#e3f2fd,stroke:#1976d2,stroke-width:1px,color:#000,font-size:12px
+    classDef decisionNode fill:#f3e5f5,stroke:#8e24aa,stroke-width:1px,color:#000,font-size:12px
+    classDef successNode fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px,color:#000,font-size:12px
+    classDef failureNode fill:#ffebee,stroke:#c62828,stroke-width:1px,color:#000,font-size:12px
 
     class Start,Complete startEndNode
     class Auth,Webhook,KYC,AddBank,PayoutFlow,FetchRate,CreateQuote,InitiatePayout,MonitorStatus,PayInFlow,FetchPayInRate,CreatePayInQuote,SendFiat,InitiatePayIn,MonitorPayInStatus mainNode
-    class KYCVerified,FlowType decisionNode
-    class HandleKYCFailure failureNode
+    class KYCVerified,BankVerified,FlowType decisionNode
+    class HandleKYCFailure,HandleBankFailure failureNode
+
+    linkStyle default stroke:#64748b,stroke-width:1px;
 ```
 
 ## Key Integration Components
@@ -185,7 +198,7 @@ See our [KYC Integration Guide](/api-reference-other/integration-guides/kyc-inte
 
 ### 3. PayIn Service Integration
 
-Connect to our payin system to enable fiat-to-cryptocurrency transfers:
+Connect to our payin system to enable **fiat-to-crypto** transfers:
 
 <Accordion title="PayIn Implementation Steps">
 1. Fetch payin configurations using [/payin/configuration](/api-reference-exchange/endpoint/payin/configuration)
@@ -201,7 +214,7 @@ See our [PayIn Integration Guide](/api-reference-exchange/integration-guides/pay
 
 ### 4. Payout Service Integration
 
-Connect to our payout system to enable cryptocurrency-to-fiat transfers:
+Connect to our payout system to enable **crypto-to-fiat** transfers:
 
 <Accordion title="Payout Implementation Steps">
 1. Fetch payout configurations using [/payout/configuration](/api-reference-other/endpoint/payout/configuration)
