@@ -234,6 +234,12 @@
             "group": "Payin (on-ramp)",
             "pages": [
               {
+                "group": "Configuration",
+                "pages": [
+                  "api-reference-exchange/endpoint/payin/configuration"
+                ]
+              },
+              {
                 "group": "Rate",
                 "pages": [
                   "api-reference-exchange/endpoint/payin/fetch-rate"

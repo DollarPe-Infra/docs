@@ -1,13 +1,13 @@
 {
-  "/payout/configuration": {
+  "/payin/configuration": {
     "get": {
-      "tags": ["Payout"],
+      "tags": ["Payin"],
       "x-title": "Configuration",
-      "description": "Returns basic configuration for payout - supported fiats, supported assets, supported networks and live coin limits",
+      "description": "Returns basic configuration for payin - supported fiats, supported assets, supported networks and live coin limits",
       "servers": [
         {
-          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
-          "description": "Payout API Base URL"
+          "url": "https://sandbox.dollarpe.xyz/pis/api/v1",
+          "description": "Payin API Base URL"
         }
       ],
       "responses": {
@@ -40,22 +40,56 @@
                       "coin_limits": {
                         "type": "object",
                         "properties": {
-                          "{asset}": {
+                          "{fiat}": {
                             "type": "object",
                             "properties": {
-                              "min": {
-                                "type": "number",
-                                "format": "decimal",
-                                "example": 30
-                              },
-                              "max": {
-                                "type": "number",
-                                "format": "decimal",
-                                "example": 5850
+                              "{asset}": {
+                                "type": "object",
+                                "properties": {
+                                  "bank_transfer": {
+                                    "type": "object",
+                                    "properties": {
+                                      "min": {
+                                        "type": "number",
+                                        "format": "decimal",
+                                        "example": 30
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "format": "decimal",
+                                        "example": 5850
+                                      }
+                                    }
+                                  },
+                                  "upi": {
+                                    "type": "object",
+                                    "properties": {
+                                      "min": {
+                                        "type": "number",
+                                        "format": "decimal",
+                                        "example": 30
+                                      },
+                                      "max": {
+                                        "type": "number",
+                                        "format": "decimal",
+                                        "example": 5850
+                                      }
+                                    }
+                                  }
+                                }
                               }
                             }
                           }
                         }
+                      },
+                      "required_risk_parameters": {
+                        "type": "array",
+                        "example": [
+                          "ip_address",
+                          "device_id",
+                          "suspicious_activity_report",
+                          "law_enforcement_agency_report"
+                        ]
                       }
                     }
                   }
@@ -94,15 +128,15 @@
       }
     }
   },
-  "/payout/fetch-rate": {
+  "/payin/fetch-rate": {
     "get": {
-      "tags": ["Payout"],
+      "tags": ["Payin"],
       "x-title": "Fetch Rate",
-      "description": "Fetch exchange rate for a given asset and network combination",
+      "description": "Fetch exchange rate for a given asset",
       "servers": [
         {
-          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
-          "description": "Payout API Base URL"
+          "url": "https://sandbox.dollarpe.xyz/pis/api/v1",
+          "description": "Payin API Base URL"
         }
       ],
       "parameters": [
@@ -233,15 +267,15 @@
       }
     }
   },
-  "/payout/quotation": {
+  "/payin/quotation": {
     "post": {
-      "tags": ["Payout"],
+      "tags": ["Payin"],
       "x-title": "Create Quotation",
       "description": "Create a quotation for cryptocurrency to fiat conversion",
       "servers": [
         {
-          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
-          "description": "Payout API Base URL"
+          "url": "https://sandbox.dollarpe.xyz/pis/api/v1",
+          "description": "Payin API Base URL"
         }
       ],
       "requestBody": {
@@ -255,7 +289,10 @@
                 "fiat",
                 "sending_amount",
                 "customer_id",
-                "bank_id"
+                "bank_id",
+                "payment_method",
+                "selfie_url",
+                "risk_parameters"
               ],
               "properties": {
                 "asset": {
@@ -282,8 +319,36 @@
                 "bank_id": {
                   "type": "string",
                   "format": "uuid",
-                  "description": "Customer's Bank's unique identifier in which the payout will be maid",
+                  "description": "Customer's Bank's unique identifier from which the payin will be made",
                   "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                },
+                "payment_method": {
+                  "type": "string",
+                  "example": "BANK_TRANSFER"
+                },
+                "selfie_url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "risk_parameters": {
+                  "type": "object",
+                  "properties": {
+                    "ip_address": {
+                      "type": "string",
+                      "example": "127.0.0.1"
+                    },
+                    "device_id": {
+                      "type": "string"
+                    },
+                    "suspicious_activity_report": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "law_enforcement_agency_report": {
+                      "type": "boolean",
+                      "example": false
+                    }
+                  }
                 }
               }
             }
@@ -332,20 +397,28 @@
                         "type": "string",
                         "example": "INR"
                       },
+                      "payment_method": {
+                        "type": "string",
+                        "example": "BANK_TRANSFER"
+                      },
+                      "selfie_url": {
+                        "type": "string",
+                        "format": "uri"
+                      },
                       "sending_amount": {
                         "type": "number",
                         "format": "float",
-                        "example": 51
+                        "example": 1000.00
                       },
                       "rate": {
                         "type": "number",
                         "format": "float",
-                        "example": 82.5
+                        "example": 91.91
                       },
                       "receiving_amount": {
                         "type": "number",
                         "format": "float",
-                        "example": 4144.6
+                        "example": 108.80
                       },
                       "fees": {
                         "type": "object",
@@ -399,6 +472,19 @@
                             "type": "number",
                             "format": "float",
                             "example": 88.92
+                          }
+                        }
+                      },
+                      "deposit_instructions": {
+                        "type": "object",
+                        "properties": {
+                          "account_number": {
+                            "type": "string",
+                            "example": "1234567890"
+                          },
+                          "ifsc": {
+                            "type": "string",
+                            "example": "1234567890"
                           }
                         }
                       },
@@ -484,15 +570,15 @@
       }
     }
   },
-  "/payout/quotation/{quotation_id}": {
+  "/payin/quotation/{quotation_id}": {
     "get": {
-      "tags": ["Payout"],
+      "tags": ["Payin"],
       "x-title": "Fetch Quotation",
       "description": "Fetch details of a specific quotation",
       "servers": [
         {
-          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
-          "description": "Payout API Base URL"
+          "url": "https://sandbox.dollarpe.xyz/pis/api/v1",
+          "description": "Payin API Base URL"
         }
       ],
       "parameters": [
@@ -559,6 +645,14 @@
                         "type": "string",
                         "example": "INR"
                       },
+                      "payment_method": {
+                        "type": "string",
+                        "example": "BANK_TRANSFER"
+                      },
+                      "selfie_url": {
+                        "type": "string",
+                        "format": "uri"
+                      },
                       "sending_amount": {
                         "type": "number",
                         "example": 10
@@ -623,6 +717,19 @@
                             "type": "number",
                             "format": "float",
                             "example": 88.92
+                          }
+                        }
+                      },
+                      "deposit_instructions": {
+                        "type": "object",
+                        "properties": {
+                          "account_number": {
+                            "type": "string",
+                            "example": "1234567890"
+                          },
+                          "ifsc": {
+                            "type": "string",
+                            "example": "1234567890"
                           }
                         }
                       },
@@ -708,15 +815,15 @@
       }
     }
   },
-  "/payout/initiate": {
+  "/payin/initiate": {
     "post": {
-      "tags": ["Payout"],
-      "x-title": "Create Payout",
-      "description": "Create a new payout using a quotation",
+      "tags": ["Payin"],
+      "x-title": "Create Payin",
+      "description": "Create a new payin using a quotation",
       "servers": [
         {
-          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
-          "description": "Payout API Base URL"
+          "url": "https://sandbox.dollarpe.xyz/pis/api/v1",
+          "description": "Payin API Base URL"
         }
       ],
       "requestBody": {
@@ -725,7 +832,7 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": ["quotation_id", "customer_id", "exchange_order_id"],
+              "required": ["quotation_id", "customer_id", "utr"],
               "properties": {
                 "quotation_id": {
                   "type": "string",
@@ -744,10 +851,10 @@
                   "description": "Optional client reference ID for tracking",
                   "example": "testUser123"
                 },
-                "exchange_order_id": {
+                "utr": {
                   "type": "string",
-                  "description": "Order ID on the exchange",
-                  "example": "5059889123892"
+                  "description": "UTR of the bank transaction",
+                  "example": "RATN0329SJDH0"
                 }
               }
             }
@@ -756,7 +863,7 @@
       },
       "responses": {
         "201": {
-          "description": "Payout created successfully",
+          "description": "Payin created successfully",
           "content": {
             "application/json": {
               "schema": {
@@ -804,6 +911,14 @@
                       "fiat": {
                         "type": "string",
                         "example": "INR"
+                      },
+                      "payment_method": {
+                        "type": "string",
+                        "example": "BANK_TRANSFER"
+                      },
+                      "selfie_url": {
+                        "type": "string",
+                        "format": "uri"
                       },
                       "rate": {
                         "type": "number",
@@ -875,9 +990,22 @@
                           }
                         }
                       },
-                      "exchange_order_id": {
+                      "deposit_instructions": {
+                        "type": "object",
+                        "properties": {
+                          "account_number": {
+                            "type": "string",
+                            "example": "1234567890"
+                          },
+                          "ifsc": {
+                            "type": "string",
+                            "example": "1234567890"
+                          }
+                        }
+                      },
+                      "utr": {
                         "type": "string",
-                        "example": "5059889123892"
+                        "example": "RATN0329SJDH0"
                       },
                       "created_at": {
                         "type": "string",
@@ -960,23 +1088,23 @@
       }
     }
   },
-  "/payout/{payout_id}": {
+  "/payin/{payin_id}": {
     "get": {
-      "tags": ["Payout"],
-      "x-title": "Fetch Payout",
-      "description": "Fetch details of a specific payout",
+      "tags": ["Payin"],
+      "x-title": "Fetch Payin",
+      "description": "Fetch details of a specific payin",
       "servers": [
         {
-          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
-          "description": "Payout API Base URL"
+          "url": "https://sandbox.dollarpe.xyz/pis/api/v1",
+          "description": "Payin API Base URL"
         }
       ],
       "parameters": [
         {
-          "name": "payout_id",
+          "name": "payin_id",
           "in": "path",
           "required": true,
-          "description": "The unique identifier of the payout",
+          "description": "The unique identifier of the payin",
           "schema": {
             "type": "string",
             "format": "uuid",
@@ -986,7 +1114,7 @@
       ],
       "responses": {
         "200": {
-          "description": "Payout details fetched successfully",
+          "description": "Payin details fetched successfully",
           "content": {
             "application/json": {
               "schema": {
@@ -1102,9 +1230,9 @@
                           }
                         }
                       },
-                      "exchange_order_id": {
+                      "utr": {
                         "type": "string",
-                        "example": "5059889123892"
+                        "example": "RATN0329SJDH0"
                       },
                       "exchange_transfer_id": {
                         "type": "string",
@@ -1117,10 +1245,6 @@
                       "failure_reason": {
                         "type": "null",
                         "example": null
-                      },
-                      "utr": {
-                        "type": "string",
-                        "example": "RATN0329SJDH0"
                       },
                       "created_at": {
                         "type": "string",
@@ -1169,23 +1293,23 @@
       }
     }
   },
-  "/payout/history": {
+  "/payin/history": {
     "get": {
-      "tags": ["Payout"],
-      "x-title": "Fetch Payout History",
-      "description": "Fetch filtered list of payouts",
+      "tags": ["Payin"],
+      "x-title": "Fetch Payin History",
+      "description": "Fetch filtered list of payins",
       "servers": [
         {
-          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
-          "description": "Payout API Base URL"
+          "url": "https://sandbox.dollarpe.xyz/pis/api/v1",
+          "description": "Payin API Base URL"
         }
       ],
       "parameters": [
         {
-          "name": "payout_status",
+          "name": "payin_status",
           "in": "query",
           "required": false,
-          "description": "Filter payouts by status (e.g., SUCCESS, FAILED, PROCESSING)",
+          "description": "Filter payins by status (e.g., SUCCESS, FAILED, PROCESSING)",
           "schema": {
             "type": "string",
             "example": "SUCCESS"
@@ -1195,7 +1319,7 @@
           "name": "customer_id",
           "in": "query",
           "required": false,
-          "description": "Filter payouts by customer ID",
+          "description": "Filter payins by customer ID",
           "schema": {
             "type": "string",
             "format": "uuid",
@@ -1206,7 +1330,7 @@
           "name": "start_date",
           "in": "query",
           "required": false,
-          "description": "Filter payouts created on or after this date (YYYY-MM-DD). Must be used together with end_date.",
+          "description": "Filter payins created on or after this date (YYYY-MM-DD). Must be used together with end_date.",
           "schema": {
             "type": "string",
             "format": "date",
@@ -1217,7 +1341,7 @@
           "name": "end_date",
           "in": "query",
           "required": false,
-          "description": "Filter payouts created on or before this date (YYYY-MM-DD). Must be used together with start_date.",
+          "description": "Filter payins created on or before this date (YYYY-MM-DD). Must be used together with start_date.",
           "schema": {
             "type": "string",
             "format": "date",
@@ -1365,9 +1489,9 @@
                                 }
                               }
                             },
-                            "exchange_order_id": {
+                            "utr": {
                               "type": "string",
-                              "example": "5059889123892"
+                              "example": "RATN0329SJDH0"
                             },
                             "exchange_transfer_id": {
                               "type": "string",
@@ -1380,10 +1504,6 @@
                             "failure_reason": {
                               "type": "null",
                               "example": null
-                            },
-                            "utr": {
-                              "type": "string",
-                              "example": "RATN0329SJDH0"
                             },
                             "created_at": {
                               "type": "string",
@@ -1472,15 +1592,15 @@
       }
     }
   },
-  "/payout/update-transfer-id": {
+  "/payin/update-transfer-id": {
     "patch": {
-      "tags": ["Payout"],
+      "tags": ["Payin"],
       "x-title": "Update transfer ID",
       "description": "Updates transfer ID for the order",
       "servers": [
         {
-          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
-          "description": "Payout API Base URL"
+          "url": "https://sandbox.dollarpe.xyz/pis/api/v1",
+          "description": "Payin API Base URL"
         }
       ],
       "requestBody": {
@@ -1489,12 +1609,12 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": ["exchange_order_id", "exchange_transfer_id"],
+              "required": ["payin_id", "exchange_transfer_id"],
               "properties": {
-                "exchange_order_id": {
+                "payin_id": {
                   "type": "string",
                   "format": "uuid",
-                  "example": "982738475838910"
+                  "example": "9e67356c-cf5e-4fa2-958f-411e7607a307"
                 },
                 "exchange_transfer_id": {
                   "type": "string",
@@ -1525,10 +1645,10 @@
                   "data": {
                     "type": "object",
                     "properties": {
-                      "exchange_order_id": {
+                      "payin_id": {
                         "type": "string",
                         "format": "uuid",
-                        "example": "982738475838910"
+                        "example": "9e67356c-cf5e-4fa2-958f-411e7607a307"
                       },
                       "exchange_transfer_id": {
                         "type": "string",
@@ -1572,15 +1692,15 @@
       }
     }
   },
-  "/payout/mock-payout-status": {
+  "/payin/mock-payin-status": {
     "patch": {
-      "tags": ["Payout"],
-      "x-title": "Mock Payout Status",
-      "description": "Mock Payout Status [Sandbox Environment Only]",
+      "tags": ["Payin"],
+      "x-title": "Mock Payin Status",
+      "description": "Mock Payin Status [Sandbox Environment Only]",
       "servers": [
         {
-          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
-          "description": "Payout API Base URL"
+          "url": "https://sandbox.dollarpe.xyz/pis/api/v1",
+          "description": "Payin API Base URL"
         }
       ],
       "requestBody": {
@@ -1589,14 +1709,14 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": ["payout_id", "payout_status"],
+              "required": ["payin_id", "payin_status"],
               "properties": {
-                "payout_id": {
+                "payin_id": {
                   "type": "string",
                   "format": "uuid",
                   "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
                 },
-                "payout_status": {
+                "payin_status": {
                   "type": "string",
                   "example": "SUCCESS"
                 }
@@ -1607,7 +1727,7 @@
       },
       "responses": {
         "200": {
-          "description": "Payout Status updated successfully",
+          "description": "Payin Status updated successfully",
           "content": {
             "application/json": {
               "schema": {
@@ -1624,12 +1744,12 @@
                   "data": {
                     "type": "object",
                     "properties": {
-                      "payout_id": {
+                      "payin_id": {
                         "type": "string",
                         "format": "uuid",
                         "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
                       },
-                      "payout_status": {
+                      "payin_status": {
                         "type": "string",
                         "example": "SUCCESS"
                       }
