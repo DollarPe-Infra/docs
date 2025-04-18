@@ -36,6 +36,108 @@
     }
   ],
   "paths": {
+    "/payout/configuration": {
+      "get": {
+        "tags": [
+          "Payout"
+        ],
+        "x-title": "Configuration",
+        "description": "Returns basic configuration for payout - supported fiats, supported assets, supported networks and live coin limits",
+        "servers": [
+          {
+            "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
+            "description": "Payout API Base URL"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "supported_fiats": {
+                          "type": "array",
+                          "example": [
+                            "inr"
+                          ]
+                        },
+                        "supported_assets": {
+                          "type": "array",
+                          "example": [
+                            "usdt",
+                            "usdc"
+                          ]
+                        },
+                        "coin_limits": {
+                          "type": "object",
+                          "properties": {
+                            "{asset}": {
+                              "type": "object",
+                              "properties": {
+                                "min": {
+                                  "type": "number",
+                                  "format": "decimal",
+                                  "example": 30
+                                },
+                                "max": {
+                                  "type": "number",
+                                  "format": "decimal",
+                                  "example": 5850
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/payout/fetch-rate": {
       "get": {
         "tags": [
@@ -1253,6 +1355,111 @@
                     },
                     "data": {
                       "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/payout/update-transfer-id": {
+      "patch": {
+        "tags": [
+          "Payout"
+        ],
+        "x-title": "Update transfer ID",
+        "description": "Updates transfer ID for the order",
+        "servers": [
+          {
+            "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
+            "description": "Payout API Base URL"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "exchange_order_id",
+                  "exchange_transfer_id"
+                ],
+                "properties": {
+                  "exchange_order_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "982738475838910"
+                  },
+                  "exchange_transfer_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "987283747899283945"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transfer ID updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "exchange_order_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "982738475838910"
+                        },
+                        "exchange_transfer_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "987283747899283945"
+                        }
+                      }
                     }
                   }
                 }

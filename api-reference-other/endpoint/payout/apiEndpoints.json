@@ -1,4 +1,108 @@
 {
+  "/payout/configuration": {
+    "get": {
+      "tags": ["Payout"],
+      "x-title": "Configuration",
+      "description": "Returns basic configuration for payout - supported fiats, supported assets, supported networks and live coin limits",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
+          "description": "Payout API Base URL"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "supported_fiats": {
+                        "type": "array",
+                        "example": ["inr"]
+                      },
+                      "supported_assets": {
+                        "type": "array",
+                        "example": ["usdt", "usdc"]
+                      },
+                      "supported_networks": {
+                        "type": "array",
+                        "example": ["polygon", "eth", "bsc", "sepolia", "solana", "tron", "arbitrum"]
+                      },
+                      "coin_limits": {
+                        "type": "object",
+                        "properties": {
+                          "{asset}": {
+                            "type": "object",
+                            "properties": {
+                              "{network}": {
+                                "type": "object",
+                                "properties": {
+                                  "min": {
+                                    "type": "number",
+                                    "format": "decimal",
+                                    "example": 30
+                                  },
+                                  "max": {
+                                    "type": "number",
+                                    "format": "decimal",
+                                    "example": 5850
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "data": {
+                    "type": "null"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "/payout/fetch-rate": {
     "get": {
       "tags": ["Payout"],
@@ -279,15 +383,55 @@
                       "fees": {
                         "type": "object",
                         "properties": {
-                          "dollarpe_fees": {
+                          "client_fee_fiat": {
                             "type": "number",
                             "format": "float",
-                            "example": 21.04
+                            "example": 450.00
                           },
-                          "tds_fees": {
+                          "client_fee_crypto": {
                             "type": "number",
                             "format": "float",
-                            "example": 41.86
+                            "example": 5
+                          },
+                          "dollarpe_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 450.00
+                          },
+                          "pg_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 18.00
+                          },
+                          "client_gst_fiat": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "client_gst_crypto": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 0.90
+                          },
+                          "dollarpe_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "pg_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "tds": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 889.17
+                          },
+                          "gross_effective_exchange_rate": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 88.92
                           }
                         }
                       },
@@ -471,13 +615,55 @@
                       "fees": {
                         "type": "object",
                         "properties": {
-                          "tds_fee": {
+                          "client_fee_fiat": {
                             "type": "number",
-                            "example": 8.67
+                            "format": "float",
+                            "example": 450.00
+                          },
+                          "client_fee_crypto": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 5
                           },
                           "dollarpe_fee": {
                             "type": "number",
-                            "example": 12.721252606222546
+                            "format": "float",
+                            "example": 450.00
+                          },
+                          "pg_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 18.00
+                          },
+                          "client_gst_fiat": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "client_gst_crypto": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 0.90
+                          },
+                          "dollarpe_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "pg_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "tds": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 889.17
+                          },
+                          "gross_effective_exchange_rate": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 88.92
                           }
                         }
                       },
@@ -687,15 +873,55 @@
                       "fees": {
                         "type": "object",
                         "properties": {
-                          "dollarpe_fees": {
+                          "client_fee_fiat": {
                             "type": "number",
                             "format": "float",
-                            "example": 21.04
+                            "example": 450.00
                           },
-                          "tds_fees": {
+                          "client_fee_crypto": {
                             "type": "number",
                             "format": "float",
-                            "example": 41.86
+                            "example": 5
+                          },
+                          "dollarpe_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 450.00
+                          },
+                          "pg_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 18.00
+                          },
+                          "client_gst_fiat": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "client_gst_crypto": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 0.90
+                          },
+                          "dollarpe_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "pg_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "tds": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 889.17
+                          },
+                          "gross_effective_exchange_rate": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 88.92
                           }
                         }
                       },
@@ -882,13 +1108,55 @@
                       "fees": {
                         "type": "object",
                         "properties": {
-                          "tds_fees": {
-                            "type": "string",
-                            "example": ""
+                          "client_fee_fiat": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 450.00
                           },
-                          "dollarpe_fees": {
-                            "type": "string",
-                            "example": ""
+                          "client_fee_crypto": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 5
+                          },
+                          "dollarpe_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 450.00
+                          },
+                          "pg_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 18.00
+                          },
+                          "client_gst_fiat": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "client_gst_crypto": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 0.90
+                          },
+                          "dollarpe_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "pg_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "tds": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 889.17
+                          },
+                          "gross_effective_exchange_rate": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 88.92
                           }
                         }
                       },
@@ -1107,13 +1375,55 @@
                             "fees": {
                               "type": "object",
                               "properties": {
-                                "tds_fees": {
-                                  "type": "string",
-                                  "example": ""
+                                "client_fee_fiat": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 450.00
                                 },
-                                "dollarpe_fees": {
-                                  "type": "string",
-                                  "example": ""
+                                "client_fee_crypto": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 5
+                                },
+                                "dollarpe_fee": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 450.00
+                                },
+                                "pg_fee": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 18.00
+                                },
+                                "client_gst_fiat": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 81.00
+                                },
+                                "client_gst_crypto": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 0.90
+                                },
+                                "dollarpe_gst": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 81.00
+                                },
+                                "pg_gst": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 81.00
+                                },
+                                "tds": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 889.17
+                                },
+                                "gross_effective_exchange_rate": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 88.92
                                 }
                               }
                             },

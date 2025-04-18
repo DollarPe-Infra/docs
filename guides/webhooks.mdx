@@ -18,8 +18,13 @@ All webhook notifications follow this consistent structure:
   "type": "string",           // The entity type (e.g., "PAYOUT", "PAYIN", "CUSTOMER", "BANK_STATEMENT")
   "id": "string"              // Unique ID of the entity 
   "event": "string",          // The state change event
-  "failure_reason": "string", // In case of FAILED event
-  "timestamp": "ISO-8601 timestamp"
+  "timestamp": "ISO-8601 timestamp",
+  "metadata": {
+    "failure_reason": "string", // In case of FAILED event,
+    .
+    .
+    .
+  }
 }
 ```
 
@@ -40,8 +45,10 @@ Example customer webhook payload:
   "type": "CUSTOMER",
   "event": "FAILED",
   "id": "12348400-e29b-41d4-a716-446655440000",
-  "failure_reason": "TAX_VERIFICATION_FAILED",
-  "timestamp": "2024-03-13T10:00:00Z"
+  "timestamp": "2024-03-13T10:00:00Z",
+  "metadata": {
+    "failure_reason": "TAX_VERIFICATION_FAILED"
+  }
 }
 ```
 
@@ -60,8 +67,8 @@ Example customer webhook payload:
   "type": "BANK_STATEMENT",
   "event": "SUCCESS",
   "id": "12348400-e29b-41d4-a716-446655440000",
-  "failure_reason": null,
-  "timestamp": "2024-03-13T10:00:00Z"
+  "timestamp": "2024-03-13T10:00:00Z",
+  "metadata": {}
 }
 ```
 
@@ -81,8 +88,10 @@ Example payout webhook payload:
   "type": "PAYOUT",
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "event": "SUCCESS",
-  "failure_reason": null,
-  "timestamp": "2024-03-13T10:00:00Z"
+  "timestamp": "2024-03-13T10:00:00Z",
+  "metadata": {
+    "utr": "RATN12341234XYZ"
+  }
 }
 ```
 
@@ -102,7 +111,7 @@ Example payin webhook payload:
   "type": "PAYIN",
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "event": "SUCCESS",
-  "failure_reason": null,
-  "timestamp": "2024-03-13T10:00:00Z"
+  "timestamp": "2024-03-13T10:00:00Z",
+  "metadata": {}
 }
 ```

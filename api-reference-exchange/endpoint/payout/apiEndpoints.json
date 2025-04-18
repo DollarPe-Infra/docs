@@ -1,4 +1,99 @@
 {
+  "/payout/configuration": {
+    "get": {
+      "tags": ["Payout"],
+      "x-title": "Configuration",
+      "description": "Returns basic configuration for payout - supported fiats, supported assets, supported networks and live coin limits",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
+          "description": "Payout API Base URL"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "supported_fiats": {
+                        "type": "array",
+                        "example": ["inr"]
+                      },
+                      "supported_assets": {
+                        "type": "array",
+                        "example": ["usdt", "usdc"]
+                      },
+                      "coin_limits": {
+                        "type": "object",
+                        "properties": {
+                          "{asset}": {
+                            "type": "object",
+                            "properties": {
+                              "min": {
+                                "type": "number",
+                                "format": "decimal",
+                                "example": 30
+                              },
+                              "max": {
+                                "type": "number",
+                                "format": "decimal",
+                                "example": 5850
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "data": {
+                    "type": "null"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "/payout/fetch-rate": {
     "get": {
       "tags": ["Payout"],
@@ -19,16 +114,6 @@
           "schema": {
             "type": "string",
             "example": "USDT"
-          }
-        },
-        {
-          "name": "network",
-          "in": "path",
-          "required": true,
-          "description": "The network of the crypto asset",
-          "schema": {
-            "type": "string",
-            "example": "BSC"
           }
         },
         {
@@ -64,10 +149,6 @@
                       "asset": {
                         "type": "string",
                         "example": "USDT"
-                      },
-                      "network": {
-                        "type": "string",
-                        "example": "BSC"
                       },
                       "fiat": {
                         "type": "string",
@@ -172,7 +253,6 @@
               "required": [
                 "asset",
                 "fiat",
-                "network",
                 "sending_amount",
                 "customer_id",
                 "bank_id"
@@ -187,11 +267,6 @@
                   "type": "string",
                   "description": "The fiat currency code",
                   "example": "inr"
-                },
-                "network": {
-                  "type": "string",
-                  "description": "The blockchain network",
-                  "example": "bsc"
                 },
                 "sending_amount": {
                   "type": "string",
@@ -253,10 +328,6 @@
                         "type": "string",
                         "example": "USDT"
                       },
-                      "network": {
-                        "type": "string",
-                        "example": "BSC"
-                      },
                       "fiat": {
                         "type": "string",
                         "example": "INR"
@@ -279,21 +350,57 @@
                       "fees": {
                         "type": "object",
                         "properties": {
-                          "dollarpe_fees": {
+                          "client_fee_fiat": {
                             "type": "number",
                             "format": "float",
-                            "example": 21.04
+                            "example": 450.00
                           },
-                          "tds_fees": {
+                          "client_fee_crypto": {
                             "type": "number",
                             "format": "float",
-                            "example": 41.86
+                            "example": 5
+                          },
+                          "dollarpe_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 450.00
+                          },
+                          "pg_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 18.00
+                          },
+                          "client_gst_fiat": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "client_gst_crypto": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 0.90
+                          },
+                          "dollarpe_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "pg_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "tds": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 889.17
+                          },
+                          "gross_effective_exchange_rate": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 88.92
                           }
                         }
-                      },
-                      "wallet_address": {
-                        "type": "string",
-                        "example": "0x2EAf174Bf1CD624eD63e3C8c74Dd66B66e5cb273"
                       },
                       "created_at": {
                         "type": "string",
@@ -448,10 +555,6 @@
                         "type": "string",
                         "example": "USDT"
                       },
-                      "network": {
-                        "type": "string",
-                        "example": "BSC"
-                      },
                       "fiat": {
                         "type": "string",
                         "example": "INR"
@@ -471,20 +574,57 @@
                       "fees": {
                         "type": "object",
                         "properties": {
-                          "tds_fee": {
+                          "client_fee_fiat": {
                             "type": "number",
-                            "example": 8.67
+                            "format": "float",
+                            "example": 450.00
+                          },
+                          "client_fee_crypto": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 5
                           },
                           "dollarpe_fee": {
                             "type": "number",
-                            "example": 12.721252606222546
+                            "format": "float",
+                            "example": 450.00
+                          },
+                          "pg_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 18.00
+                          },
+                          "client_gst_fiat": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "client_gst_crypto": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 0.90
+                          },
+                          "dollarpe_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "pg_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "tds": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 889.17
+                          },
+                          "gross_effective_exchange_rate": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 88.92
                           }
                         }
-                      },
-                      "wallet_address": {
-                        "type": "string",
-                        "nullable": true,
-                        "example": null
                       },
                       "created_at": {
                         "type": "string",
@@ -585,7 +725,7 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": ["quotation_id", "customer_id", "transaction_hash"],
+              "required": ["quotation_id", "customer_id", "exchange_order_id"],
               "properties": {
                 "quotation_id": {
                   "type": "string",
@@ -604,10 +744,10 @@
                   "description": "Optional client reference ID for tracking",
                   "example": "testUser123"
                 },
-                "transaction_hash": {
+                "exchange_order_id": {
                   "type": "string",
-                  "description": "The blockchain transaction hash",
-                  "example": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406884d14f8108bc"
+                  "description": "Order ID on the exchange",
+                  "example": "5059889123892"
                 }
               }
             }
@@ -661,10 +801,6 @@
                         "type": "string",
                         "example": "USDT"
                       },
-                      "network": {
-                        "type": "string",
-                        "example": "BSC"
-                      },
                       "fiat": {
                         "type": "string",
                         "example": "INR"
@@ -687,25 +823,61 @@
                       "fees": {
                         "type": "object",
                         "properties": {
-                          "dollarpe_fees": {
+                          "client_fee_fiat": {
                             "type": "number",
                             "format": "float",
-                            "example": 21.04
+                            "example": 450.00
                           },
-                          "tds_fees": {
+                          "client_fee_crypto": {
                             "type": "number",
                             "format": "float",
-                            "example": 41.86
+                            "example": 5
+                          },
+                          "dollarpe_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 450.00
+                          },
+                          "pg_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 18.00
+                          },
+                          "client_gst_fiat": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "client_gst_crypto": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 0.90
+                          },
+                          "dollarpe_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "pg_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "tds": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 889.17
+                          },
+                          "gross_effective_exchange_rate": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 88.92
                           }
                         }
                       },
-                      "wallet_address": {
+                      "exchange_order_id": {
                         "type": "string",
-                        "example": "0x2EAf174Bf1CD624eD63e3C8c74Dd66B66e5cb273"
-                      },
-                      "transaction_hash": {
-                        "type": "string",
-                        "example": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406884d14f8108bc"
+                        "example": "5059889123892"
                       },
                       "created_at": {
                         "type": "string",
@@ -859,10 +1031,6 @@
                         "type": "string",
                         "example": "USDT"
                       },
-                      "network": {
-                        "type": "string",
-                        "example": "POLYGON"
-                      },
                       "fiat": {
                         "type": "string",
                         "example": "INR"
@@ -882,23 +1050,65 @@
                       "fees": {
                         "type": "object",
                         "properties": {
-                          "tds_fees": {
-                            "type": "string",
-                            "example": ""
+                          "client_fee_fiat": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 450.00
                           },
-                          "dollarpe_fees": {
-                            "type": "string",
-                            "example": ""
+                          "client_fee_crypto": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 5
+                          },
+                          "dollarpe_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 450.00
+                          },
+                          "pg_fee": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 18.00
+                          },
+                          "client_gst_fiat": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "client_gst_crypto": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 0.90
+                          },
+                          "dollarpe_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "pg_gst": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 81.00
+                          },
+                          "tds": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 889.17
+                          },
+                          "gross_effective_exchange_rate": {
+                            "type": "number",
+                            "format": "float",
+                            "example": 88.92
                           }
                         }
                       },
-                      "transaction_hash": {
+                      "exchange_order_id": {
                         "type": "string",
-                        "example": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406684d4f809ac"
+                        "example": "5059889123892"
                       },
-                      "wallet_address": {
+                      "exchange_transfer_id": {
                         "type": "string",
-                        "example": "0x71C7656EC7ab88b098def1B5f6d8976F"
+                        "example": ""
                       },
                       "status": {
                         "type": "string",
@@ -1084,10 +1294,6 @@
                               "type": "string",
                               "example": "USDT"
                             },
-                            "network": {
-                              "type": "string",
-                              "example": "POLYGON"
-                            },
                             "fiat": {
                               "type": "string",
                               "example": "INR"
@@ -1107,23 +1313,65 @@
                             "fees": {
                               "type": "object",
                               "properties": {
-                                "tds_fees": {
-                                  "type": "string",
-                                  "example": ""
+                                "client_fee_fiat": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 450.00
                                 },
-                                "dollarpe_fees": {
-                                  "type": "string",
-                                  "example": ""
+                                "client_fee_crypto": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 5
+                                },
+                                "dollarpe_fee": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 450.00
+                                },
+                                "pg_fee": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 18.00
+                                },
+                                "client_gst_fiat": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 81.00
+                                },
+                                "client_gst_crypto": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 0.90
+                                },
+                                "dollarpe_gst": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 81.00
+                                },
+                                "pg_gst": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 81.00
+                                },
+                                "tds": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 889.17
+                                },
+                                "gross_effective_exchange_rate": {
+                                  "type": "number",
+                                  "format": "float",
+                                  "example": 88.92
                                 }
                               }
                             },
-                            "transaction_hash": {
+                            "exchange_order_id": {
                               "type": "string",
-                              "example": "0x9b34a0e4897cd834847d8bbb8814eba72149f914785c406684d4f809ac"
+                              "example": "5059889123892"
                             },
-                            "wallet_address": {
+                            "exchange_transfer_id": {
                               "type": "string",
-                              "example": "0x71C7656EC7ab88b098def1B5f6d8976F"
+                              "example": ""
                             },
                             "status": {
                               "type": "string",
@@ -1188,6 +1436,106 @@
                   },
                   "data": {
                     "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/payout/update-transfer-id": {
+    "patch": {
+      "tags": ["Payout"],
+      "x-title": "Update transfer ID",
+      "description": "Updates transfer ID for the order",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/pos/api/v1",
+          "description": "Payout API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["exchange_order_id", "exchange_transfer_id"],
+              "properties": {
+                "exchange_order_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "982738475838910"
+                },
+                "exchange_transfer_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "987283747899283945"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Transfer ID updated successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "exchange_order_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "982738475838910"
+                      },
+                      "exchange_transfer_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "987283747899283945"
+                      }
+                    }
                   }
                 }
               }

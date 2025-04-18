@@ -113,6 +113,12 @@
             "group": "Payout (off-ramp)",
             "pages": [
               {
+                "group": "Configuration",
+                "pages": [
+                  "api-reference-other/endpoint/payout/configuration"
+                ]
+              },
+              {
                 "group": "Rate",
                 "pages": [
                   "api-reference-other/endpoint/payout/fetch-rate"
@@ -194,6 +200,12 @@
           {
             "group": "Payout (off-ramp)",
             "pages": [
+              {
+                "group": "Configuration",
+                "pages": [
+                  "api-reference-exchange/endpoint/payout/configuration"
+                ]
+              },
               {
                 "group": "Rate",
                 "pages": [
