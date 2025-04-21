@@ -279,7 +279,7 @@
                 "network",
                 "sending_amount",
                 "customer_id",
-                "bank_account_id"
+                "bank_id"
               ],
               "properties": {
                 "asset": {
@@ -308,7 +308,7 @@
                   "description": "Customer's unique identifier",
                   "example": "def8b740-99f9-4cba-bc9e-99de57e927b4"
                 },
-                "bank_account_id": {
+                "bank_id": {
                   "type": "string",
                   "format": "uuid",
                   "description": "Customer's Bank's unique identifier in which the payout will be maid",
@@ -348,7 +348,7 @@
                         "format": "uuid",
                         "example": "def8b740-99f9-4cba-bc9e-99de57e927b4"
                       },
-                      "bank_account_id": {
+                      "bank_id": {
                         "type": "string",
                         "format": "uuid",
                         "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
@@ -579,7 +579,7 @@
                         "format": "uuid",
                         "example": "def8b740-99f9-4cba-bc9e-99de57e927b4"
                       },
-                      "bank_account_id": {
+                      "bank_id": {
                         "type": "string",
                         "format": "uuid",
                         "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
@@ -838,7 +838,7 @@
                         "type": "string",
                         "example": "testUser123"
                       },
-                      "bank_account_id": {
+                      "bank_id": {
                         "type": "string",
                         "format": "uuid",
                         "example": "e75f62f0-db9e-4904-8103-d6f14f67f5dc"
@@ -1076,7 +1076,7 @@
                         "type": "string",
                         "example": "testUser123"
                       },
-                      "bank_account_id": {
+                      "bank_id": {
                         "type": "string",
                         "format": "uuid",
                         "example": "e75f62f0-db9e-4904-8103-d6f14f67f5dc"
@@ -1343,7 +1343,7 @@
                               "type": "string",
                               "example": "testUser123"
                             },
-                            "bank_account_id": {
+                            "bank_id": {
                               "type": "string",
                               "format": "uuid",
                               "example": "e75f62f0-db9e-4904-8103-d6f14f67f5dc"

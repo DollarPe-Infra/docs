@@ -305,7 +305,7 @@ After getting the current rate, create a quotation to lock in the rate.
     "fiat": "inr",
     "sending_amount": "51",
     "customer_id": "def8b740-99f9-4cba-bc9e-99de57e927b4",
-    "bank_account_id": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+    "bank_id": "4e6f1b20-a73c-11ec-b909-0242ac120002"
   }
   ```
   </Tab>
@@ -318,7 +318,7 @@ After getting the current rate, create a quotation to lock in the rate.
       "data": {
           "id": "c9f343b5-ff56-4d52-93af-0962f75242b7",
           "customer_id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
-          "bank_account_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
+          "bank_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
           "asset": "USDT",
           "fiat": "INR",
           "sending_amount": 10,
@@ -381,7 +381,7 @@ Create a payout request with the exchange order ID:
         "quotation_id": "c9f343b5-ff56-4d52-93af-0962f75242b7",
         "customer_id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
         "client_reference_id": "payout_first_test",
-        "bank_account_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
+        "bank_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
         "asset": "USDT",
         "fiat": "INR",
         "rate": 87.2,
@@ -413,7 +413,7 @@ Create a payout request with the exchange order ID:
 - `quotation_id`: ID received from Step 3
 - `customer_id`: ID of the KYC-verified customer
 - `client_reference_id`: Your internal reference ID for tracking (optional)
-- `bank_account_id`: ID of the verified bank account
+- `bank_id`: ID of the verified bank account
 - `exchange_order_id`: ID of the order placed at the centralized exchange
 - `status`: Current status of the payout
 
@@ -472,7 +472,7 @@ If webhooks aren't feasible, you can periodically check the status using the pay
       "quotation_id": "c9f343b5-ff56-4d52-93af-0962f75242b7",
       "customer_id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
       "client_reference_id": "payout_first_test",
-      "bank_account_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
+      "bank_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
       "asset": "USDT",
       "fiat": "INR",
       "sending_amount": "10.00000000",

@@ -331,7 +331,7 @@ After getting the current rate, create a quotation to lock in the rate.
       "fiat": "INR",
       "sending_amount": "10000",
       "customer_id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
-      "bank_account_id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
+      "bank_id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
       "payment_method": "BANK_TRANSFER",
       "selfie_url": "https://google.com",
       "risk_parameters": {
@@ -390,7 +390,7 @@ After getting the current rate, create a quotation to lock in the rate.
 - `fiat`: Fiat currency to send (e.g., "INR" for Indian Rupee)
 - `receiving_amount`: Amount in cryptocurrency to receive
 - `customer_id`: ID of the KYC-verified customer
-- `bank_account_id`: ID of the verified bank account
+- `bank_id`: ID of the verified bank account
 - `bank_details`: Bank account details for sending the fiat payment
 - `expiry_time`: Time until the quotation expires
 
@@ -469,7 +469,7 @@ After the fiat payment is completed, create a payin request with the UTR:
 - `quotation_id`: ID received from Step 3
 - `customer_id`: ID of the KYC-verified customer
 - `client_reference_id`: Your internal reference ID for tracking (optional)
-- `bank_account_id`: ID of the verified bank account
+- `bank_id`: ID of the verified bank account
 - `utr`: Unique Transaction Reference from the bank payment
 - `status`: Current status of the payin
 
@@ -525,7 +525,7 @@ If webhooks aren't feasible, you can periodically check the status using the pay
         "quotation_id": "c9f343b5-ff56-4d52-93af-0962f75242b7",
         "customer_id": "8da49e5e-33d1-48b2-b107-eb34f851b2fd",
         "client_reference_id": "payin_first_test",
-        "bank_account_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
+        "bank_id": "c863b696-7fbd-4b16-b3a7-134aefffb2fe",
         "asset": "USDT",
         "network": "BSC",
         "fiat": "INR",
