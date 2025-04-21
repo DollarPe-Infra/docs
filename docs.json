@@ -132,6 +132,7 @@
                   "api-reference-exchange/endpoint/payout/initiate",
                   "api-reference-exchange/endpoint/payout/{payout_id}",
                   "api-reference-exchange/endpoint/payout/history",
+                  "api-reference-exchange/endpoint/payout/update-transfer-id",
                   "api-reference-exchange/endpoint/payout/mock-payout-status"
                 ]
               }
@@ -165,6 +166,7 @@
                   "api-reference-exchange/endpoint/payin/initiate",
                   "api-reference-exchange/endpoint/payin/{payin_id}",
                   "api-reference-exchange/endpoint/payin/history",
+                  "api-reference-exchange/endpoint/payin/update-transfer-id",
                   "api-reference-exchange/endpoint/payin/mock-payin-status"
                 ]
               }

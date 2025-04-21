@@ -18,7 +18,7 @@ All webhook notifications follow this consistent structure:
   "type": "string",           // The entity type (e.g., "PAYOUT", "PAYIN", "CUSTOMER", "BANK_STATEMENT")
   "id": "string"              // Unique ID of the entity 
   "event": "string",          // The state change event
-  "timestamp": "ISO-8601 timestamp",
+  "timestamp": "timestamp",
   "metadata": {
     "failure_reason": "string", // In case of FAILED event,
     .
