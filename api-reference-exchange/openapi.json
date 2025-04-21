@@ -4081,6 +4081,7 @@
                   "full_address",
                   "dob",
                   "registered_date",
+                  "tax_number",
                   "document_type",
                   "document_front_image_url",
                   "document_back_image_url",
@@ -4699,6 +4700,13 @@
                         "bank_account_status": {
                           "type": "string",
                           "example": "VERIFIED"
+                        },
+                        "is_bank_statement_analysed": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "bank_statement_analysis_failure_reason": {
+                          "type": "null"
                         }
                       }
                     }

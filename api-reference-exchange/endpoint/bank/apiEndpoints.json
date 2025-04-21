@@ -108,6 +108,13 @@
                       "bank_account_status": {
                         "type": "string",
                         "example": "VERIFIED"
+                      },
+                      "is_bank_statement_analysed": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "bank_statement_analysis_failure_reason": {
+                        "type": "null"
                       }
                     }
                   }
