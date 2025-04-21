@@ -81,15 +81,6 @@
                             }
                           }
                         }
-                      },
-                      "required_risk_parameters": {
-                        "type": "array",
-                        "example": [
-                          "ip_address",
-                          "device_id",
-                          "suspicious_activity_report",
-                          "law_enforcement_agency_report"
-                        ]
                       }
                     }
                   }
