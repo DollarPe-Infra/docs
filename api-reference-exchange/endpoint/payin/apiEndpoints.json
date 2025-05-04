@@ -291,6 +291,7 @@
                 "customer_id",
                 "bank_id",
                 "payment_method",
+                "wallet_address",
                 "selfie_url",
                 "risk_parameters"
               ],
@@ -325,6 +326,10 @@
                 "payment_method": {
                   "type": "string",
                   "example": "BANK_TRANSFER"
+                },
+                "wallet_address": {
+                  "type": "string",
+                  "example": "0x8Fbb8925F08ad7c864A0b7eA0351Fe5F7BCe1189"
                 },
                 "selfie_url": {
                   "type": "string",

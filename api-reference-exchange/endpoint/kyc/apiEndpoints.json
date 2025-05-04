@@ -19,6 +19,7 @@
               "required": [
                 "customer_id",
                 "full_name",
+                "phone",
                 "full_address",
                 "dob",
                 "registered_date",
@@ -283,6 +284,7 @@
               "type": "object",
               "required": [
                 "customer_id",
+                "phone",
                 "full_address",
                 "document_type",
                 "document_front_image_url",

@@ -52,20 +52,20 @@ Example customer webhook payload:
 }
 ```
 
-### Bank Statement Events
+### Bank Events
 
-Bank Statement webhooks are triggered when a customer's bank statement is analysed. Below are the possible states:
+Bank webhooks are triggered when a customer's bank account details or UPI ID is verified. Below are the possible states:
 
 | Event | Description |
 |-------|-------------|
-| `SUCCESS` | Bank statement is analysed successfully and the bank account can be used for payins |
-| `FAILED` | Bank statement analysis failed and the bank account cannot be used for payins |
+| `VERIFIED` | Bank Account or UPI ID is verified successfully and can be used to place orders |
+| `FAILED` | Bank Account or UPI ID verification failed and the bank account cannot be used to place orders |
 
 Example customer webhook payload:
 ```json
 {
-  "type": "BANK_STATEMENT",
-  "event": "SUCCESS",
+  "type": "BANK",
+  "event": "VERIFIED",
   "id": "12348400-e29b-41d4-a716-446655440000",
   "timestamp": "2024-03-13T10:00:00Z",
   "metadata": {}
