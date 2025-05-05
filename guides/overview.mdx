@@ -6,7 +6,7 @@ iconType: "solid"
 
 <Highlight># Quickstart</Highlight>
 
-DollarPe provides a comprehensive suite of APIs that enable businesses to offer **fiat-to-crypto** (onramp) and **crypto-to-fiat** (offramp) services to their customers. Our platform handles the complex aspects of cryptocurrency transactions, KYC verification, and banking operations, allowing you to focus on your core business while offering seamless crypto-fiat conversion solutions.
+DollarPe provides a comprehensive suite of APIs that enables businesses to offer **fiat-to-crypto** (onramp) and **crypto-to-fiat** (offramp) services to their customers. By managing the intricacies of cryptocurrency transactions, KYC compliance, and banking processes, our solution enables you to deliver smooth onramp and offramp experiences while staying focused on your core operations.
 
 <Note>
   **Partner Integration Benefits** 
@@ -174,23 +174,11 @@ const generateHeaders = (apiKey, apiSecret, body = {}) => {
 Implement our KYC flow to verify your customers' identities:
 
 <Accordion title="KYC Implementation Steps (Sharing based)">
-1. Create a customer profile using [/customer/create](/api-reference-other/endpoint/customer/create)
+1. Initiate a customer profile through the [/customer/create](/api-reference-other/endpoint/customer/create) endpoint
 2. Submit KYC documents and information using [/kyc/add-kyc-data](/api-reference-other/endpoint/kyc/add-kyc-data)
 3. Monitor verification status via [/customer/{customer_id}](/api-reference-other/endpoint/customer/{customer_id}) or webhooks
 4. Handle verification issues if needed using [/kyc/update-tax-info](/api-reference-other/endpoint/kyc/update-tax-info) or [/kyc/update-document-info](/api-reference-other/endpoint/kyc/update-document-info)
 5. Add bank account details once verified using [/bank/create](/api-reference-other/endpoint/bank/create)
-
-See our [KYC Integration Guide](/api-reference-other/integration-guides/kyc-integration-guide) for detailed implementation steps.
-
-</Accordion>
-
-<Accordion title="KYC Implementation Steps (SDK based)">
-1. Create a customer profile using [/customer/create](/api-reference-other/endpoint/customer/create)
-2. Generate a KYC link for the user [/kyc/generate-link](/api-reference-other/endpoint/kyc/generate-link)
-3. Once the user has completed their [KYC Journey](/guides/kyc/kyc-sdk), they will be automatically redirected back to the redirect URL provided
-4. Monitor verification status via [/customer/{customer_id}](/api-reference-other/endpoint/customer/{customer_id}) or webhooks
-5. Re-attempt fresh KYC in case of issues or KYC failure by generating a new link
-6. Add bank account details once verified using [/bank/create](/api-reference-other/endpoint/bank/create)
 
 See our [KYC Integration Guide](/api-reference-other/integration-guides/kyc-integration-guide) for detailed implementation steps.
 

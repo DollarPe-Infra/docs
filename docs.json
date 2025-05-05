@@ -30,9 +30,8 @@
           {
             "group": "How KYC Works?",
             "pages": [
-              "guides/kyc/kyc-methods",
               "guides/kyc/kyc-sharing",
-              "guides/kyc/kyc-sdk"
+              "guides/kyc/reset-kyc"
             ]
           },
           {
@@ -90,6 +89,8 @@
                   "api-reference-exchange/endpoint/kyc/add-kyc-data",
                   "api-reference-exchange/endpoint/kyc/update-tax-info",
                   "api-reference-exchange/endpoint/kyc/update-document-info",
+                  "api-reference-exchange/endpoint/kyc/reset-kyc",
+                  "api-reference-exchange/endpoint/kyc/add-edd-data",
                   "api-reference-exchange/endpoint/kyc/mock-kyc-status"
                 ]
               },
@@ -98,8 +99,7 @@
                 "pages": [
                   "api-reference-exchange/endpoint/bank/create",
                   "api-reference-exchange/endpoint/bank/{customer_id}-{bank_id}",
-                  "api-reference-exchange/endpoint/bank/list-{customer_id}",
-                  "api-reference-exchange/endpoint/bank/submit-bank-statement"
+                  "api-reference-exchange/endpoint/bank/list-{customer_id}"
                 ]
               }
             ]
@@ -165,6 +165,7 @@
                 "pages": [
                   "api-reference-exchange/endpoint/payin/initiate",
                   "api-reference-exchange/endpoint/payin/{payin_id}",
+                  "api-reference-exchange/endpoint/payin/limit-{customer_id}",
                   "api-reference-exchange/endpoint/payin/history",
                   "api-reference-exchange/endpoint/payin/update-transfer-id",
                   "api-reference-exchange/endpoint/payin/mock-payin-status"

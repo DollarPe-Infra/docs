@@ -18,7 +18,7 @@ Payins enable your application to seamlessly accept fiat payments from your cust
     - **[supported geographies](/guides/support/geographies)** 
     - **[supported stablecoins and blockchains](/guides/support/stablecoins_and_blockchains)** 
     - **[supported fiat methods](/guides/support/fiatMethods)** 
-  - Verify your users have completed KYC and have at least one verified bank account
+    - Verify your users have completed KYC and have at least one verified bank account
 </Note>
 
 <Warning>
@@ -42,19 +42,26 @@ The Payin integration flow for centralized exchanges involves the following key 
 ### Process Flow Diagram
 
 ```mermaid
+%%{init: {'themeVariables': { 'fontSize': '18px', 'nodeWidth': '300', 'nodeHeight': '60' }}}%%
 flowchart TD
     Start([Start Process]) --> CheckKYC[Check KYC & Bank Status]
-    CheckKYC -->|YES| FetchRate["Fetch Exchange Rate"]
-    CheckKYC -->|NO| AddKYC["Complete KYC & Bank 
-    Verification"]
+    CheckKYC -->|YES| CheckLimit["Check Payin Limit"]
+    CheckKYC -->|NO| AddKYC["Complete KYC & Bank<br/>Verification"]
 
-    AddKYC -->|API Call| KycAPI[/"API: /kyc/add-kyc-data/"/]
+    AddKYC -->|API Call| KycAPI["/API: /kyc/add-kyc-data/"]
     KycAPI --> CheckKYC
 
-    FetchRate -->|API Call| RateAPI[/"API: /payin/fetch-rate/"/]
+    CheckLimit -->|Limit Available| FetchRate["Fetch Exchange Rate"]
+    CheckLimit -->|EDD Required| EDDStep["Complete EDD<br/>(Enhanced Due Diligence)"]
+    CheckLimit -->|Limit Exhausted &<br/>EDD Done| LimitError["Show Limit Exhausted/Error"]
+
+    EDDStep -->|API Call| EddAPI["/API: /kyc/add-edd-data"]
+    EddAPI --> CheckLimit
+
+    FetchRate -->|API Call| RateAPI["/API: /payin/fetch-rate/"]
     RateAPI --> CreateQuote["Create Quotation"]
 
-    CreateQuote -->|API Call| QuoteAPI[/"API: /payin/quotation/"/]
+    CreateQuote -->|API Call| QuoteAPI["/API: /payin/quotation/"]
     QuoteAPI --> AMLScreening["AML Screening"]
 
     AMLScreening -->|PASSED| ShowBankDetails["Show Bank Details"]
@@ -63,7 +70,7 @@ flowchart TD
     ShowBankDetails --> SendFiat["Send Fiat Payment"]
     SendFiat --> InitiatePayin["Initiate Payin with UTR"]
 
-    InitiatePayin -->|API Call| PayinAPI[/"API: /payin/initiate/"/]
+    InitiatePayin -->|API Call| PayinAPI["/API: /payin/initiate/"]
     PayinAPI --> WebhookNotification["Webhook Notification"]
     PayinAPI --> PollStatus["Order Polling"]
 
@@ -105,42 +112,52 @@ sequenceDiagram
     API->>Exchange: Return KYC & Bank Status
 
     alt KYC & Bank Verified
-        Exchange->>API: Fetch Exchange Rate
-        API->>Exchange: Return Current Rate
+        Exchange->>API: Check Payin Limit
+        API->>Exchange: Return Limit Info
+        alt Limit Available
+            Exchange->>API: Fetch Exchange Rate
+            API->>Exchange: Return Current Rate
 
-        Exchange->>API: Create Quotation
-        Note over API: Internal AML Screening
-        alt AML Passed
-            API->>Exchange: Return Bank Details for Payment
-        else AML Failed
-            API->>Exchange: Return AML Error
-            Exchange->>Exchange: Contact Support
-        end
+            Exchange->>API: Create Quotation
+            Note over API: Internal AML Screening
+            alt AML Passed
+                API->>Exchange: Return Bank Details for Payment
+            else AML Failed
+                API->>Exchange: Return AML Error
+                Exchange->>Exchange: Contact Support
+            end
 
-        Exchange->>Bank: Send Fiat Payment
-        Note over Exchange: Get UTR from Bank
+            Exchange->>Bank: Send Fiat Payment
+            Note over Exchange: Get UTR from Bank
 
-        Exchange->>API: Initiate Payin with UTR
-        API->>Exchange: Payin Created with payin_id
+            Exchange->>API: Initiate Payin with UTR
+            API->>Exchange: Payin Created with payin_id
 
-        alt Successful Transaction
-            API->>Bank: Verify Payment
-            Bank->>API: Payment Verified
+            alt Successful Transaction
+                API->>Bank: Verify Payment
+                Bank->>API: Payment Verified
 
-            API->>Webhook: Send Status Update (COMPLETED)
-            Webhook->>Exchange: Webhook Notification (COMPLETED)
+                API->>Webhook: Send Status Update (COMPLETED)
+                Webhook->>Exchange: Webhook Notification (COMPLETED)
 
-            Exchange->>API: Poll for Status Updates (optional)
-            API->>Exchange: Status: COMPLETED
-        else Failed Transaction
-            API->>Bank: Payment Verification Failed
+                Exchange->>API: Poll for Status Updates (optional)
+                API->>Exchange: Status: COMPLETED
+            else Failed Transaction
+                API->>Bank: Payment Verification Failed
 
-            API->>Webhook: Send Status Update (FAILED)
-            Webhook->>Exchange: Webhook Notification (FAILED)
+                API->>Webhook: Send Status Update (FAILED)
+                Webhook->>Exchange: Webhook Notification (FAILED)
 
-            Exchange->>API: Poll for Status Updates (optional)
-            API->>Exchange: Status: FAILED
-            Exchange->>Exchange: Handle Error & Notify User
+                Exchange->>API: Poll for Status Updates (optional)
+                API->>Exchange: Status: FAILED
+                Exchange->>Exchange: Handle Error & Notify User
+            end
+        else EDD Required
+            Exchange->>API: Complete EDD (Enhanced Due Diligence)
+            API->>Exchange: EDD Result
+            Exchange->>API: Check Payin Limit (again)
+        else Limit Exhausted & EDD Done
+            API->>Exchange: Show Limit Exhausted/Error (No further payins allowed)
         end
     else KYC & Bank Not Verified
         API->>Exchange: KYC/Bank Verification Required
@@ -244,7 +261,8 @@ Before initiating any payin, ensure the customer is KYC-verified and has a verif
           "country": "IND",
           "type": "INDIVIDUAL",
           "status": "UNVERIFIED",
-          "failure_reason": null
+          "failure_reason": null,
+          "is_edd_verified": false
       }
   }
   ```
@@ -277,7 +295,44 @@ Before initiating any payin, ensure the customer is KYC-verified and has a verif
   </Tab>
 </Tabs>
 
-### Step 3: Fetch Exchange Rate
+### Step 3: Check Payin Limit
+
+Before creating a quotation, check the customer's available payin limit to ensure they are eligible to create a new order.
+
+<Tabs>
+  <Tab title="API Request">
+  ```javascript
+  GET /payin/limit/{customer_id}
+  ```
+  </Tab>
+  <Tab title="Response">
+  ```json
+  {
+    "status": true,
+    "message": "Success",
+    "data": {
+      "maximum_daily_limit": "100000.00",
+      "available_daily_limit": "50000.00",
+      "is_edd_required": false
+    }
+  }
+  ```
+  </Tab>
+</Tabs>
+
+**Key Fields:**
+
+- `maximum_daily_limit`: The maximum daily payin limit for the customer
+- `available_daily_limit`: The remaining payin limit for the day
+- `is_edd_required`: If true, the customer must complete Enhanced Due Diligence (EDD) before proceeding
+
+**How to use:**
+
+- If `available_daily_limit` is sufficient for the intended transaction and `is_edd_required` is false, proceed to the next step.
+- If `is_edd_required` is true and the limit is not available, direct the user to complete EDD as part of the KYC process before proceeding. After EDD, recheck the limit.
+- If `is_edd_required` is false and the limit is not available (i.e., user has already completed EDD and limit is still exhausted), do not allow the user to create a new payin order and show an appropriate error message. No further action is possible until the limit resets.
+
+### Step 4: Fetch Exchange Rate
 
 Get the real-time exchange rate for a given crypto asset.
 
@@ -318,7 +373,7 @@ Get the real-time exchange rate for a given crypto asset.
   new rate before each transaction to ensure accuracy.
 </Tip>
 
-### Step 4: Create a Quotation
+### Step 5: Create a Quotation
 
 After getting the current rate, create a quotation to lock in the rate.
 
@@ -396,7 +451,7 @@ After getting the current rate, create a quotation to lock in the rate.
 
 <Note>You must complete your transaction before this time expires.</Note>
 
-### Step 5: Send Fiat Payment
+### Step 6: Send Fiat Payment
 
 Once you have the quotation and bank details, instruct the customer to send the fiat payment:
 
@@ -405,7 +460,7 @@ Once you have the quotation and bank details, instruct the customer to send the 
 3. Keep the UTR (Unique Transaction Reference) from the bank
 4. Complete the payment before the quotation expires
 
-### Step 6: Initiate the Payin
+### Step 7: Initiate the Payin
 
 After the fiat payment is completed, create a payin request with the UTR:
 
@@ -473,7 +528,7 @@ After the fiat payment is completed, create a payin request with the UTR:
 - `utr`: Unique Transaction Reference from the bank payment
 - `status`: Current status of the payin
 
-### Step 7: Monitor Transaction Status
+### Step 8: Monitor Transaction Status
 
 After initiating the payin, you need to track the payin status. There are two ways to monitor this status:
 
@@ -564,7 +619,7 @@ If webhooks aren't feasible, you can periodically check the status using the pay
 - `SUCCESS`: Payin has been successfully completed
 - `FAILED`: Payin has failed and failure_reason is updated
 
-### Step 8: Handle Transaction Completion
+### Step 9: Handle Transaction Completion
 
 #### Successful Transactions
 
@@ -575,7 +630,7 @@ When a payin is completed successfully:
 3. Notify your user that the funds have been received
 4. Store the transaction details for future reference and customer support
 
-### Step 8: Link Exchange Order ID with Exchange Transfer ID
+### Step 10: Link Exchange Order ID with Exchange Transfer ID
 
 Upon successful payin, ensure the exchange transfer ID (associated with the sent cryptocurrency) is linked to the corresponding exchange order ID.
 

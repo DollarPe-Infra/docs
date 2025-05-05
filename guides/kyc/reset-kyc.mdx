@@ -1,0 +1,32 @@
+---
+title: "Reset KYC"
+icon: "book-open-cover"
+iconType: "solid"
+---
+
+<Highlight>
+  # Reset KYC
+</Highlight>
+
+## Overview
+
+The **Reset KYC** feature allows you to reset a customer's existing KYC information and reinitiate the verification process. This is particularly useful in scenarios where the initial KYC was completed using an identity document **other than Aadhaar**, such as a **Passport**, **Voter ID**, or **Driving License**.
+
+While all KYC-verified users are eligible for **Payout** services, access to **Payin** services is restricted to users whose identity has been verified via **Aadhaar**. To enable Payins for such users, their KYC must be reset and re-performed with Aadhaar as the primary identity document.
+
+### When to Use
+
+- Customer has completed KYC using Passport, Voter ID, or Driving License.
+- Customer now wants to use **Payin services**, which require Aadhaar-based verification.
+- Client wants to allow re-verification without deleting the user’s profile.
+
+### How it Works
+
+- Use the [Reset KYC endpoint](/api-reference-exchange/endpoint/kyc/reset-kyc) to initiate the KYC reset process.
+- Once reset, the customer must go through the KYC flow again, this time submitting **Aadhaar** for verification.
+- After successful Aadhaar-based verification, the customer becomes eligible for **both Payin and Payout** services.
+
+### Notes
+
+- Resetting KYC marks the customer as **UNVERIFIED**, restricting their Payout capability as well till their re-complete their KYC.
+- KYC reset is irreversible and should be initiated only when the customer has explicitly opted to re-verify with Aadhaar.

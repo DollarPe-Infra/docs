@@ -32,19 +32,19 @@ The flow diagrams use the following color coding:
 - **Red** (`#FF5252`): Failed/Error State
 - **Orange** (`#FFA726`): Reversed/Refunded State
 
-## Bank Statement Analysis Status
+## Bank Verification Status
 
 ### Available States
 | State | Description |
 |-------|-------------|
-| `PROCESSING` | Bank statement analysis is in processing |
-| `SUCCESS` | Bank statement analysis failed and the bank account can be used for payin |
-| `FAILED` | Bank statement analysis failed and the bank account cannot be used for payin |
+| `PROCESSING` | Bank verification is in processing |
+| `VERIFIED` | Bank account or UPI ID successfully verified |
+| `FAILED` | Bank account or UPI ID verification failed |
 
 ### Status Flow
 ```mermaid
 graph LR
-    A[PROCESSING] --> B[SUCCESS]
+    A[PROCESSING] --> B[VERIFIED]
     A --> C[FAILED]
     style B fill:#4CAF50,color:#fff
     style C fill:#FF5252,color:#fff
@@ -108,4 +108,21 @@ graph LR
     style B fill:#4CAF50,color:#fff
     style C fill:#FF5252,color:#fff
     style D fill:#FFA726,color:#fff
+```
+
+## EDD Verification Status
+
+### Available States
+| State | Description |
+|-------|-------------|
+| `VERIFIED` | EDD successfully verified |
+| `FAILED` | EDD verification failed |
+
+### Status Flow
+```mermaid
+graph LR
+    A[PROCESSING] --> B[VERIFIED]
+    A --> C[FAILED]
+    style B fill:#4CAF50,color:#fff
+    style C fill:#FF5252,color:#fff
 ```

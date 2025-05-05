@@ -19,6 +19,7 @@
               "required": [
                 "customer_id",
                 "full_name",
+                "phone",
                 "full_address",
                 "dob",
                 "registered_date",
@@ -69,10 +70,12 @@
                 },
                 "document_front_image_url": {
                   "type": "string",
+                  "description": "Accepts JPG, JPEG, PNG and PDF links",
                   "format": "uri"
                 },
                 "document_back_image_url": {
                   "type": "string",
+                  "description": "Accepts JPG, JPEG, PNG and PDF links",
                   "format": "uri"
                 },
                 "document_details": {
@@ -90,6 +93,7 @@
                 },
                 "selfie_url": {
                   "type": "string",
+                  "description": "Accepts JPG, JPEG and PNG links",
                   "format": "uri"
                 },
                 "selfie_verification_status": {
@@ -283,6 +287,7 @@
               "type": "object",
               "required": [
                 "customer_id",
+                "phone",
                 "full_address",
                 "document_type",
                 "document_front_image_url",
@@ -310,10 +315,12 @@
                 },
                 "document_front_image_url": {
                   "type": "string",
+                  "description": "Accepts JPG, JPEG, PNG and PDF links",
                   "format": "uri"
                 },
                 "document_back_image_url": {
                   "type": "string",
+                  "description": "Accepts JPG, JPEG, PNG and PDF links",
                   "format": "uri"
                 },
                 "document_details": {
@@ -361,6 +368,229 @@
                       "status": {
                         "type": "string",
                         "example": "UNVERIFIED"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/kyc/reset-kyc": {
+    "post": {
+      "tags": ["KYC"],
+      "x-title": "Reset KYC",
+      "description": "Resets KYC for verified customers",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+          "description": "KYC API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "customer_id"
+              ],
+              "properties": {
+                "customer_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "KYC reseted successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "UNVERIFIED"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/kyc/add-edd-data": {
+    "post": {
+      "tags": ["KYC"],
+      "x-title": "Add EDD Data",
+      "description": "Adds EDD data for the customer for enhanced payin limits",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+          "description": "KYC API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "customer_id",
+                "source_of_income",
+                "higher_limit_reason",
+                "reason_support_doc_url",
+                "bank_statement_url",
+                "itr_report_url",
+                "p2p_trading_status"
+              ],
+              "properties": {
+                "customer_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                },
+                "source_of_income": {
+                  "type": "string",
+                  "enum": ["SALARY", "RENTAL_INCOME", "BUSINESS_INCOME", "LOAN", "SAVINGS", "OTHERS"],
+                  "example": "SALARY"
+                },
+                "higher_limit_reason": {
+                  "type": "string",
+                  "example": "Investment; Trading; Payments; Others (please specify)"
+                },
+                "reason_support_doc_url": {
+                  "type": "string",
+                  "description": "Supporting document (PDF) for reason specified",
+                  "format": "uri"
+                },
+                "bank_statement_url": {
+                  "type": "string",
+                  "description": "Last 6 month bank statement from which you will deposit (PDF)",
+                  "format": "uri"
+                },
+                "itr_report_url": {
+                  "type": "string",
+                  "description": "ITR Report (PDF) for last financial year",
+                  "format": "uri"
+                },
+                "p2p_trading_status": {
+                  "type": "boolean",
+                  "description": "Are you involved in any P2P trading in past 12 months?",
+                  "example": false
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "EDD uploaded successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
                       }
                     }
                   }
