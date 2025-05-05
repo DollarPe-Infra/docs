@@ -30,7 +30,8 @@
           {
             "group": "How KYC Works?",
             "pages": [
-              "guides/kyc/kyc-sharing"
+              "guides/kyc/kyc-sharing",
+              "guides/kyc/reset-kyc"
             ]
           },
           {
