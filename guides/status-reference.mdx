@@ -109,3 +109,20 @@ graph LR
     style C fill:#FF5252,color:#fff
     style D fill:#FFA726,color:#fff
 ```
+
+## EDD Verification Status
+
+### Available States
+| State | Description |
+|-------|-------------|
+| `VERIFIED` | EDD successfully verified |
+| `FAILED` | EDD verification failed |
+
+### Status Flow
+```mermaid
+graph LR
+    A[PROCESSING] --> B[VERIFIED]
+    A --> C[FAILED]
+    style B fill:#4CAF50,color:#fff
+    style C fill:#FF5252,color:#fff
+```

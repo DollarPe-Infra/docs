@@ -15,7 +15,7 @@ All webhook notifications follow this consistent structure:
 
 ```json
 {
-  "type": "string",           // The entity type (e.g., "PAYOUT", "PAYIN", "CUSTOMER", "BANK")
+  "type": "string",           // The entity type (e.g., "PAYOUT", "PAYIN", "CUSTOMER", "BANK", "EDD")
   "id": "string"              // Unique ID of the entity 
   "event": "string",          // The state change event
   "timestamp": "timestamp",
@@ -111,6 +111,26 @@ Example payin webhook payload:
   "type": "PAYIN",
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "event": "SUCCESS",
+  "timestamp": "2024-03-13T10:00:00Z",
+  "metadata": {}
+}
+```
+
+### EDD Events
+
+EDD webhooks are triggered when a customer's enhanced due diligence verification status changes. Below are the possible states:
+
+| Event | Description |
+|-------|-------------|
+| `VERIFIED` | Customer's EDD is verified successfully and customer will now have enhanced onramp limits |
+| `FAILED` | Customer's EDD verification failed. The payin limits will remain unchanged |
+
+Example customer webhook payload:
+```json
+{
+  "type": "EDD",
+  "event": "VERIFIED",
+  "id": "12348400-e29b-41d4-a716-446655440000",
   "timestamp": "2024-03-13T10:00:00Z",
   "metadata": {}
 }
