@@ -252,6 +252,10 @@
                       "failure_reason": {
                         "type": "null",
                         "example": null
+                      },
+                      "is_edd_verified": {
+                        "type": "boolean",
+                        "example": false
                       }
                     }
                   }
@@ -410,6 +414,10 @@
                             "failure_reason": {
                               "type": "null",
                               "example": null
+                            },
+                            "is_edd_verified": {
+                              "type": "boolean",
+                              "example": false
                             }
                           }
                         }
