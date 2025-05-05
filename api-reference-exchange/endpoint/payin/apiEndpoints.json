@@ -408,7 +408,7 @@
                       "sending_amount": {
                         "type": "number",
                         "format": "float",
-                        "example": 1000.00
+                        "example": 1000.0
                       },
                       "rate": {
                         "type": "number",
@@ -418,7 +418,7 @@
                       "receiving_amount": {
                         "type": "number",
                         "format": "float",
-                        "example": 108.80
+                        "example": 108.8
                       },
                       "fees": {
                         "type": "object",
@@ -426,7 +426,7 @@
                           "client_fee_fiat": {
                             "type": "number",
                             "format": "float",
-                            "example": 450.00
+                            "example": 450.0
                           },
                           "client_fee_crypto": {
                             "type": "number",
@@ -436,32 +436,32 @@
                           "dollarpe_fee": {
                             "type": "number",
                             "format": "float",
-                            "example": 450.00
+                            "example": 450.0
                           },
                           "pg_fee": {
                             "type": "number",
                             "format": "float",
-                            "example": 18.00
+                            "example": 18.0
                           },
                           "client_gst_fiat": {
                             "type": "number",
                             "format": "float",
-                            "example": 81.00
+                            "example": 81.0
                           },
                           "client_gst_crypto": {
                             "type": "number",
                             "format": "float",
-                            "example": 0.90
+                            "example": 0.9
                           },
                           "dollarpe_gst": {
                             "type": "number",
                             "format": "float",
-                            "example": 81.00
+                            "example": 81.0
                           },
                           "pg_gst": {
                             "type": "number",
                             "format": "float",
-                            "example": 81.00
+                            "example": 81.0
                           },
                           "tds": {
                             "type": "number",
@@ -671,7 +671,7 @@
                           "client_fee_fiat": {
                             "type": "number",
                             "format": "float",
-                            "example": 450.00
+                            "example": 450.0
                           },
                           "client_fee_crypto": {
                             "type": "number",
@@ -681,32 +681,32 @@
                           "dollarpe_fee": {
                             "type": "number",
                             "format": "float",
-                            "example": 450.00
+                            "example": 450.0
                           },
                           "pg_fee": {
                             "type": "number",
                             "format": "float",
-                            "example": 18.00
+                            "example": 18.0
                           },
                           "client_gst_fiat": {
                             "type": "number",
                             "format": "float",
-                            "example": 81.00
+                            "example": 81.0
                           },
                           "client_gst_crypto": {
                             "type": "number",
                             "format": "float",
-                            "example": 0.90
+                            "example": 0.9
                           },
                           "dollarpe_gst": {
                             "type": "number",
                             "format": "float",
-                            "example": 81.00
+                            "example": 81.0
                           },
                           "pg_gst": {
                             "type": "number",
                             "format": "float",
-                            "example": 81.00
+                            "example": 81.0
                           },
                           "tds": {
                             "type": "number",
@@ -941,7 +941,7 @@
                           "client_fee_fiat": {
                             "type": "number",
                             "format": "float",
-                            "example": 450.00
+                            "example": 450.0
                           },
                           "client_fee_crypto": {
                             "type": "number",
@@ -951,32 +951,32 @@
                           "dollarpe_fee": {
                             "type": "number",
                             "format": "float",
-                            "example": 450.00
+                            "example": 450.0
                           },
                           "pg_fee": {
                             "type": "number",
                             "format": "float",
-                            "example": 18.00
+                            "example": 18.0
                           },
                           "client_gst_fiat": {
                             "type": "number",
                             "format": "float",
-                            "example": 81.00
+                            "example": 81.0
                           },
                           "client_gst_crypto": {
                             "type": "number",
                             "format": "float",
-                            "example": 0.90
+                            "example": 0.9
                           },
                           "dollarpe_gst": {
                             "type": "number",
                             "format": "float",
-                            "example": 81.00
+                            "example": 81.0
                           },
                           "pg_gst": {
                             "type": "number",
                             "format": "float",
-                            "example": 81.00
+                            "example": 81.0
                           },
                           "tds": {
                             "type": "number",
@@ -1181,7 +1181,7 @@
                           "client_fee_fiat": {
                             "type": "number",
                             "format": "float",
-                            "example": 450.00
+                            "example": 450.0
                           },
                           "client_fee_crypto": {
                             "type": "number",
@@ -1191,32 +1191,32 @@
                           "dollarpe_fee": {
                             "type": "number",
                             "format": "float",
-                            "example": 450.00
+                            "example": 450.0
                           },
                           "pg_fee": {
                             "type": "number",
                             "format": "float",
-                            "example": 18.00
+                            "example": 18.0
                           },
                           "client_gst_fiat": {
                             "type": "number",
                             "format": "float",
-                            "example": 81.00
+                            "example": 81.0
                           },
                           "client_gst_crypto": {
                             "type": "number",
                             "format": "float",
-                            "example": 0.90
+                            "example": 0.9
                           },
                           "dollarpe_gst": {
                             "type": "number",
                             "format": "float",
-                            "example": 81.00
+                            "example": 81.0
                           },
                           "pg_gst": {
                             "type": "number",
                             "format": "float",
-                            "example": 81.00
+                            "example": 81.0
                           },
                           "tds": {
                             "type": "number",
@@ -1440,7 +1440,7 @@
                                 "client_fee_fiat": {
                                   "type": "number",
                                   "format": "float",
-                                  "example": 450.00
+                                  "example": 450.0
                                 },
                                 "client_fee_crypto": {
                                   "type": "number",
@@ -1450,32 +1450,32 @@
                                 "dollarpe_fee": {
                                   "type": "number",
                                   "format": "float",
-                                  "example": 450.00
+                                  "example": 450.0
                                 },
                                 "pg_fee": {
                                   "type": "number",
                                   "format": "float",
-                                  "example": 18.00
+                                  "example": 18.0
                                 },
                                 "client_gst_fiat": {
                                   "type": "number",
                                   "format": "float",
-                                  "example": 81.00
+                                  "example": 81.0
                                 },
                                 "client_gst_crypto": {
                                   "type": "number",
                                   "format": "float",
-                                  "example": 0.90
+                                  "example": 0.9
                                 },
                                 "dollarpe_gst": {
                                   "type": "number",
                                   "format": "float",
-                                  "example": 81.00
+                                  "example": 81.0
                                 },
                                 "pg_gst": {
                                   "type": "number",
                                   "format": "float",
-                                  "example": 81.00
+                                  "example": 81.0
                                 },
                                 "tds": {
                                   "type": "number",
@@ -1781,6 +1781,121 @@
                   },
                   "data": {
                     "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/payin/limit/{customer_id}": {
+    "get": {
+      "tags": ["Payin"],
+      "x-title": "Fetch Payin Limit",
+      "description": "Fetch the payin limit for a specific customer",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/pis/api/v1",
+          "description": "Payin API Base URL"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the customer",
+          "schema": {
+            "type": "string",
+            "format": "uuid",
+            "example": "def8b740-99f9-4cba-bc9e-99de57e927b4"
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Customer payin limit fetched successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "maximum_daily_limit": {
+                        "type": "string",
+                        "example": "100000.00"
+                      },
+                      "available_daily_limit": {
+                        "type": "string",
+                        "example": "50000.00"
+                      },
+                      "is_edd_required": {
+                        "type": "boolean",
+                        "example": false
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad Request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "customer_id: Invalid customer id"
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "data": {
+                    "type": "null"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
                   }
                 }
               }

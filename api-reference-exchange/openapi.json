@@ -3613,6 +3613,123 @@
         }
       }
     },
+    "/payin/limit/{customer_id}": {
+      "get": {
+        "tags": [
+          "Payin"
+        ],
+        "x-title": "Fetch Payin Limit",
+        "description": "Fetch the payin limit for a specific customer",
+        "servers": [
+          {
+            "url": "https://sandbox.dollarpe.xyz/pis/api/v1",
+            "description": "Payin API Base URL"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the customer",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "def8b740-99f9-4cba-bc9e-99de57e927b4"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer payin limit fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "maximum_daily_limit": {
+                          "type": "string",
+                          "example": "100000.00"
+                        },
+                        "available_daily_limit": {
+                          "type": "string",
+                          "example": "50000.00"
+                        },
+                        "is_edd_required": {
+                          "type": "boolean",
+                          "example": false
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "customer_id: Invalid customer id"
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/customer/create": {
       "post": {
         "tags": [

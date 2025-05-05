@@ -165,6 +165,7 @@
                 "pages": [
                   "api-reference-exchange/endpoint/payin/initiate",
                   "api-reference-exchange/endpoint/payin/{payin_id}",
+                  "api-reference-exchange/endpoint/payin/limit-{customer_id}",
                   "api-reference-exchange/endpoint/payin/history",
                   "api-reference-exchange/endpoint/payin/update-transfer-id",
                   "api-reference-exchange/endpoint/payin/mock-payin-status"
