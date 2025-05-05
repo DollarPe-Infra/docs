@@ -401,6 +401,102 @@
       }
     }
   },
+  "/kyc/reset-kyc": {
+    "post": {
+      "tags": ["KYC"],
+      "x-title": "Reset KYC",
+      "description": "Resets KYC for verified customers",
+      "servers": [
+        {
+          "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+          "description": "KYC API Base URL"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "customer_id"
+              ],
+              "properties": {
+                "customer_id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "KYC reseted successfully",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Success"
+                  },
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                      },
+                      "status": {
+                        "type": "string",
+                        "example": "UNVERIFIED"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean",
+                    "example": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Internal Server Error"
+                  },
+                  "errors": {
+                    "type": "string",
+                    "example": "Unexpected error occurred. Please try again later."
+                  },
+                  "data": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "/kyc/mock-kyc-status": {
     "patch": {
       "tags": ["KYC"],

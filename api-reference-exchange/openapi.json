@@ -4507,6 +4507,104 @@
         }
       }
     },
+    "/kyc/reset-kyc": {
+      "post": {
+        "tags": [
+          "KYC"
+        ],
+        "x-title": "Reset KYC",
+        "description": "Resets KYC for verified customers",
+        "servers": [
+          {
+            "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
+            "description": "KYC API Base URL"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "customer_id"
+                ],
+                "properties": {
+                  "customer_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "KYC reseted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "550e8400-e29b-41d4-a716-446655440000"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "UNVERIFIED"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Internal Server Error"
+                    },
+                    "errors": {
+                      "type": "string",
+                      "example": "Unexpected error occurred. Please try again later."
+                    },
+                    "data": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/kyc/mock-kyc-status": {
       "patch": {
         "tags": [
@@ -4728,13 +4826,6 @@
                         "bank_account_status": {
                           "type": "string",
                           "example": "VERIFIED"
-                        },
-                        "is_bank_statement_analysed": {
-                          "type": "boolean",
-                          "example": true
-                        },
-                        "bank_statement_analysis_failure_reason": {
-                          "type": "null"
                         }
                       }
                     }
@@ -4893,13 +4984,6 @@
                         "bank_account_status": {
                           "type": "string",
                           "example": "VERIFIED"
-                        },
-                        "is_bank_statement_analysed": {
-                          "type": "boolean",
-                          "example": true
-                        },
-                        "bank_statement_analysis_failure_reason": {
-                          "type": "null"
                         }
                       }
                     }
@@ -5067,13 +5151,6 @@
                               "bank_account_status": {
                                 "type": "string",
                                 "example": "VERIFIED"
-                              },
-                              "is_bank_statement_analysed": {
-                                "type": "boolean",
-                                "example": true
-                              },
-                              "bank_statement_analysis_failure_reason": {
-                                "type": "null"
                               }
                             }
                           }
@@ -5116,111 +5193,6 @@
                     },
                     "data": {
                       "type": "null"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "example": false
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Internal Server Error"
-                    },
-                    "errors": {
-                      "type": "string",
-                      "example": "Unexpected error occurred. Please try again later."
-                    },
-                    "data": {
-                      "type": "null"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/bank/submit-bank-statement": {
-      "post": {
-        "tags": [
-          "Bank"
-        ],
-        "x-title": "Submit Bank Statement",
-        "description": "Submit's bank statement for analysis (required before onramp)",
-        "servers": [
-          {
-            "url": "https://sandbox.dollarpe.xyz/cms/api/v1",
-            "description": "Bank API Base URL"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "bank_id",
-                  "source_of_funds",
-                  "bank_statement_url"
-                ],
-                "properties": {
-                  "bank_id": {
-                    "type": "string",
-                    "format": "uuid",
-                    "example": "4e6f1b20-a73c-11ec-b909-0242ac120002"
-                  },
-                  "source_of_funds": {
-                    "type": "string",
-                    "enum": [
-                      "SALARY",
-                      "RENTAL_INCOME",
-                      "BUSINESS_INCOME",
-                      "LOAN",
-                      "SAVINGS",
-                      "OTHERS"
-                    ],
-                    "example": "SALARY"
-                  },
-                  "bank_statement_url": {
-                    "type": "string",
-                    "format": "uri"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Bank Statement Submitted",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "boolean",
-                      "example": true
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Success"
-                    },
-                    "data": {
-                      "type": "object"
                     }
                   }
                 }
