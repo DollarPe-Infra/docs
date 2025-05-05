@@ -184,18 +184,6 @@ See our [KYC Integration Guide](/api-reference-other/integration-guides/kyc-inte
 
 </Accordion>
 
-<Accordion title="KYC Implementation Steps (SDK based)">
-1. Create a customer profile using [/customer/create](/api-reference-other/endpoint/customer/create)
-2. Generate a KYC link for the user [/kyc/generate-link](/api-reference-other/endpoint/kyc/generate-link)
-3. Once the user has completed their [KYC Journey](/guides/kyc/kyc-sdk), they will be automatically redirected back to the redirect URL provided
-4. Monitor verification status via [/customer/{customer_id}](/api-reference-other/endpoint/customer/{customer_id}) or webhooks
-5. Re-attempt fresh KYC in case of issues or KYC failure by generating a new link
-6. Add bank account details once verified using [/bank/create](/api-reference-other/endpoint/bank/create)
-
-See our [KYC Integration Guide](/api-reference-other/integration-guides/kyc-integration-guide) for detailed implementation steps.
-
-</Accordion>
-
 ### 3. PayIn Service Integration
 
 Connect to our payin system to enable **fiat-to-crypto** transfers:
